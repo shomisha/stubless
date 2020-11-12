@@ -1,0 +1,21 @@
+{
+    "name": "shomisha/stubless",
+    "description": "A package for generating PHP files without stubs.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Miša Ković",
+            "email": "misa95kovic@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "nikic/php-parser": "^4.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "Shomisha\\Stubless\\": "src"
+        }
+    }
+}
