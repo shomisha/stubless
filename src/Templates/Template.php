@@ -2,6 +2,7 @@
 
 namespace Shomisha\Stubless\Templates;
 
+use PhpParser\Builder;
 use PhpParser\BuilderFactory;
 use PhpParser\Node;
 use PhpParser\PrettyPrinter\Standard as PrettyPrinter;
@@ -41,5 +42,19 @@ abstract class Template implements TemplateContract
 		}
 
 		return $this->printer;
+	}
+
+	protected function convertBuilderToNode(Builder $builder): Node
+	{
+		return $builder->getNode();
+	}
+
+	protected function validateArrayElements(array $array, string $expectedClass): void
+	{
+		foreach ($array as $element) {
+			if (! $element instanceof $expectedClass) {
+				throw new \InvalidArgumentException("Array contains values that are not an instance of the '{$expectedClass}' class.");
+			}
+		}
 	}
 }
