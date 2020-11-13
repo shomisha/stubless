@@ -14,7 +14,8 @@ class ClassProperty extends Template
 
 	private ?string $type;
 
-	private ?string $value;
+	/** @var mixed */
+	private $value;
 
 	public function __construct(string $name, string $type = null, string $value = null, ClassAccess $access = null)
 	{
@@ -45,7 +46,7 @@ class ClassProperty extends Template
 		return $this;
 	}
 
-	public function value(string $value = null)
+	public function value($value = null)
 	{
 		if ($value === null) {
 			return $this->getValue();
@@ -59,7 +60,7 @@ class ClassProperty extends Template
 		return $this->value;
 	}
 
-	public function setValue(?string $value): self
+	public function setValue($value): self
 	{
 		$this->value = $value;
 
@@ -77,7 +78,9 @@ class ClassProperty extends Template
 		}
 
 		if ($this->value) {
-			$property->setDefault($this->value);
+			$property->setDefault(
+				$this->getFactory()->val($this->value)
+			);
 		}
 
 		return $this->convertBuilderToNode($property);
