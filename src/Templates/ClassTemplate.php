@@ -7,13 +7,12 @@ use Shomisha\Stubless\Templates\Concerns\CanBeAbstract;
 use Shomisha\Stubless\Templates\Concerns\CanBeFinal;
 use Shomisha\Stubless\Templates\Concerns\HasImports;
 use Shomisha\Stubless\Templates\Concerns\HasMethods;
+use Shomisha\Stubless\Templates\Concerns\HasName;
 use Shomisha\Stubless\Templates\Concerns\HasProperties;
 
 class ClassTemplate extends Template
 {
-	use HasImports, CanBeAbstract, CanBeFinal, HasProperties, HasMethods;
-
-	private string $name;
+	use HasImports, CanBeAbstract, CanBeFinal, HasName, HasProperties, HasMethods;
 
 	private ?string $extends;
 
@@ -23,16 +22,13 @@ class ClassTemplate extends Template
 		$this->extends = $extends;
 	}
 
-	public function getName(): string
+	public function extends(string $extends = null)
 	{
-		return $this->name;
-	}
+		if ($extends === null) {
+			return $this->getExtends();
+		}
 
-	public function setName(string $name): self
-	{
-		$this->name = $name;
-
-		return $this;
+		return $this->setExtends($extends);
 	}
 
 	public function getExtends(): ?string

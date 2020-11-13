@@ -6,18 +6,17 @@ use PhpParser\Builder\Property;
 use PhpParser\Node;
 use Shomisha\Stubless\Enums\ClassAccess;
 use Shomisha\Stubless\Templates\Concerns\HasAccessModifier;
+use Shomisha\Stubless\Templates\Concerns\HasName;
 
 class ClassProperty extends Template
 {
-	use HasAccessModifier;
+	use HasAccessModifier, HasName;
 
 	private ?string $type;
 
-	private string $name;
-
 	private ?string $value;
 
-	public function __construct(string $name, string $type, string $value = null, ClassAccess $access = null)
+	public function __construct(string $name, string $type = null, string $value = null, ClassAccess $access = null)
 	{
 		$this->name = $name;
 		$this->type = $type;
@@ -25,14 +24,44 @@ class ClassProperty extends Template
 		$this->access = $access ?? ClassAccess::PUBLIC();
 	}
 
-	public function getName(): string
+	public function type(string $type = null)
 	{
-		return $this->name;
+		if ($type === null) {
+			return $this->getType();
+		}
+
+		return $this->setType($type);
 	}
 
-	public function setName(string $name): self
+	public function getType(): string
 	{
-		$this->name = $name;
+		return $this->type;
+	}
+
+	public function setType(string $type): self
+	{
+		$this->type = $type;
+
+		return $this;
+	}
+
+	public function value(string $value = null)
+	{
+		if ($value === null) {
+			return $this->getValue();
+		}
+
+		return $this->setValue($value);
+	}
+
+	public function getValue(): ?string
+	{
+		return $this->value;
+	}
+
+	public function setValue(?string $value): self
+	{
+		$this->value = $value;
 
 		return $this;
 	}

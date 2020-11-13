@@ -3,10 +3,11 @@
 namespace Shomisha\Stubless\Templates;
 
 use PhpParser\Node;
+use Shomisha\Stubless\Templates\Concerns\HasName;
 
 class Argument extends Template
 {
-	private string $name;
+	use HasName;
 
 	private ?string $type;
 
@@ -14,6 +15,27 @@ class Argument extends Template
 	{
 		$this->name = $name;
 		$this->type = $type;
+	}
+
+	public function type(string $type = null)
+	{
+		if ($type === null) {
+			return $this->getType();
+		}
+
+		return $this->setType($type);
+	}
+
+	public function getType(): string
+	{
+		return $this->type;
+	}
+
+	public function setType(?string $type): self
+	{
+		$this->type = $type;
+
+		return $this;
 	}
 
 	/** @return \PhpParser\Node\Param */

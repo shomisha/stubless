@@ -3,10 +3,11 @@
 namespace Shomisha\Stubless\Templates;
 
 use PhpParser\Node;
+use Shomisha\Stubless\Templates\Concerns\HasName;
 
 class UseStatement extends Template
 {
-	private string $name;
+	use HasName;
 
 	private ?string $as;
 
@@ -14,18 +15,6 @@ class UseStatement extends Template
 	{
 		$this->name = $name;
 		$this->as = $as;
-	}
-
-	public function getName(): string
-	{
-		return $this->name;
-	}
-
-	public function setName(string $name): self
-	{
-		$this->name = $name;
-
-		return $this;
 	}
 
 	public function getAs(): string

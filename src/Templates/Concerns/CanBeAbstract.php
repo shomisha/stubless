@@ -8,6 +8,15 @@ trait CanBeAbstract
 {
 	protected bool $isAbstract = false;
 
+	public function abstract(bool $abstract = null)
+	{
+		if ($abstract === null) {
+			return $this->isAbstract();
+		}
+
+		return $this->makeAbstract($abstract);
+	}
+
 	public function makeAbstract($abstract = true): self
 	{
 		$this->isAbstract = $abstract;

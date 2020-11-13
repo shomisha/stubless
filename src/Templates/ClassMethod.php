@@ -7,17 +7,12 @@ use Shomisha\Stubless\Enums\ClassAccess;
 use Shomisha\Stubless\Templates\Concerns\CanBeAbstract;
 use Shomisha\Stubless\Templates\Concerns\CanBeFinal;
 use Shomisha\Stubless\Templates\Concerns\HasAccessModifier;
+use Shomisha\Stubless\Templates\Concerns\HasArguments;
+use Shomisha\Stubless\Templates\Concerns\HasName;
 
 class ClassMethod extends Template
 {
-	use CanBeFinal, CanBeAbstract, HasAccessModifier;
-
-	private ClassAccess $access;
-
-	private string $name;
-
-	/** @var \Shomisha\Stubless\Templates\Argument[] */
-	private array $arguments = [];
+	use CanBeFinal, CanBeAbstract, HasAccessModifier, HasName, HasArguments;
 
 	private ?string $returnType;
 
@@ -29,31 +24,23 @@ class ClassMethod extends Template
 		$this->returnType = $returnType;
 	}
 
-	public function getName():string
+	public function return(string $returnType = null)
 	{
-		return $this->name;
+		if ($returnType === null) {
+			return $this->getReturnType();
+		}
+
+		return $this->setReturnType($returnType);
 	}
 
-	public function setName(string $name): self
+	public function getReturnType(): ?string
 	{
-		$this->name = $name;
-
-		return $this;
+		return $this->returnType;
 	}
 
-	public function addArgument(Argument $argument): self
+	public function setReturnType(?string $returnType): self
 	{
-		$this->arguments[] = $argument;
-
-		return $this;
-	}
-
-	/** @param \Shomisha\Stubless\Templates\Argument[] */
-	public function withArguments(array $arguments): self
-	{
-		$this->validateArrayElements($arguments, Argument::class);
-
-		$this->arguments = $arguments;
+		$this->returnType = $returnType;
 
 		return $this;
 	}
@@ -63,14 +50,16 @@ class ClassMethod extends Template
 	{
 		$method = $this->getFactory()->method($this->name);
 
-		foreach ($this->arguments as $argument) {
-			$method->addParam($argument->constructNode());
-		}
-
 		$this->makeBuilderAbstract($method);
 		$this->makeBuilderFinal($method);
 
 		$this->setAccessToBuilder($method);
+
+		$this->addArgumentsToFunctionLike($method);
+
+		if ($this->returnType !== null) {
+			$method->setReturnType($this->returnType);
+		}
 
 		return $this->convertBuilderToNode($method);
 	}
