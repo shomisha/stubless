@@ -8,14 +8,19 @@ use Shomisha\Stubless\Templates\Concerns\CanBeFinal;
 use Shomisha\Stubless\Templates\Concerns\HasImports;
 use Shomisha\Stubless\Templates\Concerns\HasMethods;
 use Shomisha\Stubless\Templates\Concerns\HasName;
+use Shomisha\Stubless\Templates\Concerns\HasNamespace;
 use Shomisha\Stubless\Templates\Concerns\HasProperties;
 use Shomisha\Stubless\Utilities\Importable;
 
 class ClassTemplate extends Template
 {
-	use HasImports, CanBeAbstract, CanBeFinal, HasName, HasProperties, HasMethods;
+	use HasNamespace, HasImports, CanBeAbstract, CanBeFinal, HasName, HasProperties, HasMethods;
 
-	private ?string $extends;
+	private ?string $extends = null;
+
+	private array $interfaces = [];
+
+	private array $traits = [];
 
 	public function __construct(string $name, string $extends = null)
 	{
@@ -49,12 +54,75 @@ class ClassTemplate extends Template
 		return $this;
 	}
 
+	public function implements(array $interfaces)
+	{
+		if (!empty($interfaces)) {
+			return $this->setInterfaces($interfaces);
+		}
+
+		return $this->getInterfaces();
+	}
+
+	public function getInterfaces(): array
+	{
+		return $this->interfaces;
+	}
+
+	public function setInterfaces(array $interfaces): self
+	{
+		$actualInterfaces = [];
+
+		foreach ($interfaces as $interface) {
+			if ($interface instanceof Importable) {
+				$actualInterfaces[] = $interface->getShortName();
+				$this->addImportable($interface);
+			} elseif (is_string($interface)) {
+				$actualInterfaces[] = $interface;
+			}
+		}
+
+		$this->interfaces = $actualInterfaces;
+		return $this;
+	}
+
+	public function uses(array $traits = null)
+	{
+		if ($traits === null) {
+			return $this->getTraits();
+		}
+
+		return $this->setTraits($traits);
+	}
+
+	public function getTraits(): array
+	{
+		return $this->traits;
+	}
+
+	public function setTraits(array $traits): self
+	{
+		$actualTraits = [];
+
+		foreach ($traits as $trait) {
+			if ($trait instanceof Importable) {
+				$actualTraits[] = $trait->getShortName();
+				$this->addImportable($trait);
+			} elseif (is_string($trait)) {
+				$actualTraits[] = $trait;
+			}
+		}
+
+		$this->traits = $actualTraits;
+
+		return $this;
+	}
+
 	public function constructNode(): Node
 	{
 		$class = $this->getFactory()->class($this->name);
 
-		foreach ($this->gatherAllImports() as $import) {
-			$class->addStmt($import->constructNode());
+		if (!empty($this->interfaces)) {
+			$class->implement(...$this->interfaces);
 		}
 
 		$this->makeBuilderFinal($class);
@@ -64,8 +132,25 @@ class ClassTemplate extends Template
 			$class->extend($this->extends);
 		}
 
+		if (!empty($this->traits)) {
+			$class->addStmt($this->getFactory()->useTrait(...$this->traits));
+		}
+
 		$this->addPropertiesToDeclaration($class);
 		$this->addMethodsToDeclaration($class);
+
+		if ($this->hasNamespace()) {
+			$namespace = $this->getNamespaceBuilder();
+
+			foreach ($this->gatherAllImports() as $import) {
+				$namespace->addStmt($import->constructNode());
+			}
+
+
+			$namespace->addStmt($class);
+
+			return $this->convertBuilderToNode($namespace);
+		}
 
 		return $this->convertBuilderToNode($class);
 	}
