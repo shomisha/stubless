@@ -2,15 +2,16 @@
 
 namespace Shomisha\Stubless\Templates;
 
-use PhpParser\Builder\Property;
 use PhpParser\Node;
+use Shomisha\Stubless\Contracts\DelegatesImports;
 use Shomisha\Stubless\Enums\ClassAccess;
 use Shomisha\Stubless\Templates\Concerns\HasAccessModifier;
+use Shomisha\Stubless\Templates\Concerns\HasImports;
 use Shomisha\Stubless\Templates\Concerns\HasName;
 
-class ClassProperty extends Template
+class ClassProperty extends Template implements DelegatesImports
 {
-	use HasAccessModifier, HasName;
+	use HasAccessModifier, HasName, HasImports;
 
 	private ?string $type;
 
@@ -25,7 +26,7 @@ class ClassProperty extends Template
 		$this->access = $access ?? ClassAccess::PUBLIC();
 	}
 
-	public function type(string $type = null)
+	public function type($type = null)
 	{
 		if ($type === null) {
 			return $this->getType();
@@ -39,9 +40,15 @@ class ClassProperty extends Template
 		return $this->type;
 	}
 
-	public function setType(string $type): self
+	/** @param string|\Shomisha\Stubless\Utilities\Importable $type */
+	public function setType($type): self
 	{
-		$this->type = $type;
+		if ($this->isImportable($type)) {
+			$this->type = $type->getShortName();
+			$this->addImportable($type);
+		} else {
+			$this->type = $type;
+		}
 
 		return $this;
 	}
@@ -84,5 +91,10 @@ class ClassProperty extends Template
 		}
 
 		return $this->convertBuilderToNode($property);
+	}
+
+	public function getDelegatedImports(): array
+	{
+		return $this->imports;
 	}
 }

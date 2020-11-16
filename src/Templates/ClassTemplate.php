@@ -9,6 +9,7 @@ use Shomisha\Stubless\Templates\Concerns\HasImports;
 use Shomisha\Stubless\Templates\Concerns\HasMethods;
 use Shomisha\Stubless\Templates\Concerns\HasName;
 use Shomisha\Stubless\Templates\Concerns\HasProperties;
+use Shomisha\Stubless\Utilities\Importable;
 
 class ClassTemplate extends Template
 {
@@ -22,7 +23,7 @@ class ClassTemplate extends Template
 		$this->extends = $extends;
 	}
 
-	public function extends(string $extends = null)
+	public function extends($extends = null)
 	{
 		if ($extends === null) {
 			return $this->getExtends();
@@ -36,9 +37,14 @@ class ClassTemplate extends Template
 		return $this->extends;
 	}
 
-	public function setExtends(?string $extends): self
+	public function setExtends($extends): self
 	{
-		$this->extends = $extends;
+		if ($extends instanceof Importable) {
+			$this->extends = $extends->getShortName();
+			$this->addImportable($extends);
+		} else {
+			$this->extends = $extends;
+		}
 
 		return $this;
 	}
@@ -47,7 +53,9 @@ class ClassTemplate extends Template
 	{
 		$class = $this->getFactory()->class($this->name);
 
-		$this->addImportsToDeclaration($class);
+		foreach ($this->gatherAllImports() as $import) {
+			$class->addStmt($import->constructNode());
+		}
 
 		$this->makeBuilderFinal($class);
 		$this->makeBuilderAbstract($class);
@@ -60,5 +68,15 @@ class ClassTemplate extends Template
 		$this->addMethodsToDeclaration($class);
 
 		return $this->convertBuilderToNode($class);
+	}
+
+	/** @return \Shomisha\Stubless\Templates\UseStatement[] */
+	protected function gatherAllImports(): array
+	{
+		return array_merge(
+			$this->imports,
+			$this->gatherImportsFromDelegates($this->properties),
+			$this->gatherImportsFromDelegates($this->methods),
+		);
 	}
 }

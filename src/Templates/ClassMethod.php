@@ -3,16 +3,19 @@
 namespace Shomisha\Stubless\Templates;
 
 use PhpParser\Node;
+use Shomisha\Stubless\Contracts\DelegatesImports;
 use Shomisha\Stubless\Enums\ClassAccess;
 use Shomisha\Stubless\Templates\Concerns\CanBeAbstract;
 use Shomisha\Stubless\Templates\Concerns\CanBeFinal;
 use Shomisha\Stubless\Templates\Concerns\HasAccessModifier;
 use Shomisha\Stubless\Templates\Concerns\HasArguments;
+use Shomisha\Stubless\Templates\Concerns\HasImports;
 use Shomisha\Stubless\Templates\Concerns\HasName;
+use Shomisha\Stubless\Utilities\Importable;
 
-class ClassMethod extends Template
+class ClassMethod extends Template implements DelegatesImports
 {
-	use CanBeFinal, CanBeAbstract, HasAccessModifier, HasName, HasArguments;
+	use CanBeFinal, CanBeAbstract, HasAccessModifier, HasName, HasArguments, HasImports;
 
 	private ?string $returnType;
 
@@ -24,7 +27,7 @@ class ClassMethod extends Template
 		$this->returnType = $returnType;
 	}
 
-	public function return(string $returnType = null)
+	public function return($returnType = null)
 	{
 		if ($returnType === null) {
 			return $this->getReturnType();
@@ -38,9 +41,14 @@ class ClassMethod extends Template
 		return $this->returnType;
 	}
 
-	public function setReturnType(?string $returnType): self
+	public function setReturnType($returnType): self
 	{
-		$this->returnType = $returnType;
+		if ($returnType instanceof Importable) {
+			$this->returnType = $returnType->getShortName();
+			$this->addImportable($returnType);
+		} else {
+			$this->returnType = $returnType;
+		}
 
 		return $this;
 	}
@@ -62,5 +70,13 @@ class ClassMethod extends Template
 		}
 
 		return $this->convertBuilderToNode($method);
+	}
+
+	public function getDelegatedImports(): array
+	{
+		return array_merge(
+			$this->imports,
+			$this->gatherImportsFromDelegates($this->arguments),
+		);
 	}
 }

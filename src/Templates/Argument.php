@@ -3,11 +3,13 @@
 namespace Shomisha\Stubless\Templates;
 
 use PhpParser\Node;
+use Shomisha\Stubless\Contracts\DelegatesImports;
+use Shomisha\Stubless\Templates\Concerns\HasImports;
 use Shomisha\Stubless\Templates\Concerns\HasName;
 
-class Argument extends Template
+class Argument extends Template implements DelegatesImports
 {
-	use HasName;
+	use HasName, HasImports;
 
 	private ?string $type;
 
@@ -17,7 +19,7 @@ class Argument extends Template
 		$this->type = $type;
 	}
 
-	public function type(string $type = null)
+	public function type($type = null)
 	{
 		if ($type === null) {
 			return $this->getType();
@@ -31,9 +33,15 @@ class Argument extends Template
 		return $this->type;
 	}
 
-	public function setType(?string $type): self
+	/** @param string|\Shomisha\Stubless\Utilities\Importable $type */
+	public function setType($type): self
 	{
-		$this->type = $type;
+		if ($this->isImportable($type)) {
+			$this->type = $type->getShortName();
+			$this->addImportable($type);
+		} else {
+			$this->type = $type;
+		}
 
 		return $this;
 	}
@@ -48,5 +56,10 @@ class Argument extends Template
 		}
 
 		return $this->convertBuilderToNode($argument);
+	}
+
+	public function getDelegatedImports(): array
+	{
+		return $this->getImports();
 	}
 }

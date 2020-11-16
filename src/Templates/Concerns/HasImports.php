@@ -4,6 +4,7 @@ namespace Shomisha\Stubless\Templates\Concerns;
 
 use PhpParser\Builder\Declaration;
 use Shomisha\Stubless\Templates\UseStatement;
+use Shomisha\Stubless\Utilities\Importable;
 
 /** @mixin \Shomisha\Stubless\Templates\Template */
 trait HasImports
@@ -11,9 +12,21 @@ trait HasImports
 	/** @var \Shomisha\Stubless\Templates\UseStatement[] */
 	protected array $imports = [];
 
+	public function getImports(): array
+	{
+		return $this->imports;
+	}
+
 	public function addImport(UseStatement $import): self
 	{
 		$this->imports[$import->getName()] = $import;
+
+		return $this;
+	}
+
+	public function addImportable(Importable $importable): self
+	{
+		return $this->addImport($importable->getImportStatement());
 	}
 
 	public function removeImport(string $name): self
@@ -28,15 +41,30 @@ trait HasImports
 	{
 		$this->validateArrayElements($imports, UseStatement::class);
 
-		$this->imports = $imports;
+		$rekeyedImports = [];
+		foreach ($imports as $import) {
+			$rekeyedImports[$import->getName()] = $import;
+		}
+
+		$this->imports = $rekeyedImports;
 
 		return $this;
 	}
 
-	protected function addImportsToDeclaration(Declaration $declaration): void
+	protected function isImportable($value): bool
 	{
-		foreach ($this->imports as $import) {
-			$declaration->addStmt($import->constructNode());
+		return $value instanceof Importable;
+	}
+
+	/** @param \Shomisha\Stubless\Contracts\DelegatesImports[] $delegates */
+	protected function gatherImportsFromDelegates(array $delegates): array
+	{
+		$imports = [];
+
+		foreach ($delegates as $delegate) {
+			$imports = array_merge($imports, $delegate->getDelegatedImports());
 		}
+
+		return $imports;
 	}
 }
