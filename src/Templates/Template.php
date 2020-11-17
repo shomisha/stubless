@@ -6,13 +6,17 @@ use PhpParser\Builder;
 use PhpParser\BuilderFactory;
 use PhpParser\Node;
 use PhpParser\PrettyPrinter\Standard as PrettyPrinter;
+use Shomisha\Stubless\Contracts\Formatter;
 use Shomisha\Stubless\Contracts\Template as TemplateContract;
+use Shomisha\Stubless\Formatters\CsFixerFormatter;
 
 abstract class Template implements TemplateContract
 {
 	private BuilderFactory $factory;
 
 	private PrettyPrinter $printer;
+
+	private Formatter $formatter;
 
 	public function save(string $path): bool
 	{
@@ -21,7 +25,12 @@ abstract class Template implements TemplateContract
 
 	public function print(): string
 	{
-		return $this->getPrinter()->prettyPrintFile([$this->constructNode()]);
+		return $this->getFormatter()->format(
+			$this->getPrinter()->prettyPrintFile([
+				$this->constructNode()
+			])
+		);
+
 	}
 
 	abstract public function constructNode(): Node;
@@ -42,6 +51,15 @@ abstract class Template implements TemplateContract
 		}
 
 		return $this->printer;
+	}
+
+	protected function getFormatter(): Formatter
+	{
+		if (!isset($this->formatter)) {
+			$this->formatter = new CsFixerFormatter();
+		}
+
+		return $this->formatter;
 	}
 
 	protected function convertBuilderToNode(Builder $builder): Node
