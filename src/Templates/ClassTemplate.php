@@ -22,6 +22,8 @@ class ClassTemplate extends Template
 
 	private array $traits = [];
 
+	private array $constants = [];
+
 	public function __construct(string $name, string $extends = null)
 	{
 		$this->name = $name;
@@ -117,6 +119,49 @@ class ClassTemplate extends Template
 		return $this;
 	}
 
+	public function constants(array $constants = null)
+	{
+		if ($constants !== null) {
+			return $this->setConstants($constants);
+		}
+
+		return $this->getConstants();
+	}
+
+	public function getConstants(): array
+	{
+		return $this->constants;
+	}
+
+	/** @param \Shomisha\Stubless\Templates\ClassConstant[] $constants */
+	public function setConstants(array $constants): self
+	{
+		$this->validateArrayElements($constants, ClassConstant::class);
+
+		$namedConstants = [];
+		foreach ($constants as $constant) {
+			$namedConstants[$constant->getName()] = $constant;
+		}
+
+		$this->constants = $namedConstants;
+
+		return $this;
+	}
+
+	public function withConstant(ClassConstant $constant): self
+	{
+		$this->constants[$constant->getName()] = $constant;
+
+		return $this;
+	}
+
+	public function withoutConstant(string $constantName): self
+	{
+		unset($this->constants[$constantName]);
+
+		return $this;
+	}
+
 	public function constructNode(): Node
 	{
 		$class = $this->getFactory()->class($this->name);
@@ -134,6 +179,10 @@ class ClassTemplate extends Template
 
 		if (!empty($this->traits)) {
 			$class->addStmt($this->getFactory()->useTrait(...$this->traits));
+		}
+
+		foreach ($this->constants as $constant) {
+			$class->addStmt($constant->constructNode());
 		}
 
 		$this->addPropertiesToDeclaration($class);
