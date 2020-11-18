@@ -16,6 +16,11 @@ abstract class BaseEnum
 		return $this->value;
 	}
 
+	public function value(): string
+	{
+		return $this->value;
+	}
+
 	public static function fromString(string $value): self
 	{
 		if (!in_array($value, static::all())) {
