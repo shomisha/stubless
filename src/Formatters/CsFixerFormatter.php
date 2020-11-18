@@ -39,14 +39,14 @@ class CsFixerFormatter implements Formatter
 
 	private function runFixer(string $tempPath): void
 	{
-		exec($this->prepareFixerCommand($tempPath));
+		exec($this->prepareFixerCommand($tempPath) . " 2>&1");
 	}
 
 	private function prepareFixerCommand(string $path): string
 	{
 		$rules = implode(',', $this->rules);
 
-		return "{$this->csFixerPath} fix \"{$path}\" --rules={$rules} 2>&1";
+		return "{$this->csFixerPath} fix \"{$path}\" --rules={$rules} --use-cache=no";
 	}
 
 	private function removeTemp(string $tempPath): void
