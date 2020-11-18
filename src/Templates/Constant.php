@@ -35,6 +35,8 @@ class Constant extends Template
 
 	public function constructNode(): Node
 	{
-		return new Node\Const_($this->name, BuilderHelpers::normalizeValue($this->value));
+		return new Node\Stmt\Const_([
+			new Node\Const_($this->name, BuilderHelpers::normalizeValue($this->value))
+		]);
 	}
 }
