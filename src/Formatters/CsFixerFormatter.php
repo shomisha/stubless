@@ -46,7 +46,7 @@ class CsFixerFormatter implements Formatter
 	{
 		$rules = implode(',', $this->rules);
 
-		return "{$this->csFixerPath} fix \"{$path}\" --rules={$rules}";
+		return "{$this->csFixerPath} fix \"{$path}\" --rules={$rules} 2>&1";
 	}
 
 	private function removeTemp(string $tempPath): void
