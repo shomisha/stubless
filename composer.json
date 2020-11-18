@@ -13,9 +13,17 @@
         "php": "^7.4",
         "nikic/php-parser": "^4.10"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^9.4"
+    },
     "autoload": {
         "psr-4": {
             "Shomisha\\Stubless\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Shomisha\\Stubless\\Test\\": "tests"
         }
     }
 }
