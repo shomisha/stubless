@@ -3,6 +3,7 @@
 namespace Shomisha\Stubless\Test\Unit\Templates;
 
 use PHPUnit\Framework\TestCase;
+use Shomisha\Stubless\Enums\ClassAccess;
 use Shomisha\Stubless\Templates\ClassProperty;
 use Shomisha\Stubless\Templates\ClassTemplate;
 use Shomisha\Stubless\Utilities\Importable;
@@ -40,6 +41,18 @@ class ClassPropertyTest extends TestCase
 	}
 
 	/** @test */
+	public function user_can_check_if_class_property_is_public()
+	{
+		$property = ClassProperty::name('test')->makeProtected();
+
+
+		$isPublic = $property->isPublic();
+
+
+		$this->assertFalse($isPublic);
+	}
+
+	/** @test */
 	public function user_can_create_protected_class_property()
 	{
 		$property = ClassProperty::name('protectedProperty')->makeProtected();
@@ -52,6 +65,18 @@ class ClassPropertyTest extends TestCase
 	}
 
 	/** @test */
+	public function user_can_check_if_class_property_is_protected()
+	{
+		$property = ClassProperty::name('test')->makeProtected();
+
+
+		$isProtected = $property->isProtected();
+
+
+		$this->assertTrue($isProtected);
+	}
+
+	/** @test */
 	public function user_can_create_private_class_property()
 	{
 		$property = ClassProperty::name('privateProperty')->makePrivate();
@@ -61,6 +86,43 @@ class ClassPropertyTest extends TestCase
 
 
 		$this->assertStringContainsString('private $privateProperty;', $printed);
+	}
+
+	/** @test */
+	public function user_can_check_if_class_property_is_private()
+	{
+		$property = ClassProperty::name('test')->makePublic();
+
+
+		$isPrivate = $property->isPrivate();
+
+
+		$this->assertFalse($isPrivate);
+	}
+
+	/** @test */
+	public function user_can_set_property_access_modifier_explicitly()
+	{
+		$property = ClassProperty::name('test');
+
+
+		$property->setAccess(ClassAccess::PROTECTED());
+
+
+		$this->assertTrue($property->isProtected());
+	}
+
+	/** @test */
+	public function user_can_get_property_access_modifier()
+	{
+		$property = ClassProperty::name('test')->makeProtected();
+
+
+		$access = $property->getAccess();
+
+
+		$this->assertInstanceOf(ClassAccess::class, $access);
+		$this->assertEquals('protected', $access->value());
 	}
 
 	/** @test */

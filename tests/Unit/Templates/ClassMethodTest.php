@@ -44,6 +44,42 @@ class ClassMethodTest extends TestCase
 	}
 
 	/** @test */
+	public function users_can_create_final_methods_using_fluent_alias()
+	{
+		$method = ClassMethod::name('test')->final(true);
+
+
+		$isFinal = $method->isFinal();
+
+
+		$this->assertTrue($isFinal);
+	}
+
+	/** @test */
+	public function users_can_check_if_method_is_final()
+	{
+		$method = ClassMethod::name('test');
+
+
+		$isFinal = $method->isFinal();
+
+
+		$this->assertFalse($isFinal);
+	}
+
+	/** @test */
+	public function user_can_check_if_method_is_final_using_fluent_alias()
+	{
+		$method = ClassMethod::name('test')->makeFinal();
+
+
+		$isFinal = $method->final();
+
+
+		$this->assertTrue($isFinal);
+	}
+
+	/** @test */
 	public function users_can_create_abstract_methods()
 	{
 		$method = ClassMethod::name('abstractMethod')->makeAbstract();
@@ -53,6 +89,42 @@ class ClassMethodTest extends TestCase
 
 
 		$this->assertStringContainsString("public abstract function abstractMethod();", $printed);
+	}
+
+	/** @test */
+	public function users_can_create_abstract_methods_using_fluent_alias()
+	{
+		$method = ClassMethod::name('test')->abstract(true);
+
+
+		$isAbstract = $method->isAbstract();
+
+
+		$this->assertTrue($isAbstract);
+	}
+
+	/** @test */
+	public function users_can_check_if_method_is_abstract()
+	{
+		$method = ClassMethod::name('test');
+
+
+		$isAbstract = $method->isAbstract();
+
+
+		$this->assertFalse($isAbstract);
+	}
+
+	/** @test */
+	public function user_can_check_if_method_is_abstract_using_fluent_alias()
+	{
+		$method = ClassMethod::name('test')->makeAbstract(true);
+
+
+		$isAbstract = $method->abstract();
+
+
+		$this->assertTrue($isAbstract);
 	}
 
 	/** @test */
@@ -119,6 +191,51 @@ class ClassMethodTest extends TestCase
 
 
 		$this->assertStringContainsString("public function methodWithoutArguments()\n{\n}", $printed);
+	}
+
+	/** @test */
+	public function users_can_override_all_method_arguments()
+	{
+		$method = ClassMethod::name('test');
+
+		$method->addArgument(Argument::name('test'))->addArgument(Argument::name('anotherTest'));
+
+
+		$method->withArguments([Argument::name('iWillSurvive')]);
+		$printed = $method->print();
+
+
+		$this->assertStringContainsString("public function test(\$iWillSurvive)\n{\n}", $printed);
+	}
+
+	/** @test */
+	public function users_cannot_override_all_method_arguments_using_invalid_array()
+	{
+		$method = ClassMethod::name('test');
+
+		$this->expectException(\InvalidArgumentException::class);
+
+
+		$method->withArguments([
+			Argument::name('test'),
+			123,
+			'not a valid argument',
+		]);
+	}
+
+	/** @test */
+	public function users_can_remove_method_arguments_by_name()
+	{
+		$method = ClassMethod::name('test');
+
+		$method->addArgument(Argument::name('test'))->addArgument(Argument::name('anotherTest'));
+
+
+		$method->removeArgument('anotherTest');
+		$printed = $method->print();
+
+
+		$this->assertStringContainsString("public function test(\$test)\n{\n}", $printed);
 	}
 
 	/** @test */
