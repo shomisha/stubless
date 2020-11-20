@@ -20,8 +20,9 @@ class ClassConstant extends Constant
 
 	public function constructNode(): Node
 	{
-		return new ClassConst([
-			parent::constructNode()
-		], $this->access->getPhpParserAccessModifier());
+		/** @var Node\Stmt\Const_ $stmt */
+		$stmt = parent::constructNode();
+
+		return new ClassConst($stmt->consts, $this->access->getPhpParserAccessModifier());
 	}
 }
