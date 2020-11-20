@@ -1,2 +1,5 @@
 vendor
 .idea
+coverage
+test.php
+generated.php
