@@ -56,9 +56,9 @@ class ClassTemplate extends Template
 		return $this;
 	}
 
-	public function implements(array $interfaces)
+	public function implements(array $interfaces = null)
 	{
-		if (!empty($interfaces)) {
+		if ($interfaces === null) {
 			return $this->setInterfaces($interfaces);
 		}
 
