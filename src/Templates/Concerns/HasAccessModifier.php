@@ -18,7 +18,7 @@ trait HasAccessModifier
 
 	public function getAccess(): ClassAccess
 	{
-		return $this->getAccess();
+		return $this->access;
 	}
 
 	public function makePublic(): self

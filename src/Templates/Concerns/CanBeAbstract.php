@@ -26,7 +26,7 @@ trait CanBeAbstract
 
 	public function isAbstract(): bool
 	{
-		return $this->isAbstract();
+		return $this->isAbstract;
 	}
 
 	/** @param \PhpParser\Builder\Method|\PhpParser\Builder\Class_ $builder */
