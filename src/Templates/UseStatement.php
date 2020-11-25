@@ -17,7 +17,7 @@ class UseStatement extends Template
 		$this->as = $as;
 	}
 
-	public function getAs(): string
+	public function getAs(): ?string
 	{
 		return $this->as;
 	}

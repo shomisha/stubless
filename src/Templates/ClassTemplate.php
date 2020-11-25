@@ -58,7 +58,7 @@ class ClassTemplate extends Template
 
 	public function implements(array $interfaces = null)
 	{
-		if ($interfaces === null) {
+		if ($interfaces !== null) {
 			return $this->setInterfaces($interfaces);
 		}
 
@@ -128,6 +128,7 @@ class ClassTemplate extends Template
 		return $this->getConstants();
 	}
 
+	/** @return \Shomisha\Stubless\Templates\ClassConstant[] */
 	public function getConstants(): array
 	{
 		return $this->constants;

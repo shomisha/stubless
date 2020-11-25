@@ -12,6 +12,7 @@ trait HasImports
 	/** @var \Shomisha\Stubless\Templates\UseStatement[] */
 	protected array $imports = [];
 
+	/** @return \Shomisha\Stubless\Templates\UseStatement[] */
 	public function getImports(): array
 	{
 		return $this->imports;
