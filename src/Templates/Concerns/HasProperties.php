@@ -11,6 +11,16 @@ trait HasProperties
 	/** @var \Shomisha\Stubless\Templates\ClassProperty[] */
 	protected array $properties = [];
 
+	/** @param \Shomisha\Stubless\Templates\ClassProperty[] $properties */
+	public function properties(array $properties = null)
+	{
+		if ($properties === null) {
+			return $this->getProperties();
+		}
+
+		return $this->withProperties($properties);
+	}
+
 	public function addProperty(ClassProperty $property): self
 	{
 		$this->properties[$property->getName()] = $property;
@@ -30,9 +40,19 @@ trait HasProperties
 	{
 		$this->validateArrayElements($properties, ClassProperty::class);
 
-		$this->properties = $properties;
+		$this->properties = [];
+
+		foreach ($properties as $property) {
+			$this->addProperty($property);
+		}
 
 		return $this;
+	}
+
+	/** @return \Shomisha\Stubless\Templates\ClassProperty[] */
+	public function getProperties(): array
+	{
+		return $this->properties;
 	}
 
 	protected function addPropertiesToDeclaration(Declaration $declaration): void

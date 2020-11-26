@@ -11,6 +11,16 @@ trait HasMethods
 	/** @var \Shomisha\Stubless\Templates\ClassMethod[] */
 	private array $methods = [];
 
+	/** @param \Shomisha\Stubless\Templates\ClassMethod[] $methods */
+	public function methods(array $methods = null)
+	{
+		if ($methods === null) {
+			return $this->getMethods();
+		}
+
+		return $this->withMethods($methods);
+	}
+
 	public function addMethod(ClassMethod $method): self
 	{
 		$this->methods[$method->getName()] = $method;
@@ -30,9 +40,19 @@ trait HasMethods
 	{
 		$this->validateArrayElements($methods, ClassMethod::class);
 
-		$this->methods = $methods;
+		$this->methods = [];
+
+		foreach ($methods as $method) {
+			$this->addMethod($method);
+		}
 
 		return $this;
+	}
+
+	/** @return \Shomisha\Stubless\Templates\ClassMethod[] */
+	public function getMethods(): array
+	{
+		return $this->methods;
 	}
 
 	protected function addMethodsToDeclaration(Declaration $declaration): void

@@ -12,10 +12,19 @@ trait HasImports
 	/** @var \Shomisha\Stubless\Templates\UseStatement[] */
 	protected array $imports = [];
 
-	/** @return \Shomisha\Stubless\Templates\UseStatement[] */
-	public function getImports(): array
+	/** @param \Shomisha\Stubless\Templates\UseStatement[] */
+	public function imports(array $imports = null)
 	{
-		return $this->imports;
+		if ($imports === null) {
+			return $this->getImports();
+		}
+
+		return $this->withImports($imports);
+	}
+
+	public function addImportable(Importable $importable): self
+	{
+		return $this->addImport($importable->getImportStatement());
 	}
 
 	public function addImport(UseStatement $import): self
@@ -23,11 +32,6 @@ trait HasImports
 		$this->imports[$import->getName()] = $import;
 
 		return $this;
-	}
-
-	public function addImportable(Importable $importable): self
-	{
-		return $this->addImport($importable->getImportStatement());
 	}
 
 	public function removeImport(string $name): self
@@ -42,14 +46,19 @@ trait HasImports
 	{
 		$this->validateArrayElements($imports, UseStatement::class);
 
-		$rekeyedImports = [];
+		$this->imports = [];
+
 		foreach ($imports as $import) {
-			$rekeyedImports[$import->getName()] = $import;
+			$this->addImport($import);
 		}
 
-		$this->imports = $rekeyedImports;
-
 		return $this;
+	}
+
+	/** @return \Shomisha\Stubless\Templates\UseStatement[] */
+	public function getImports(): array
+	{
+		return $this->imports;
 	}
 
 	protected function isImportable($value): bool

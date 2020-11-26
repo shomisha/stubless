@@ -63,13 +63,13 @@ trait HasAccessModifier
 		switch ($this->access) {
 			case ClassAccess::PUBLIC():
 				$builder->makePublic();
-				return;
+				break;
 			case ClassAccess::PROTECTED():
 				$builder->makeProtected();
-				return;
+				break;
 			case ClassAccess::PRIVATE():
 				$builder->makePrivate();
-				return;
+				break;
 		}
 	}
 }

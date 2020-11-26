@@ -11,6 +11,16 @@ trait HasArguments
 	/** @var \Shomisha\Stubless\Templates\Argument[] */
 	protected array $arguments = [];
 
+	/** @param \Shomisha\Stubless\Templates\Argument[] $arguments */
+	public function arguments(array $arguments = null)
+	{
+		if ($arguments === null) {
+			return $this->getArguments();
+		}
+
+		return $this->withArguments($arguments);
+	}
+
 	public function addArgument(Argument $argument): self
 	{
 		$this->arguments[$argument->getName()] = $argument;
@@ -30,9 +40,19 @@ trait HasArguments
 	{
 		$this->validateArrayElements($arguments, Argument::class);
 
-		$this->arguments = $arguments;
+		$this->arguments = [];
+
+		foreach ($arguments as $argument) {
+			$this->addArgument($argument);
+		}
 
 		return $this;
+	}
+
+	/** @return \Shomisha\Stubless\Templates\Argument[] */
+	public function getArguments(): array
+	{
+		return $this->arguments;
 	}
 
 	protected function addArgumentsToFunctionLike(FunctionLike $functionLike): void

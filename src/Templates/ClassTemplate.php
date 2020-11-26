@@ -59,32 +59,47 @@ class ClassTemplate extends Template
 	public function implements(array $interfaces = null)
 	{
 		if ($interfaces !== null) {
-			return $this->setInterfaces($interfaces);
+			return $this->withInterfaces($interfaces);
 		}
 
 		return $this->getInterfaces();
 	}
 
+	/** @param string|\Shomisha\Stubless\Utilities\Importable $interface */
+	public function addInterface($interface): self
+	{
+		if ($this->isImportable($interface)) {
+			$this->interfaces[$interface->getFullName()] = $interface->getShortName();
+			$this->addImportable($interface);
+		} elseif (is_string($interface)) {
+			$this->interfaces[$interface] = $interface;
+		}
+
+		return $this;
+	}
+
+	public function removeInterface(string $interfaceName): self
+	{
+		unset($this->interfaces[$interfaceName]);
+
+		return $this;
+	}
+
+	public function withInterfaces(array $interfaces): self
+	{
+		$this->interfaces = [];
+
+		foreach ($interfaces as $interface) {
+			$this->addInterface($interface);
+		}
+
+		return $this;
+	}
+
+	/** @return string[] */
 	public function getInterfaces(): array
 	{
 		return $this->interfaces;
-	}
-
-	public function setInterfaces(array $interfaces): self
-	{
-		$actualInterfaces = [];
-
-		foreach ($interfaces as $interface) {
-			if ($interface instanceof Importable) {
-				$actualInterfaces[] = $interface->getShortName();
-				$this->addImportable($interface);
-			} elseif (is_string($interface)) {
-				$actualInterfaces[] = $interface;
-			}
-		}
-
-		$this->interfaces = $actualInterfaces;
-		return $this;
 	}
 
 	public function uses(array $traits = null)
@@ -93,7 +108,38 @@ class ClassTemplate extends Template
 			return $this->getTraits();
 		}
 
-		return $this->setTraits($traits);
+		return $this->withTraits($traits);
+	}
+
+	/** @param string|\Shomisha\Stubless\Utilities\Importable $trait */
+	public function addTrait($trait): self
+	{
+		if ($this->isImportable($trait)) {
+			$this->traits[$trait->getFullName()] = $trait->getShortName();
+			$this->addImportable($trait);
+		} elseif (is_string($trait)) {
+			$this->traits[$trait] = $trait;
+		}
+
+		return $this;
+	}
+
+	public function removeTrait(string $trait): self
+	{
+		unset($this->traits[$trait]);
+
+		return $this;
+	}
+
+	public function withTraits(array $traits): self
+	{
+		$this->traits = [];
+
+		foreach ($traits as $trait) {
+			$this->addTrait($trait);
+		}
+
+		return $this;
 	}
 
 	public function getTraits(): array
@@ -101,31 +147,41 @@ class ClassTemplate extends Template
 		return $this->traits;
 	}
 
-	public function setTraits(array $traits): self
+	public function constants(array $constants = null)
 	{
-		$actualTraits = [];
-
-		foreach ($traits as $trait) {
-			if ($trait instanceof Importable) {
-				$actualTraits[] = $trait->getShortName();
-				$this->addImportable($trait);
-			} elseif (is_string($trait)) {
-				$actualTraits[] = $trait;
-			}
+		if ($constants !== null) {
+			return $this->withConstants($constants);
 		}
 
-		$this->traits = $actualTraits;
+		return $this->getConstants();
+	}
+
+	public function addConstant(ClassConstant $constant): self
+	{
+		$this->constants[$constant->getName()] = $constant;
 
 		return $this;
 	}
 
-	public function constants(array $constants = null)
+	public function removeConstant(string $constantName): self
 	{
-		if ($constants !== null) {
-			return $this->setConstants($constants);
+		unset($this->constants[$constantName]);
+
+		return $this;
+	}
+
+	/** @param \Shomisha\Stubless\Templates\ClassConstant[] $constants */
+	public function withConstants(array $constants): self
+	{
+		$this->validateArrayElements($constants, ClassConstant::class);
+
+		$this->constants = [];
+
+		foreach ($constants as $constant) {
+			$this->addConstant($constant);
 		}
 
-		return $this->getConstants();
+		return $this;
 	}
 
 	/** @return \Shomisha\Stubless\Templates\ClassConstant[] */
@@ -134,41 +190,12 @@ class ClassTemplate extends Template
 		return $this->constants;
 	}
 
-	/** @param \Shomisha\Stubless\Templates\ClassConstant[] $constants */
-	public function setConstants(array $constants): self
-	{
-		$this->validateArrayElements($constants, ClassConstant::class);
-
-		$namedConstants = [];
-		foreach ($constants as $constant) {
-			$namedConstants[$constant->getName()] = $constant;
-		}
-
-		$this->constants = $namedConstants;
-
-		return $this;
-	}
-
-	public function withConstant(ClassConstant $constant): self
-	{
-		$this->constants[$constant->getName()] = $constant;
-
-		return $this;
-	}
-
-	public function withoutConstant(string $constantName): self
-	{
-		unset($this->constants[$constantName]);
-
-		return $this;
-	}
-
 	public function constructNode(): Node
 	{
 		$class = $this->getFactory()->class($this->name);
 
 		if (!empty($this->interfaces)) {
-			$class->implement(...$this->interfaces);
+			$class->implement(...array_values($this->interfaces));
 		}
 
 		$this->makeBuilderFinal($class);
@@ -179,7 +206,7 @@ class ClassTemplate extends Template
 		}
 
 		if (!empty($this->traits)) {
-			$class->addStmt($this->getFactory()->useTrait(...$this->traits));
+			$class->addStmt($this->getFactory()->useTrait(...array_values($this->traits)));
 		}
 
 		foreach ($this->constants as $constant) {
