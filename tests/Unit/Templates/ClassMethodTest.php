@@ -239,6 +239,70 @@ class ClassMethodTest extends TestCase
 	}
 
 	/** @test */
+	public function users_can_set_arguments_using_fluent_alias()
+	{
+		$method = ClassMethod::name('doSomething');
+
+
+		$method->arguments([
+			Argument::name('firstArgument')->type('string'),
+			Argument::name('secondArgument')->type('bool'),
+		]);
+		$printed = $method->print();
+
+
+		$this->assertStringContainsString('function doSomething(string $firstArgument, bool $secondArgument)', $printed);
+	}
+
+	/** @test */
+	public function users_can_get_all_arguments()
+	{
+		$method = ClassMethod::name('doSomething');
+
+		$method->arguments([
+			Argument::name('firstArgument')->type('string'),
+			Argument::name('secondArgument')->type('bool'),
+		]);
+
+
+		$arguments = $method->getArguments();
+
+
+		$this->assertIsArray($arguments);
+		$this->assertCount(2, $arguments);
+
+		$this->assertEquals('firstArgument', $arguments['firstArgument']->getName());
+		$this->assertEquals('string', $arguments['firstArgument']->getType());
+
+		$this->assertEquals('secondArgument', $arguments['secondArgument']->getName());
+		$this->assertEquals('bool', $arguments['secondArgument']->getType());
+	}
+
+	/** @test */
+	public function users_can_get_all_arguments_using_fluent_alias()
+	{
+		$method = ClassMethod::name('doSomething');
+
+		$method->arguments([
+			Argument::name('firstArgument')->type('string'),
+			Argument::name('secondArgument')->type('bool'),
+		]);
+
+
+		$arguments = $method->arguments();
+
+
+		$this->assertIsArray($arguments);
+		$this->assertCount(2, $arguments);
+
+		$this->assertEquals('firstArgument', $arguments['firstArgument']->getName());
+		$this->assertEquals('string', $arguments['firstArgument']->getType());
+
+		$this->assertEquals('secondArgument', $arguments['secondArgument']->getName());
+		$this->assertEquals('bool', $arguments['secondArgument']->getType());
+	}
+
+	/** @test */
 	public function users_can_create_methods_with_importable_return_types()
 	{
 		$method = ClassMethod::name('methodWithImportableReturnType');

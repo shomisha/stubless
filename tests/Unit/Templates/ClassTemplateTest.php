@@ -153,6 +153,27 @@ class ClassTemplateTest extends TestCase
 	}
 
 	/** @test */
+	public function users_can_get_imports_from_class_using_fluent_alias()
+	{
+		$class = ClassTemplate::name('TestClass')->withImports([
+			UseStatement::name('Test\AnotherTestClass'),
+			UseStatement::name('Test\DoesSomething')->setAs('DoesSomethingTrait'),
+		]);
+
+
+		$imports = $class->imports();
+
+
+		$this->assertIsArray($imports);
+		$this->assertCount(2, $imports);
+
+		$this->assertEquals('Test\AnotherTestClass', $imports['Test\AnotherTestClass']->getName());
+		$this->assertEquals('Test\DoesSomething', $imports['Test\DoesSomething']->getName());
+		$this->assertEquals('Test\DoesSomething', $imports['Test\DoesSomething']->getName());
+		$this->assertEquals('DoesSomethingTrait', $imports['Test\DoesSomething']->getAs());
+	}
+
+	/** @test */
 	public function users_can_add_importables_to_class()
 	{
 		$class = ClassTemplate::name('TestClass');
@@ -192,6 +213,24 @@ class ClassTemplateTest extends TestCase
 
 
 		$class->withImports([
+			new UseStatement('App\Test\AnotherClass'),
+			new UseStatement('App\Test\YetAnotherClass'),
+		]);
+		$imports = $class->getImports();
+
+
+		$this->assertCount(2, $imports);
+		$this->assertEquals('App\Test\AnotherClass', $imports['App\Test\AnotherClass']->getName());
+		$this->assertEquals('App\Test\YetAnotherClass', $imports['App\Test\YetAnotherClass']->getName());
+	}
+
+	/** @test */
+	public function users_can_override_imports_on_class_using_the_fluent_alias()
+	{
+		$class = ClassTemplate::name('TestClass')->addImport(new UseStatement('App\Test\SomeClass'));
+
+
+		$class->imports([
 			new UseStatement('App\Test\AnotherClass'),
 			new UseStatement('App\Test\YetAnotherClass'),
 		]);
@@ -507,7 +546,7 @@ class ClassTemplateTest extends TestCase
 		$class = ClassTemplate::name('TestClass');
 
 
-		$class->setInterfaces([
+		$class->withInterfaces([
 			'App\Contracts\DoesSomething',
 			'App\Contracts\DoesSomethingElse',
 		]);
@@ -521,12 +560,32 @@ class ClassTemplateTest extends TestCase
 	}
 
 	/** @test */
+	public function users_can_remove_interfaces_from_a_class()
+	{
+		$class = ClassTemplate::name('TestClass')->withInterfaces([
+			'App\Contracts\DoesSomethingImportant',
+			'App\Contracts\NotSoImportant'
+		]);
+
+		$this->assertCount(2, $class->getInterfaces());
+
+
+		$class->removeInterface('App\Contracts\NotSoImportant');
+
+
+		$newInterfaces = $class->getInterfaces();
+		$this->assertCount(1, $newInterfaces);
+
+		$this->assertEquals('App\Contracts\DoesSomethingImportant', $newInterfaces['App\Contracts\DoesSomethingImportant']);
+	}
+
+	/** @test */
 	public function users_can_add_importables_as_interfaces_to_a_class()
 	{
 		$class = ClassTemplate::name('TestClass')->setNamespace('Test');
 
 
-		$class->setInterfaces([
+		$class->withInterfaces([
 			new Importable('App\Contracts\DoesSomething'),
 			new Importable('App\OtherContracts\DoesSomething', 'DoesSomethingElse'),
 		]);
@@ -559,7 +618,7 @@ class ClassTemplateTest extends TestCase
 	{
 		$class = ClassTemplate::name('TestClass');
 
-		$class->setInterfaces([
+		$class->withInterfaces([
 			'App\Contracts\DoesSomething',
 			'App\Contracts\DoesNothing',
 		]);
@@ -569,8 +628,8 @@ class ClassTemplateTest extends TestCase
 
 
 		$this->assertEquals([
-			'App\Contracts\DoesSomething',
-			'App\Contracts\DoesNothing',
+			'App\Contracts\DoesSomething' => 'App\Contracts\DoesSomething',
+			'App\Contracts\DoesNothing' => 'App\Contracts\DoesNothing',
 		], $interfaces);
 	}
 
@@ -579,7 +638,7 @@ class ClassTemplateTest extends TestCase
 	{
 		$class = ClassTemplate::name('TestClass');
 
-		$class->setInterfaces([
+		$class->withInterfaces([
 			'App\Contracts\DoesSomething',
 			'App\Contracts\DoesNothing',
 		]);
@@ -589,8 +648,8 @@ class ClassTemplateTest extends TestCase
 
 
 		$this->assertEquals([
-			'App\Contracts\DoesSomething',
-			'App\Contracts\DoesNothing',
+			'App\Contracts\DoesSomething' => 'App\Contracts\DoesSomething',
+			'App\Contracts\DoesNothing' => 'App\Contracts\DoesNothing',
 		], $interfaces);
 	}
 
@@ -600,7 +659,7 @@ class ClassTemplateTest extends TestCase
 		$class = ClassTemplate::name('TestClass');
 
 
-		$class->setTraits([
+		$class->withTraits([
 			'App\Concerns\HelpsWithOneThing',
 			'App\Concerns\HelpsWithAnotherThing',
 		]);
@@ -610,13 +669,35 @@ class ClassTemplateTest extends TestCase
 		$this->assertStringContainsString("class TestClass\n{\n    use App\Concerns\HelpsWithOneThing, App\Concerns\HelpsWithAnotherThing;", $printed);
 	}
 
+
+
+	/** @test */
+	public function users_can_remove_traits_from_a_class()
+	{
+		$class = ClassTemplate::name('TestClass')->withTraits([
+			'App\Concerns\DoesSomethingImportant',
+			'App\Concerns\NotSoImportant'
+		]);
+
+		$this->assertCount(2, $class->getTraits());
+
+
+		$class->removeTrait('App\Concerns\NotSoImportant');
+
+
+		$newTraits = $class->getTraits();
+		$this->assertCount(1, $newTraits);
+
+		$this->assertEquals('App\Concerns\DoesSomethingImportant', $newTraits['App\Concerns\DoesSomethingImportant']);
+	}
+
 	/** @test */
 	public function users_can_add_importables_as_traits_to_a_class()
 	{
 		$class = ClassTemplate::name('TestClass')->setNamespace('Test');
 
 
-		$class->setTraits([
+		$class->withTraits([
 			new Importable('App\Concerns\DoesSomething'),
 			new Importable('App\Concerns\Helpers', 'HelpersTrait'),
 		]);
@@ -650,7 +731,7 @@ class ClassTemplateTest extends TestCase
 	{
 		$class = ClassTemplate::name('TestClass');
 
-		$class->setTraits([
+		$class->withTraits([
 			'App\Concerns\Helpers',
 			'App\Concerns\Calculations',
 		]);
@@ -660,15 +741,15 @@ class ClassTemplateTest extends TestCase
 
 
 		$this->assertEquals([
-			'App\Concerns\Helpers',
-			'App\Concerns\Calculations',
+			'App\Concerns\Helpers' => 'App\Concerns\Helpers',
+			'App\Concerns\Calculations' => 'App\Concerns\Calculations',
 		], $traits);
 	}
 
 	/** @test */
 	public function users_can_get_traits_from_a_class_using_the_fluent_alias()
 	{
-		$class = ClassTemplate::name('TestClass')->setTraits([
+		$class = ClassTemplate::name('TestClass')->withTraits([
 			'App\Concerns\Helpers',
 			'App\Concerns\Calculations',
 		]);
@@ -678,8 +759,8 @@ class ClassTemplateTest extends TestCase
 
 
 		$this->assertEquals([
-			'App\Concerns\Helpers',
-			'App\Concerns\Calculations',
+			'App\Concerns\Helpers' => 'App\Concerns\Helpers',
+			'App\Concerns\Calculations' => 'App\Concerns\Calculations',
 		], $traits);
 	}
 
@@ -689,7 +770,7 @@ class ClassTemplateTest extends TestCase
 		$class = ClassTemplate::name('Person');
 
 
-		$class->setConstants([
+		$class->withConstants([
 			ClassConstant::name('MIN_AGE')->value(18),
 			ClassConstant::name('GENDER_FEMALE')->value('f'),
 			ClassConstant::name('GENDER_MALE')->value('m'),
@@ -722,7 +803,7 @@ class ClassTemplateTest extends TestCase
 	/** @test */
 	public function users_can_get_constants_from_a_class()
 	{
-		$class = ClassTemplate::name('Person')->setConstants([
+		$class = ClassTemplate::name('Person')->withConstants([
 			ClassConstant::name('GENDER_MALE')->value('m'),
 			ClassConstant::name('GENDER_FEMALE')->value('f'),
 		]);
@@ -743,7 +824,7 @@ class ClassTemplateTest extends TestCase
 	/** @test */
 	public function users_can_get_constants_from_a_class_using_the_fluent_alias()
 	{
-		$class = ClassTemplate::name('Person')->setConstants([
+		$class = ClassTemplate::name('Person')->withConstants([
 			ClassConstant::name('GENDER_MALE')->value('m'),
 			ClassConstant::name('GENDER_FEMALE')->value('f'),
 		]);
@@ -767,7 +848,7 @@ class ClassTemplateTest extends TestCase
 		$class = ClassTemplate::name('Person');
 
 
-		$class->withConstant(
+		$class->addConstant(
 			ClassConstant::name('MIN_AGE')->value(21),
 		);
 		$printed = $class->print();
@@ -779,7 +860,7 @@ class ClassTemplateTest extends TestCase
 	/** @test */
 	public function users_can_remove_a_single_constant_from_a_class()
 	{
-		$class = ClassTemplate::name('Person')->setConstants([
+		$class = ClassTemplate::name('Person')->withConstants([
 			ClassConstant::name('MIN_AGE')->value(18),
 			ClassConstant::name('GENDER_FEMALE')->value('f'),
 			ClassConstant::name('GENDER_MALE')->value('m'),
@@ -788,7 +869,7 @@ class ClassTemplateTest extends TestCase
 		$this->assertCount(3, $class->getConstants());
 
 
-		$class->withoutConstant('MIN_AGE');
+		$class->removeConstant('MIN_AGE');
 		$constants = $class->getConstants();
 
 
@@ -851,6 +932,28 @@ class ClassTemplateTest extends TestCase
 	}
 
 	/** @test */
+	public function users_can_override_all_properties_using_the_fluent_alias()
+	{
+		$class = ClassTemplate::name('TestClass')->addProperty(
+			ClassProperty::name('age')->makePrivate()
+		);
+
+
+		$class->properties([
+			ClassProperty::name('gender')->makePublic(),
+			ClassProperty::name('first_name')->makePublic(),
+			ClassProperty::name('last_name')->makeProtected()
+		]);
+		$printed = $class->print();
+
+
+		$this->assertStringContainsString('public $gender;', $printed);
+		$this->assertStringContainsString('public $first_name;', $printed);
+		$this->assertStringContainsString('protected $last_name;', $printed);
+		$this->assertStringNotContainsString('private $age;', $printed);
+	}
+
+	/** @test */
 	public function users_cannot_override_properties_using_an_invalid_array()
 	{
 		$class = ClassTemplate::name('TestClass')->addProperty(
@@ -865,6 +968,50 @@ class ClassTemplateTest extends TestCase
 			ClassProperty::name('test'),
 			'i am not a class property',
 		]);
+	}
+
+	/** @test */
+	public function users_can_get_properties_from_a_class()
+	{
+		$class = ClassTemplate::name('TestClass')->withProperties([
+			ClassProperty::name('age')->type('int'),
+			ClassProperty::name('gender')->type('string'),
+		]);
+
+
+		$properties = $class->getProperties();
+
+
+		$this->assertIsArray($properties);
+		$this->assertCount(2, $properties);
+
+		$this->assertEquals('age', $properties['age']->getName());
+		$this->assertEquals('int', $properties['age']->getType());
+
+		$this->assertEquals('gender', $properties['gender']->getName());
+		$this->assertEquals('string', $properties['gender']->getType());
+	}
+
+	/** @test */
+	public function users_can_get_properties_from_a_class_using_fluent_alias()
+	{
+		$class = ClassTemplate::name('TestClass')->withProperties([
+			ClassProperty::name('age')->type('int'),
+			ClassProperty::name('gender')->type('string'),
+		]);
+
+
+		$properties = $class->properties();
+
+
+		$this->assertIsArray($properties);
+		$this->assertCount(2, $properties);
+
+		$this->assertEquals('age', $properties['age']->getName());
+		$this->assertEquals('int', $properties['age']->getType());
+
+		$this->assertEquals('gender', $properties['gender']->getName());
+		$this->assertEquals('string', $properties['gender']->getType());
 	}
 
 	/** @test */
@@ -918,6 +1065,26 @@ class ClassTemplateTest extends TestCase
 	}
 
 	/** @test */
+	public function users_can_override_all_methods_on_a_class_using_the_fluent_alias()
+	{
+		$class = ClassTemplate::name('TestClass')->addMethod(
+			ClassMethod::name('doSomething')
+		);
+
+
+		$class->methods([
+			ClassMethod::name('dontDoIt')->makePublic(),
+			ClassMethod::name('doSomethingElse')->makeProtected()->return('bool'),
+		]);
+		$printed = $class->print();
+
+
+		$this->assertStringContainsString('public function dontDoIt()', $printed);
+		$this->assertStringContainsString('protected function doSomethingElse() : bool', $printed);
+		$this->assertStringNotContainsString('function doSomething()', $printed);
+	}
+
+	/** @test */
 	public function users_cannot_override_methods_on_a_class_using_an_invalid_array()
 	{
 		$class = ClassTemplate::name('TestClass')->addMethod(
@@ -932,5 +1099,49 @@ class ClassTemplateTest extends TestCase
 			ClassMethod::name('dontDoIt')->makePublic(),
 			'not a class method',
 		]);
+	}
+
+	/** @test */
+	public function users_can_get_methods_from_a_class()
+	{
+		$class = ClassTemplate::name('TestClass')->withMethods([
+			ClassMethod::name('doesSomethingImportant')->return('bool'),
+			ClassMethod::name('doesSomethingMoreImportant')->return('string'),
+		]);
+
+
+		$methods = $class->getMethods();
+
+
+		$this->assertIsArray($methods);
+		$this->assertCount(2, $methods);
+
+		$this->assertEquals('doesSomethingImportant', $methods['doesSomethingImportant']->getName());
+		$this->assertEquals('bool', $methods['doesSomethingImportant']->getReturnType());
+
+		$this->assertEquals('doesSomethingMoreImportant', $methods['doesSomethingMoreImportant']->getName());
+		$this->assertEquals('string', $methods['doesSomethingMoreImportant']->getReturnType());
+	}
+
+	/** @test */
+	public function users_can_get_methods_from_a_class_using_the_fluent_alias()
+	{
+		$class = ClassTemplate::name('TestClass')->withMethods([
+			ClassMethod::name('doesSomethingImportant')->return('bool'),
+			ClassMethod::name('doesSomethingMoreImportant')->return('string'),
+		]);
+
+
+		$methods = $class->methods();
+
+
+		$this->assertIsArray($methods);
+		$this->assertCount(2, $methods);
+
+		$this->assertEquals('doesSomethingImportant', $methods['doesSomethingImportant']->getName());
+		$this->assertEquals('bool', $methods['doesSomethingImportant']->getReturnType());
+
+		$this->assertEquals('doesSomethingMoreImportant', $methods['doesSomethingMoreImportant']->getName());
+		$this->assertEquals('string', $methods['doesSomethingMoreImportant']->getReturnType());
 	}
 }
