@@ -43,11 +43,10 @@ class ClassMethod extends Template implements DelegatesImports
 
 	public function setReturnType($returnType): self
 	{
-		if ($returnType instanceof Importable) {
-			$this->returnType = $returnType->getShortName();
+		$this->returnType = (string) $returnType;
+
+		if ($this->isImportable($returnType)) {
 			$this->addImportable($returnType);
-		} else {
-			$this->returnType = $returnType;
 		}
 
 		return $this;

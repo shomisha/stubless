@@ -43,11 +43,10 @@ class ClassProperty extends Template implements DelegatesImports
 	/** @param string|\Shomisha\Stubless\Utilities\Importable $type */
 	public function setType($type): self
 	{
+		$this->type = (string) $type;
+
 		if ($this->isImportable($type)) {
-			$this->type = $type->getShortName();
 			$this->addImportable($type);
-		} else {
-			$this->type = $type;
 		}
 
 		return $this;

@@ -22,6 +22,11 @@ class Importable
 		$this->use = new UseStatement($fullName, $alias);
 	}
 
+	public function __toString()
+	{
+		return $this->getShortName();
+	}
+
 	public function getFullName(): string
 	{
 		return $this->fqcn;

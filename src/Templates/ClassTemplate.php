@@ -46,11 +46,10 @@ class ClassTemplate extends Template
 
 	public function setExtends($extends): self
 	{
-		if ($extends instanceof Importable) {
-			$this->extends = $extends->getShortName();
+		$this->extends = (string) $extends;
+
+		if ($this->isImportable($extends)) {
 			$this->addImportable($extends);
-		} else {
-			$this->extends = $extends;
 		}
 
 		return $this;
@@ -68,11 +67,12 @@ class ClassTemplate extends Template
 	/** @param string|\Shomisha\Stubless\Utilities\Importable $interface */
 	public function addInterface($interface): self
 	{
+		$actualInterface = (string) $interface;
+
+		$this->interfaces[$actualInterface] = $actualInterface;
+
 		if ($this->isImportable($interface)) {
-			$this->interfaces[$interface->getFullName()] = $interface->getShortName();
 			$this->addImportable($interface);
-		} elseif (is_string($interface)) {
-			$this->interfaces[$interface] = $interface;
 		}
 
 		return $this;
@@ -114,11 +114,12 @@ class ClassTemplate extends Template
 	/** @param string|\Shomisha\Stubless\Utilities\Importable $trait */
 	public function addTrait($trait): self
 	{
+		$actualTrait = (string) $trait;
+
+		$this->traits[$actualTrait] = $actualTrait;
+
 		if ($this->isImportable($trait)) {
-			$this->traits[$trait->getFullName()] = $trait->getShortName();
 			$this->addImportable($trait);
-		} elseif (is_string($trait)) {
-			$this->traits[$trait] = $trait;
 		}
 
 		return $this;
