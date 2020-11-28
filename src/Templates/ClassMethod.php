@@ -7,6 +7,7 @@ use Shomisha\Stubless\Contracts\DelegatesImports;
 use Shomisha\Stubless\Enums\ClassAccess;
 use Shomisha\Stubless\Templates\Concerns\CanBeAbstract;
 use Shomisha\Stubless\Templates\Concerns\CanBeFinal;
+use Shomisha\Stubless\Templates\Concerns\CanBeStatic;
 use Shomisha\Stubless\Templates\Concerns\HasAccessModifier;
 use Shomisha\Stubless\Templates\Concerns\HasArguments;
 use Shomisha\Stubless\Templates\Concerns\HasImports;
@@ -15,7 +16,7 @@ use Shomisha\Stubless\Utilities\Importable;
 
 class ClassMethod extends Template implements DelegatesImports
 {
-	use CanBeFinal, CanBeAbstract, HasAccessModifier, HasName, HasArguments, HasImports;
+	use CanBeFinal, CanBeAbstract, HasAccessModifier, CanBeStatic, HasName, HasArguments, HasImports;
 
 	private ?string $returnType;
 
@@ -59,6 +60,7 @@ class ClassMethod extends Template implements DelegatesImports
 
 		$this->makeBuilderAbstract($method);
 		$this->makeBuilderFinal($method);
+		$this->makeBuilderStatic($method);
 
 		$this->setAccessToBuilder($method);
 

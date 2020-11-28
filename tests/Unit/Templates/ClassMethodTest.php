@@ -355,4 +355,62 @@ class ClassMethodTest extends TestCase
 
 		$this->assertEquals('float', $returnType);
 	}
+
+	/** @test */
+	public function user_can_make_methods_static()
+	{
+		$method = ClassMethod::name('staticMethodTest');
+
+
+		$method->makeStatic();
+		$printed = $method->print();
+
+
+		$this->assertStringContainsString('public static function staticMethodTest()', $printed);
+	}
+
+	/** @test */
+	public function user_can_make_methods_static_using_the_fluent_alias()
+	{
+		$method = ClassMethod::name('staticMethodTest');
+
+
+		$method->static(true);
+		$printed = $method->print();
+
+
+		$this->assertStringContainsString('public static function staticMethodTest()', $printed);
+	}
+
+	/**
+	 * @test
+	 * @testWith [true]
+	 * 			 [false]
+	 */
+	public function user_can_check_if_methods_are_static($shouldBeStatic)
+	{
+		$method = ClassMethod::name('staticMethod')->makeStatic($shouldBeStatic);
+
+
+		$isStatic = $method->isStatic();
+
+
+		$this->assertEquals($shouldBeStatic, $isStatic);
+	}
+
+	/**
+	 * @test
+	 * @testWith [true]
+	 *			 [false]
+	 */
+	public function user_can_check_if_methods_are_static_using_the_fluent_alias($shouldBeStatic)
+	{
+		$method = ClassMethod::name('staticMethod')->makeStatic($shouldBeStatic);
+
+
+		$isStatic = $method->static();
+
+
+		$this->assertEquals($shouldBeStatic, $isStatic);
+	}
 }

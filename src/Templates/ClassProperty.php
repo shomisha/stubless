@@ -5,13 +5,14 @@ namespace Shomisha\Stubless\Templates;
 use PhpParser\Node;
 use Shomisha\Stubless\Contracts\DelegatesImports;
 use Shomisha\Stubless\Enums\ClassAccess;
+use Shomisha\Stubless\Templates\Concerns\CanBeStatic;
 use Shomisha\Stubless\Templates\Concerns\HasAccessModifier;
 use Shomisha\Stubless\Templates\Concerns\HasImports;
 use Shomisha\Stubless\Templates\Concerns\HasName;
 
 class ClassProperty extends Template implements DelegatesImports
 {
-	use HasAccessModifier, HasName, HasImports;
+	use HasAccessModifier, CanBeStatic, HasName, HasImports;
 
 	private ?string $type;
 
@@ -78,6 +79,7 @@ class ClassProperty extends Template implements DelegatesImports
 		$property = $this->getFactory()->property($this->name);
 
 		$this->setAccessToBuilder($property);
+		$this->makeBuilderStatic($property);
 
 		if ($this->type !== null) {
 			$property->setType($this->type);

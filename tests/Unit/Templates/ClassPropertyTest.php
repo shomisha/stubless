@@ -219,4 +219,62 @@ class ClassPropertyTest extends TestCase
 
 		$this->assertEquals(false, $value);
 	}
+
+	/** @test */
+	public function user_can_make_properties_static()
+	{
+		$property = ClassProperty::name('staticProperty');
+
+
+		$property->makeStatic();
+		$printed = $property->print();
+
+
+		$this->assertStringContainsString('public static $staticProperty;', $printed);
+	}
+
+	/** @test */
+	public function user_can_make_properties_static_using_the_fluent_alias()
+	{
+		$property = ClassProperty::name('staticProperty');
+
+
+		$property->static(true);
+		$printed = $property->print();
+
+
+		$this->assertStringContainsString('public static $staticProperty;', $printed);
+	}
+
+	/**
+	 * @test
+	 * @testWith [true]
+	 * 			 [false]
+	 */
+	public function user_can_check_if_properties_are_static($shouldBeStatic)
+	{
+		$property = ClassProperty::name('staticProperty')->makeStatic($shouldBeStatic);
+
+
+		$isStatic = $property->isStatic();
+
+
+		$this->assertEquals($shouldBeStatic, $isStatic);
+	}
+
+	/**
+	 * @test
+	 * @testWith [true]
+	 *			 [false]
+	 */
+	public function user_can_check_if_properties_are_static_using_the_fluent_alias($shouldBeStatic)
+	{
+		$property = ClassProperty::name('staticProperty')->makeStatic($shouldBeStatic);
+
+
+		$isStatic = $property->static();
+
+
+		$this->assertEquals($shouldBeStatic, $isStatic);
+	}
 }
