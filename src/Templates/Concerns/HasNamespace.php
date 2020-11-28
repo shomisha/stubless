@@ -25,9 +25,4 @@ trait HasNamespace
 
 		return $this;
 	}
-
-	protected function getNamespaceBuilder(): Namespace_
-	{
-		return $this->getFactory()->namespace($this->namespace);
-	}
 }
