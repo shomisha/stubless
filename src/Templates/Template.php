@@ -26,11 +26,17 @@ abstract class Template implements TemplateContract
 	public function print(): string
 	{
 		return $this->getFormatter()->format(
-			$this->getPrinter()->prettyPrintFile([
-				$this->constructNode()
-			])
+			$this->getPrinter()->prettyPrintFile(
+				$this->getPrintableNodes()
+			)
 		);
 
+	}
+
+	/** @return \PhpParser\Node[] */
+	public function getPrintableNodes(): array
+	{
+		return [$this->constructNode()];
 	}
 
 	abstract public function constructNode(): Node;

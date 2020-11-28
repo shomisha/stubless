@@ -135,6 +135,23 @@ class ClassTemplateTest extends TestCase
 	}
 
 	/** @test */
+	public function users_can_add_imports_even_if_a_class_has_no_namespace()
+	{
+		$class = ClassTemplate::name('TestClass');
+
+		$class->addImport(UseStatement::name('App\Models\User'));
+		$class->extends(new Importable('Illuminate\Routing\Controller'));
+
+
+		$printed = $class->print();
+
+
+		$this->assertStringContainsString('use App\Models\User;', $printed);
+		$this->assertStringContainsString('use Illuminate\Routing\Controller;', $printed);
+		$this->assertStringNotContainsString('namespace', $printed);
+	}
+
+	/** @test */
 	public function users_can_get_imports_from_class()
 	{
 		$class = ClassTemplate::name('TestClass')->addImport(

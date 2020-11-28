@@ -217,20 +217,41 @@ class ClassTemplate extends Template
 		$this->addPropertiesToDeclaration($class);
 		$this->addMethodsToDeclaration($class);
 
+		return $this->convertBuilderToNode($class);
+	}
+
+	public function getPrintableNodes(): array
+	{
+		return array_values(
+			array_filter([
+				$this->constructNamespaceNode(),
+				...$this->constructImportNodes(),
+				$this->constructNode(),
+			])
+		);
+	}
+
+	protected function constructNamespaceNode(): ?Node
+	{
 		if ($this->hasNamespace()) {
-			$namespace = $this->getNamespaceBuilder();
-
-			foreach ($this->gatherAllImports() as $import) {
-				$namespace->addStmt($import->constructNode());
-			}
-
-
-			$namespace->addStmt($class);
-
-			return $this->convertBuilderToNode($namespace);
+			return $this->convertBuilderToNode(
+				$this->getFactory()->namespace($this->namespace)
+			);
 		}
 
-		return $this->convertBuilderToNode($class);
+		return null;
+	}
+
+	/** @return \PhpParser\Node\Stmt\Use_[] */
+	protected function constructImportNodes(): array
+	{
+		$imports = [];
+
+		foreach ($this->gatherAllImports() as $import) {
+			$imports[] = $import->constructNode();
+		}
+
+		return $imports;
 	}
 
 	/** @return \Shomisha\Stubless\Templates\UseStatement[] */
