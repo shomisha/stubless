@@ -197,6 +197,18 @@ class ClassPropertyTest extends TestCase
 	}
 
 	/** @test */
+	public function user_cannot_set_objects_as_value_to_class_property()
+	{
+		$property = ClassProperty::name('test');
+
+
+		$this->expectException(\InvalidArgumentException::class);
+
+
+		$property->value(new \stdClass());
+	}
+
+	/** @test */
 	public function user_can_get_the_class_property_value()
 	{
 		$property = ClassProperty::name('test')->setValue(15);

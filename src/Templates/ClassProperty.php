@@ -9,15 +9,13 @@ use Shomisha\Stubless\Templates\Concerns\CanBeStatic;
 use Shomisha\Stubless\Templates\Concerns\HasAccessModifier;
 use Shomisha\Stubless\Templates\Concerns\HasImports;
 use Shomisha\Stubless\Templates\Concerns\HasName;
+use Shomisha\Stubless\Templates\Concerns\HasValue;
 
 class ClassProperty extends Template implements DelegatesImports
 {
-	use HasAccessModifier, CanBeStatic, HasName, HasImports;
+	use HasAccessModifier, CanBeStatic, HasName, HasValue, HasImports;
 
 	private ?string $type;
-
-	/** @var mixed */
-	private $value;
 
 	public function __construct(string $name, string $type = null, string $value = null, ClassAccess $access = null)
 	{
@@ -49,27 +47,6 @@ class ClassProperty extends Template implements DelegatesImports
 		if ($this->isImportable($type)) {
 			$this->addImportable($type);
 		}
-
-		return $this;
-	}
-
-	public function value($value = null)
-	{
-		if ($value === null) {
-			return $this->getValue();
-		}
-
-		return $this->setValue($value);
-	}
-
-	public function getValue(): ?string
-	{
-		return $this->value;
-	}
-
-	public function setValue($value): self
-	{
-		$this->value = $value;
 
 		return $this;
 	}

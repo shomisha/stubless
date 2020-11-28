@@ -6,10 +6,11 @@ use PhpParser\Node;
 use Shomisha\Stubless\Contracts\DelegatesImports;
 use Shomisha\Stubless\Templates\Concerns\HasImports;
 use Shomisha\Stubless\Templates\Concerns\HasName;
+use Shomisha\Stubless\Templates\Concerns\HasValue;
 
 class Argument extends Template implements DelegatesImports
 {
-	use HasName, HasImports;
+	use HasName, HasValue, HasImports;
 
 	private ?string $type;
 
@@ -53,6 +54,10 @@ class Argument extends Template implements DelegatesImports
 
 		if ($this->type !== null) {
 			$argument->setType($this->type);
+		}
+
+		if (isset($this->value)) {
+			$argument->setDefault($this->value);
 		}
 
 		return $this->convertBuilderToNode($argument);
