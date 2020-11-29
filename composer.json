@@ -25,5 +25,8 @@
         "psr-4": {
             "Shomisha\\Stubless\\Test\\": "tests"
         }
+    },
+    "scripts": {
+        "test": "php vendor/bin/phpunit --bootstrap vendor/autoload.php --config phpunit.xml"
     }
 }
