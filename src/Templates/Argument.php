@@ -2,7 +2,6 @@
 
 namespace Shomisha\Stubless\Templates;
 
-use PhpParser\Node;
 use Shomisha\Stubless\Contracts\DelegatesImports;
 use Shomisha\Stubless\Templates\Concerns\HasImports;
 use Shomisha\Stubless\Templates\Concerns\HasName;
@@ -48,7 +47,7 @@ class Argument extends Template implements DelegatesImports
 	}
 
 	/** @return \PhpParser\Node\Param */
-	public function constructNode(): Node
+	public function getPrintableNodes(): array
 	{
 		$argument = $this->getFactory()->param($this->name);
 
@@ -60,7 +59,7 @@ class Argument extends Template implements DelegatesImports
 			$argument->setDefault($this->value);
 		}
 
-		return $this->convertBuilderToNode($argument);
+		return [$this->convertBuilderToNode($argument)];
 	}
 
 	public function getDelegatedImports(): array

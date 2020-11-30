@@ -58,7 +58,7 @@ trait HasProperties
 	protected function addPropertiesToDeclaration(Declaration $declaration): void
 	{
 		foreach ($this->properties as $property) {
-			$declaration->addStmt($property->constructNode());
+			$declaration->addStmts($property->getPrintableNodes());
 		}
 	}
 }

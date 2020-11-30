@@ -58,7 +58,7 @@ trait HasMethods
 	protected function addMethodsToDeclaration(Declaration $declaration): void
 	{
 		foreach ($this->methods as $method) {
-			$declaration->addStmt($method->constructNode());
+			$declaration->addStmts($method->getPrintableNodes());
 		}
 	}
 }

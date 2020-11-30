@@ -10,7 +10,6 @@ use Shomisha\Stubless\Templates\Concerns\HasMethods;
 use Shomisha\Stubless\Templates\Concerns\HasName;
 use Shomisha\Stubless\Templates\Concerns\HasNamespace;
 use Shomisha\Stubless\Templates\Concerns\HasProperties;
-use Shomisha\Stubless\Utilities\Importable;
 
 class ClassTemplate extends Template
 {
@@ -191,7 +190,18 @@ class ClassTemplate extends Template
 		return $this->constants;
 	}
 
-	public function constructNode(): Node
+	public function getPrintableNodes(): array
+	{
+		return array_values(
+			array_filter([
+				$this->constructNamespaceNode(),
+				...$this->constructImportNodes(),
+				$this->constructClassNode(),
+			])
+		);
+	}
+
+	protected function constructClassNode(): Node
 	{
 		$class = $this->getFactory()->class($this->name);
 
@@ -211,24 +221,13 @@ class ClassTemplate extends Template
 		}
 
 		foreach ($this->constants as $constant) {
-			$class->addStmt($constant->constructNode());
+			$class->addStmt($constant->getPrintableNodes()[0]);
 		}
 
 		$this->addPropertiesToDeclaration($class);
 		$this->addMethodsToDeclaration($class);
 
 		return $this->convertBuilderToNode($class);
-	}
-
-	public function getPrintableNodes(): array
-	{
-		return array_values(
-			array_filter([
-				$this->constructNamespaceNode(),
-				...$this->constructImportNodes(),
-				$this->constructNode(),
-			])
-		);
 	}
 
 	protected function constructNamespaceNode(): ?Node
@@ -248,7 +247,7 @@ class ClassTemplate extends Template
 		$imports = [];
 
 		foreach ($this->gatherAllImports() as $import) {
-			$imports[] = $import->constructNode();
+			$imports[] = $import->getPrintableNodes()[0];
 		}
 
 		return $imports;

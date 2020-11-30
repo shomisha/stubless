@@ -2,7 +2,6 @@
 
 namespace Shomisha\Stubless\Templates;
 
-use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassConst;
 use Shomisha\Stubless\Enums\ClassAccess;
 use Shomisha\Stubless\Templates\Concerns\HasAccessModifier;
@@ -18,11 +17,11 @@ class ClassConstant extends Constant
 		$this->access = $access ?? ClassAccess::PUBLIC();
 	}
 
-	public function constructNode(): Node
+	public function getPrintableNodes(): array
 	{
-		/** @var Node\Stmt\Const_ $stmt */
-		$stmt = parent::constructNode();
+		/** @var \PhpParser\Node\Stmt\Const_ $stmt */
+		$stmt = parent::getPrintableNodes()[0];
 
-		return new ClassConst($stmt->consts, $this->access->getPhpParserAccessModifier());
+		return [new ClassConst($stmt->consts, $this->access->getPhpParserAccessModifier())];
 	}
 }

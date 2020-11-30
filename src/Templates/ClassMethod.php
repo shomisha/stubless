@@ -2,7 +2,6 @@
 
 namespace Shomisha\Stubless\Templates;
 
-use PhpParser\Node;
 use Shomisha\Stubless\Contracts\DelegatesImports;
 use Shomisha\Stubless\Enums\ClassAccess;
 use Shomisha\Stubless\Templates\Concerns\CanBeAbstract;
@@ -53,8 +52,8 @@ class ClassMethod extends Template implements DelegatesImports
 		return $this;
 	}
 
-	/** @return \PhpParser\Node\Stmt\ClassMethod */
-	public function constructNode(): Node
+	/** @return \PhpParser\Node\Stmt\ClassMethod[] */
+	public function getPrintableNodes(): array
 	{
 		$method = $this->getFactory()->method($this->name);
 
@@ -70,7 +69,7 @@ class ClassMethod extends Template implements DelegatesImports
 			$method->setReturnType($this->returnType);
 		}
 
-		return $this->convertBuilderToNode($method);
+		return [$this->convertBuilderToNode($method)];
 	}
 
 	public function getDelegatedImports(): array

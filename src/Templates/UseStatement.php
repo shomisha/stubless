@@ -2,7 +2,6 @@
 
 namespace Shomisha\Stubless\Templates;
 
-use PhpParser\Node;
 use Shomisha\Stubless\Templates\Concerns\HasName;
 
 class UseStatement extends Template
@@ -30,7 +29,7 @@ class UseStatement extends Template
 	}
 
 	/** @return \PhpParser\Builder\Use_ */
-	public function constructNode(): Node
+	public function getPrintableNodes(): array
 	{
 		$statement = $this->getFactory()->use($this->name);
 
@@ -38,6 +37,6 @@ class UseStatement extends Template
 			$statement->as($this->as);
 		}
 
-		return $this->convertBuilderToNode($statement);
+		return [$this->convertBuilderToNode($statement)];
 	}
 }

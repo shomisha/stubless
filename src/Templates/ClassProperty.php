@@ -2,7 +2,6 @@
 
 namespace Shomisha\Stubless\Templates;
 
-use PhpParser\Node;
 use Shomisha\Stubless\Contracts\DelegatesImports;
 use Shomisha\Stubless\Enums\ClassAccess;
 use Shomisha\Stubless\Templates\Concerns\CanBeStatic;
@@ -51,7 +50,7 @@ class ClassProperty extends Template implements DelegatesImports
 		return $this;
 	}
 
-	public function constructNode(): Node
+	public function getPrintableNodes(): array
 	{
 		$property = $this->getFactory()->property($this->name);
 
@@ -68,7 +67,7 @@ class ClassProperty extends Template implements DelegatesImports
 			);
 		}
 
-		return $this->convertBuilderToNode($property);
+		return [$this->convertBuilderToNode($property)];
 	}
 
 	public function getDelegatedImports(): array

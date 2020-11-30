@@ -58,7 +58,7 @@ trait HasArguments
 	protected function addArgumentsToFunctionLike(FunctionLike $functionLike): void
 	{
 		foreach ($this->arguments as $argument) {
-			$functionLike->addParam($argument->constructNode());
+			$functionLike->addParam($argument->getPrintableNodes()[0]);
 		}
 	}
 }
