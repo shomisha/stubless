@@ -34,7 +34,7 @@ abstract class Template implements TemplateContract
 	}
 
 	/** @return \PhpParser\Node[] */
-	abstract function getPrintableNodes(): array;
+	abstract public function getPrintableNodes(): array;
 
 	protected function getFactory(): BuilderFactory
 	{
