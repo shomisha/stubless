@@ -16,7 +16,7 @@ class Block extends Template implements DelegatesImports
 	private array $subBlocks;
 
 	/** @param \Shomisha\Stubless\Blocks\Block[] $subBlocks */
-	public function __construct(array $subBlocks)
+	public function __construct(array $subBlocks = [])
 	{
 		$this->subBlocks = $subBlocks;
 	}
@@ -29,6 +29,13 @@ class Block extends Template implements DelegatesImports
 	public function addBlock(Block $block): self
 	{
 		$this->subBlocks[] = $block;
+
+		return $this;
+	}
+
+	public function addBlocks(array $blocks): self
+	{
+		$this->subBlocks = array_merge($this->subBlocks, $blocks);
 
 		return $this;
 	}
@@ -46,6 +53,10 @@ class Block extends Template implements DelegatesImports
 
 	public function getDelegatedImports(): array
 	{
+		if (!isset($this->subBlocks)) {
+			return [];
+		}
+
 		return $this->gatherImportsFromDelegates(
 			$this->extractImportDelegatesFromArray($this->subBlocks)
 		);
