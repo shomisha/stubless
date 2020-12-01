@@ -51,6 +51,22 @@ class Block extends Template implements DelegatesImports
 		);
 	}
 
+	public static function assign(Variable $variable, AssignableValue $assignable): AssignBlock
+	{
+		return new AssignBlock($variable, $assignable);
+	}
+
+	public static function return(AssignableValue $returnValue): ReturnBlock
+	{
+		return new ReturnBlock($returnValue);
+	}
+
+	/** @param \Shomisha\Stubless\Utilities\Importable|string $class */
+	public static function instantiate($class): InstantiateBlock
+	{
+		return new InstantiateBlock($class);
+	}
+
 	public static function invokeMethod(Variable $variable, string $name, array $arguments = []): InvokeMethodBlock
 	{
 		return new InvokeMethodBlock($variable, $name, $arguments);
