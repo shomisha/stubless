@@ -5,10 +5,9 @@ namespace Shomisha\Stubless\Blocks;
 use PhpParser\BuilderHelpers;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
-use Shomisha\Stubless\Contracts\AssignableValue;
 use Shomisha\Stubless\Contracts\DelegatesImports;
 
-abstract class InvokeBlock extends Block implements AssignableValue, DelegatesImports
+abstract class InvokeBlock extends AssignableValue implements DelegatesImports
 {
 	protected string $name;
 
@@ -34,11 +33,6 @@ abstract class InvokeBlock extends Block implements AssignableValue, DelegatesIm
 
 			return BuilderHelpers::normalizeValue($argument);
 		}, $this->arguments);
-	}
-
-	public function getAssignableValueExpression(): Expr
-	{
-		return $this->getPrintableNodes()[0];
 	}
 
 	public function getDelegatedImports(): array

@@ -2,9 +2,9 @@
 
 namespace Shomisha\Stubless\References;
 
-use Shomisha\Stubless\Templates\Template;
+use Shomisha\Stubless\Blocks\AssignableValue;
 
-abstract class Reference extends Template
+abstract class Reference extends AssignableValue
 {
 	public static function variable(string $name): Variable
 	{

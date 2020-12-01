@@ -4,11 +4,10 @@ namespace Shomisha\Stubless\References;
 
 use PhpParser\Node\Expr;
 use Shomisha\Stubless\Contracts\AssignableContainer;
-use Shomisha\Stubless\Contracts\AssignableValue;
 use Shomisha\Stubless\Templates\Argument;
 use Shomisha\Stubless\Templates\Concerns\HasName;
 
-class Variable extends Reference implements AssignableContainer, AssignableValue
+class Variable extends Reference implements AssignableContainer
 {
 	use HasName;
 
