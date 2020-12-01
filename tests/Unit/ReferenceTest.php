@@ -6,7 +6,9 @@ use PHPUnit\Framework\TestCase;
 use Shomisha\Stubless\References\ClassReference;
 use Shomisha\Stubless\References\ObjectProperty;
 use Shomisha\Stubless\References\Reference;
+use Shomisha\Stubless\References\SelfReference;
 use Shomisha\Stubless\References\StaticProperty;
+use Shomisha\Stubless\References\StaticReference;
 use Shomisha\Stubless\References\This;
 use Shomisha\Stubless\References\Variable;
 use Shomisha\Stubless\Templates\Argument;
@@ -146,6 +148,54 @@ class ReferenceTest extends TestCase
 
 
 		$this->assertStringContainsString('Animals::$uniqueSpecies', $printed);
+	}
+
+	/** @test */
+	public function user_can_create_static_reference_using_direct_constructor()
+	{
+		$staticReference = new StaticReference();
+
+
+		$printed = $staticReference->print();
+
+
+		$this->assertStringContainsString('static::class', $printed);
+	}
+
+	/** @test */
+	public function user_can_create_static_reference_using_reference_factory()
+	{
+		$staticReference = Reference::staticReference();
+
+
+		$printed = $staticReference->print();
+
+
+		$this->assertStringContainsString('static::class', $printed);
+	}
+
+	/** @test */
+	public function user_can_create_self_reference_using_direct_constructor()
+	{
+		$selfReference = new SelfReference();
+
+
+		$printed = $selfReference->print();
+
+
+		$this->assertStringContainsString('self::class', $printed);
+	}
+
+	/** @test */
+	public function user_can_create_self_reference_using_reference_factory()
+	{
+		$selfReference = Reference::selfReference();
+
+
+		$printed = $selfReference->print();
+
+
+		$this->assertStringContainsString('self::class', $printed);
 	}
 
 	/** @test */

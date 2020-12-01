@@ -105,13 +105,25 @@ class InvokeTest extends TestCase
 	/** @test */
 	public function user_can_create_the_invoke_static_method_block_using_static_reference()
 	{
+		$invokeStaticMethod = Block::invokeStaticMethod(Reference::staticReference(), 'doSomething');
 
+
+		$printed = $invokeStaticMethod->print();
+
+
+		$this->assertStringContainsString('static::doSomething()', $printed);
 	}
 
 	/** @test */
 	public function user_can_create_the_invoke_static_method_block_using_self_reference()
 	{
+		$invokeStaticMethod = Block::invokeStaticMethod(Reference::selfReference(), 'doSomethingElse');
 
+
+		$printed = $invokeStaticMethod->print();
+
+
+		$this->assertStringContainsString('self::doSomethingElse()', $printed);
 	}
 
 	/** @test */

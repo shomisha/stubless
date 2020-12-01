@@ -26,6 +26,16 @@ abstract class Reference extends AssignableValue
 		return new StaticProperty($class, $property);
 	}
 
+	public static function staticReference(): StaticReference
+	{
+		return new StaticReference();
+	}
+
+	public static function selfReference(): SelfReference
+	{
+		return new SelfReference();
+	}
+
 	/** @param string|\Shomisha\Stubless\Utilities\Importable $class */
 	public static function classReference($class): ClassReference
 	{
