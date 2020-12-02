@@ -7,6 +7,7 @@ use Shomisha\Stubless\Blocks\AssignBlock;
 use Shomisha\Stubless\Blocks\Block;
 use Shomisha\Stubless\References\Reference;
 use Shomisha\Stubless\References\Variable;
+use Shomisha\Stubless\Templates\ClassMethod;
 
 class AssignTest extends TestCase
 {
@@ -26,12 +27,6 @@ class AssignTest extends TestCase
 	}
 
 	/** @test */
-	public function user_can_pass_values_to_assign_block()
-	{
-
-	}
-
-	/** @test */
 	public function user_can_create_assign_block_using_block_factory()
 	{
 		$assign = Block::assign(
@@ -44,5 +39,42 @@ class AssignTest extends TestCase
 
 
 		$this->assertStringContainsString('$userAge = $user->age', $printed);
+	}
+
+	/** @test */
+	public function user_can_pass_raw_values_when_creating_block_using_factory()
+	{
+		$assign = Block::assign(
+			'test',
+			false
+		);
+
+
+		$printed = $assign->print();
+
+
+		$this->assertStringContainsString('$test = false', $printed);
+	}
+
+	public function invalidAssignBlockArgumentDataProvider()
+	{
+		return [
+			[15],
+			[false],
+			[[1, 2, 3]],
+			[ClassMethod::name('test')],
+			[Block::return(15)],
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider  invalidAssignBlockArgumentDataProvider
+	 */
+	public function user_cannot_pass_invalid_value_to_create_assign_block_when_using_factory($variable)
+	{
+		$this->expectException(\InvalidArgumentException::class);
+
+		Block::assign($variable, 'test');
 	}
 }

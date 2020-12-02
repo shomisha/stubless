@@ -2,11 +2,13 @@
 
 namespace Shomisha\Stubless\Blocks;
 
+use Shomisha\Stubless\Contracts\AssignableContainer;
 use Shomisha\Stubless\Contracts\DelegatesImports;
 use Shomisha\Stubless\References\ClassReference;
 use Shomisha\Stubless\References\Variable;
 use Shomisha\Stubless\Templates\Concerns\HasImports;
 use Shomisha\Stubless\Templates\Template;
+use Shomisha\Stubless\Values\Value;
 
 class Block extends Template implements DelegatesImports
 {
@@ -62,14 +64,26 @@ class Block extends Template implements DelegatesImports
 		);
 	}
 
-	public static function assign(Variable $variable, AssignableValue $assignable): AssignBlock
+	public static function assign($variable, $value): AssignBlock
 	{
-		return new AssignBlock($variable, $assignable);
+		if (!$variable instanceof AssignableContainer) {
+			if (is_string($variable)) {
+				$variable = Variable::name($variable);
+			} else {
+				throw new \InvalidArgumentException(sprintf(
+					"Method %s::assign() expects string or instance of %s as first argument.",
+					self::class,
+					AssignableContainer::class,
+				));
+			}
+		}
+
+		return new AssignBlock($variable, Value::normalize($value));
 	}
 
-	public static function return(AssignableValue $returnValue): ReturnBlock
+	public static function return($returnValue): ReturnBlock
 	{
-		return new ReturnBlock($returnValue);
+		return new ReturnBlock(Value::normalize($returnValue));
 	}
 
 	/** @param \Shomisha\Stubless\Utilities\Importable|string $class */
