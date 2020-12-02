@@ -3,6 +3,7 @@
 namespace Shomisha\Stubless\Templates\Concerns;
 
 use PhpParser\Builder\Declaration;
+use Shomisha\Stubless\Contracts\DelegatesImports;
 use Shomisha\Stubless\Templates\UseStatement;
 use Shomisha\Stubless\Utilities\Importable;
 
@@ -76,5 +77,13 @@ trait HasImports
 		}
 
 		return $imports;
+	}
+
+	/** @return \Shomisha\Stubless\Contracts\DelegatesImports[] */
+	protected function extractImportDelegatesFromArray(array $potentialDelegates): array
+	{
+		return array_filter($potentialDelegates, function ($potentialDelegate) {
+			return $potentialDelegate instanceof DelegatesImports;
+		});
 	}
 }
