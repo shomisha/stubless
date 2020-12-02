@@ -5,7 +5,7 @@ namespace Shomisha\Stubless\Blocks;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\Expression;
 use Shomisha\Stubless\Contracts\AssignableContainer;
-use Shomisha\Stubless\References\Variable;
+use Shomisha\Stubless\Values\AssignableValue;
 
 class AssignBlock extends Block
 {

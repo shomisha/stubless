@@ -3,6 +3,7 @@
 namespace Shomisha\Stubless\Blocks;
 
 use PhpParser\Node\Stmt\Return_;
+use Shomisha\Stubless\Values\AssignableValue;
 
 class ReturnBlock extends Block
 {

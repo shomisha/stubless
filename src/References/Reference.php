@@ -2,7 +2,7 @@
 
 namespace Shomisha\Stubless\References;
 
-use Shomisha\Stubless\Blocks\AssignableValue;
+use Shomisha\Stubless\Values\AssignableValue;
 
 abstract class Reference extends AssignableValue
 {

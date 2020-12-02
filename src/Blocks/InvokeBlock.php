@@ -6,6 +6,7 @@ use PhpParser\BuilderHelpers;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use Shomisha\Stubless\Contracts\DelegatesImports;
+use Shomisha\Stubless\Values\AssignableValue;
 
 abstract class InvokeBlock extends AssignableValue implements DelegatesImports
 {
