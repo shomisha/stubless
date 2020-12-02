@@ -3,7 +3,6 @@
 namespace Shomisha\Stubless\Blocks;
 
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Stmt\Expression;
 use Shomisha\Stubless\Contracts\AssignableContainer;
 use Shomisha\Stubless\Values\AssignableValue;
 
@@ -22,11 +21,9 @@ class AssignBlock extends Block
 	public function getPrintableNodes(): array
 	{
 		return [
-			new Expression(
-				new Assign(
-					$this->container->getAssignableContainerExpression(),
-					$this->value->getAssignableValueExpression()
-				)
+			new Assign(
+				$this->container->getAssignableContainerExpression(),
+				$this->value->getAssignableValueExpression()
 			)
 		];
 	}
