@@ -15,4 +15,15 @@ class ArrayValue extends Value
 	{
 		return $this->raw;
 	}
+
+	protected function getPrintableRaw()
+	{
+		return array_map(function ($value) {
+			if ($value instanceof AssignableValue) {
+				return $value->getPrintableNodes()[0];
+			}
+
+			return $value;
+		}, $this->raw);
+	}
 }

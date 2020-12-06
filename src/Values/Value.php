@@ -23,7 +23,9 @@ abstract class Value extends AssignableValue
 
 	public static function array(array $raw): ArrayValue
 	{
-		return new ArrayValue($raw);
+		return new ArrayValue(array_map(function ($element) {
+			return Value::normalize($element);
+		}, $raw));
 	}
 
 	public static function boolean(bool $raw): BooleanValue
@@ -38,9 +40,14 @@ abstract class Value extends AssignableValue
 
 	abstract public function getRaw();
 
+	protected function getPrintableRaw()
+	{
+		return $this->getRaw();
+	}
+
 	public function getAssignableValueExpression(): Expr
 	{
-		return $this->getFactory()->val($this->getRaw());
+		return $this->getFactory()->val($this->getPrintableRaw());
 	}
 
 	public function getPrintableNodes(): array
