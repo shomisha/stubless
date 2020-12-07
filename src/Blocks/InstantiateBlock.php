@@ -5,10 +5,10 @@ namespace Shomisha\Stubless\Blocks;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
 use Shomisha\Stubless\Contracts\DelegatesImports;
-use Shomisha\Stubless\Templates\Concerns\HasName;
 
 class InstantiateBlock extends InvokeBlock implements DelegatesImports
-{public function __construct($class, array $arguments = [])
+{
+	public function __construct($class, array $arguments = [])
 	{
 		if ($this->isImportable($class)) {
 			$this->addImportable($class);
