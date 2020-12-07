@@ -30,7 +30,7 @@ class ReturnTest extends TestCase
 			[Value::string('help me'), "return 'help me'"],
 			[Value::integer(15), 'return 15'],
 			[Value::float(3.14), 'return 3.14'],
-			[Value::array([1, 2, 3]), 'return array(1, 2, 3)'],
+			[Value::array([1, 2, 3]), 'return [1, 2, 3]'],
 			[Value::boolean(true), 'return true'],
 			[Value::null(), 'return null'],
 		];
@@ -57,7 +57,7 @@ class ReturnTest extends TestCase
 			[15, 'return 15'],
 			[42.22, 'return 42.22'],
 			['some test string', "return 'some test string'"],
-			[[1, 2, 3], 'return array(1, 2, 3)'],
+			[[1, 2, 3], 'return [1, 2, 3]'],
 			[false, 'return false'],
 			[null, 'return null'],
 		];

@@ -141,7 +141,7 @@ class ValueTest extends TestCase
 		$printed = $array->print();
 
 
-		$this->assertStringContainsString("array(15, 22, false, 'a string')", $printed);
+		$this->assertStringContainsString("[15, 22, false, 'a string']", $printed);
 	}
 
 	/** @test */
@@ -158,7 +158,7 @@ class ValueTest extends TestCase
 		$printed = $array->print();
 
 
-		$this->assertStringContainsString("array(15, 22, false, 'a string')", $printed);
+		$this->assertStringContainsString("[15, 22, false, 'a string']", $printed);
 	}
 
 	/** @test */
@@ -177,7 +177,7 @@ class ValueTest extends TestCase
 
 
 		$this->assertInstanceOf(ArrayValue::class, $normalized);
-		$this->assertStringContainsString("array('first element', 'second element', true, 15, 22.4)", $normalized->print());
+		$this->assertStringContainsString("['first element', 'second element', true, 15, 22.4]", $normalized->print());
 	}
 
 

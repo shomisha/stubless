@@ -23,7 +23,7 @@ class ValueTest extends TestCase
 		$printed = Value::array($array)->print();
 
 
-		$this->assertStringContainsString("array(new App\Test\TestClass(), new App\Test\AnotherTestClass(1, 3, \$test))", $printed);
+		$this->assertStringContainsString("[new App\Test\TestClass(), new App\Test\AnotherTestClass(1, 3, \$test)]", $printed);
 	}
 
 	/** @test */
@@ -40,7 +40,7 @@ class ValueTest extends TestCase
 		$printed = Value::array($array)->print();
 
 
-		$this->assertStringContainsString("array(1, array(1, 2), array(3, 4, 5), array('test'))", $printed);
+		$this->assertStringContainsString("[1, [1, 2], [3, 4, 5], ['test']]", $printed);
 	}
 
 	/** @test */
@@ -58,6 +58,6 @@ class ValueTest extends TestCase
 		$printed = Value::array($array)->print();
 
 
-		$this->assertStringContainsString("array(1, array(1, 2, 3), array(new TestClass()))", $printed);
+		$this->assertStringContainsString("[1, [1, 2, 3], [new TestClass()]]", $printed);
 	}
 }

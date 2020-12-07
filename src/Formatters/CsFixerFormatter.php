@@ -9,10 +9,11 @@ class CsFixerFormatter implements Formatter
 	private string $csFixerPath = __DIR__ . '/../../dist/php-cs-fixer';
 
 	private array $rules = [
-		'class_attributes_separation',
-		'no_leading_import_slash',
-		'ordered_imports',
-		'single_line_after_imports',
+		'class_attributes_separation' => true,
+		'no_leading_import_slash' => true,
+		'ordered_imports' => true,
+		'single_line_after_imports' => true,
+		'array_syntax' => ['syntax' => 'short'], // TODO: figure out how to pass this without implementing the complete configuration system
 	];
 
 	public function format(string $code): string
@@ -44,9 +45,9 @@ class CsFixerFormatter implements Formatter
 
 	private function prepareFixerCommand(string $path): string
 	{
-		$rules = implode(',', $this->rules);
+		$rules = json_encode($this->rules);
 
-		return "{$this->csFixerPath} fix \"{$path}\" --rules={$rules} --using-cache=no";
+		return "{$this->csFixerPath} fix \"{$path}\" --rules='{$rules}' --using-cache=no";
 	}
 
 	private function removeTemp(string $tempPath): void

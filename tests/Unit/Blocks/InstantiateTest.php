@@ -52,7 +52,7 @@ class InstantiateTest extends TestCase
 		$printed = $instantiate->print();
 
 
-		$this->assertStringContainsString("new App\Models\User(array('first_name' => 'Misa', 'last_name' => 'Kovic', 'nickname' => 'Shomisha'))", $printed);
+		$this->assertStringContainsString("new App\Models\User(['first_name' => 'Misa', 'last_name' => 'Kovic', 'nickname' => 'Shomisha'])", $printed);
 	}
 
 	/** @test */

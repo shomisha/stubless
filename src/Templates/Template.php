@@ -30,7 +30,6 @@ abstract class Template implements TemplateContract
 				$this->getPrintableNodes()
 			)
 		);
-
 	}
 
 	/** @return \PhpParser\Node[] */
