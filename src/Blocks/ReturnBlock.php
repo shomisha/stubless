@@ -18,4 +18,13 @@ class ReturnBlock extends Block
 	{
 		return [new Return_($this->value->getAssignableValueExpression())];
 	}
+
+	public function print(): string
+	{
+		return $this->getFormatter()->format(
+			$this->getPrinter()->prettyPrintFile(
+				$this->getPrintableNodes()
+			)
+		);
+	}
 }
