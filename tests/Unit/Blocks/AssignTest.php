@@ -56,6 +56,80 @@ class AssignTest extends TestCase
 		$this->assertStringContainsString('$test = false', $printed);
 	}
 
+	/** @test */
+	public function user_can_assign_to_object_properties()
+	{
+		$property = Reference::objectProperty(Variable::name('test'), 'testProperty');
+
+
+		$assign = Block::assign($property, 'test');
+		$printed = $assign->print();
+
+
+		$this->assertStringContainsString("\$test->testProperty = 'test'", $printed);
+	}
+
+	/** @test */
+	public function user_can_assign_to_variables()
+	{
+		$variable = Variable::name('testVariable');
+
+
+		$assign = Block::assign($variable, 'test');
+		$printed = $assign->print();
+
+
+		$this->assertStringContainsString("\$testVariable = 'test'", $printed);
+	}
+
+	/** @test */
+	public function user_can_assign_raw_values()
+	{
+		$value = 15;
+
+
+		$printed = Block::assign('test', $value)->print();
+
+
+		$this->assertStringContainsString("\$test = 15", $printed);
+	}
+
+	/** @test */
+	public function user_can_assign_invocations()
+	{
+		$invocation = Block::invokeFunction('testFunction', [true]);
+
+
+		$printed = Block::assign('test', $invocation)->print();
+
+
+		$this->assertStringContainsString("\$test = testFunction(true)", $printed);
+	}
+
+	/** @test */
+	public function user_can_assign_variables()
+	{
+		$variable = Variable::name('assignMe');
+
+
+		$printed = Block::assign('test', $variable)->print();
+
+
+		$this->assertStringContainsString("\$test = \$assignMe", $printed);
+	}
+
+	/** @test */
+	public function user_can_assign_class_properties()
+	{
+		$property = Reference::staticProperty('TestClass', 'testProperty');
+
+
+		$printed = Block::assign('test', $property)->print();
+
+
+		$this->assertStringContainsString("\$test = TestClass::\$testProperty;", $printed);
+	}
+
 	public function invalidAssignBlockArgumentDataProvider()
 	{
 		return [

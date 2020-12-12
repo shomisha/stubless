@@ -7,7 +7,6 @@ use Shomisha\Stubless\Blocks\Block;
 use Shomisha\Stubless\Blocks\InvokeFunctionBlock;
 use Shomisha\Stubless\Blocks\InvokeMethodBlock;
 use Shomisha\Stubless\Blocks\InvokeStaticMethodBlock;
-use Shomisha\Stubless\References\ClassReference;
 use Shomisha\Stubless\References\Reference;
 use Shomisha\Stubless\References\This;
 use Shomisha\Stubless\References\Variable;
@@ -138,5 +137,96 @@ class InvokeTest extends TestCase
 
 
 		$this->assertStringContainsString('Car::stopManufacturing(CarFactory::getMain())', $printed);
+	}
+
+	public function rawValuesDataProvider()
+	{
+		return [
+			[[true], "true"],
+			[[15], "15"],
+			[["exactly"], "'exactly'"],
+			[[[1, 2, 3]], "[1, 2, 3]"],
+			[[25, "to", "life"], "25, 'to', 'life'"],
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider rawValuesDataProvider
+	 */
+	public function user_can_pass_raw_values_as_arguments_to_invoke_block(array $arguments, string $expectedPrint)
+	{
+		$invokeBlock = Block::invokeMethod(Variable::name('test'), 'doSomething', $arguments);
+
+
+		$printed = $invokeBlock->print();
+
+
+		$this->assertStringContainsString("\$test->doSomething({$expectedPrint})", $printed);
+	}
+
+	public function referenceDataProvider()
+	{
+		return [
+			[[Variable::name('test')], "\$test"],
+			[[Reference::this()], "\$this"],
+			[[Reference::objectProperty(Variable::name('test'), 'testProperty')], "\$test->testProperty"],
+			[[Reference::staticProperty('TestClass', 'testProperty')], "TestClass::\$testProperty"],
+			[[Reference::selfReference()], 'self::class'],
+			[[Reference::staticReference()], 'static::class'],
+			[[Reference::classReference('TestClass')], 'TestClass::class'],
+			[[Reference::this(), Reference::variable('anotherVar'), Reference::objectProperty(Variable::name("this"), "someProperty")], "\$this, \$anotherVar, \$this->someProperty"]
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider referenceDataProvider
+	 */
+	public function user_can_pass_references_as_arguments_to_invoke_block(array $arguments, string $expectedPrint)
+	{
+		$invokeBlock = Block::invokeFunction('testFunction', $arguments);
+
+
+		$printed = $invokeBlock->print();
+
+
+		$this->assertStringContainsString("testFunction($expectedPrint)", $printed);
+	}
+
+	public function invocationDataProvider()
+	{
+		return [
+			[[Block::invokeFunction('test', [true])], "test(true)"],
+			[[Block::invokeMethod(Variable::name('testVar'), 'testMethod')], "\$testVar->testMethod()"],
+			[[Block::invokeStaticMethod(Reference::classReference('TestClass'), 'testMethod')], "TestClass::testMethod()"],
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider invocationDataProvider
+	 */
+	public function user_can_pass_other_invocations_as_arguments_to_invoke_block(array $arguments, string $expectedPrint)
+	{
+		$invokeBlock = Block::invokeMethod(Reference::this(), 'doSomething', $arguments);
+
+
+		$printed = $invokeBlock->print();
+
+
+		$this->assertStringContainsString("\$this->doSomething($expectedPrint)", $printed);
+	}
+
+	/** @test */
+	public function user_can_invoke_with_no_arguments()
+	{
+		$invokeBlock = Block::invokeFunction('doSomething');
+
+
+		$printed = $invokeBlock->print();
+
+
+		$this->assertStringContainsString('doSomething()', $printed);
 	}
 }

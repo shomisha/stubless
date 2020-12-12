@@ -24,10 +24,6 @@ abstract class InvokeBlock extends AssignableValue implements DelegatesImports
 	protected function normalizedArguments(): array
 	{
 		return array_map(function ($argument) {
-			if ($this->isImportable($argument)) {
-				$this->addImportable($argument);
-			}
-
 			if ($argument instanceof AssignableValue) {
 				return new Arg($argument->getAssignableValueExpression());
 			}

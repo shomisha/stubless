@@ -3,6 +3,10 @@
 namespace Shomisha\Stubless\Test\Unit\Templates;
 
 use PHPUnit\Framework\TestCase;
+use Shomisha\Stubless\Blocks\Block;
+use Shomisha\Stubless\References\Reference;
+use Shomisha\Stubless\References\This;
+use Shomisha\Stubless\References\Variable;
 use Shomisha\Stubless\Templates\Argument;
 use Shomisha\Stubless\Templates\ClassMethod;
 use Shomisha\Stubless\Templates\ClassTemplate;
@@ -412,5 +416,121 @@ class ClassMethodTest extends TestCase
 
 
 		$this->assertEquals($shouldBeStatic, $isStatic);
+	}
+
+	/** @test */
+	public function user_can_set_blocks_as_method_body()
+	{
+		$method = ClassMethod::name('test');
+
+
+		$method->setBody(Block::fromArray([
+			Block::assign(Variable::name('test'), true)
+		]));
+		$printed = $method->print();
+
+
+		$this->assertStringContainsString("public function test()\n{\n    \$test = true;\n}", $printed);
+	}
+
+	/** @test */
+	public function user_can_get_method_body_block()
+	{
+		$method = ClassMethod::name('activate')->setBody(
+			Block::fromArray([])
+		);
+
+
+		$body = $method->getBody();
+
+
+		$this->assertInstanceOf(Block::class, $body);
+	}
+
+	public function hasBodyDataProvider()
+	{
+		return [
+			'Has body' => [new Block(), true],
+			'Does not have body' => [null, false],
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider hasBodyDataProvider
+	 */
+	public function user_can_check_if_method_has_body($actualBody, bool $expectedHasBody)
+	{
+		$method = ClassMethod::name('test');
+
+		if ($actualBody) {
+			$method->setBody($actualBody);
+		}
+
+
+		$actualHasBody = $method->hasBody();
+
+
+		$this->assertEquals($actualHasBody, $expectedHasBody);
+	}
+
+	/** @test */
+	public function user_can_set_method_body_using_fluent_alias()
+	{
+		$method = ClassMethod::name('activate');
+
+
+		$method->body(Block::fromArray([
+			Block::invokeMethod(
+				new This(),
+				'setActive',
+				[true]
+			)
+		]));
+		$printed = $method->print();
+
+
+		$this->assertStringContainsString("public function activate()\n{\n    \$this->setActive(true);\n}", $printed);
+	}
+
+	/** @test */
+	public function user_can_get_body_using_fluent_alias()
+	{
+		$method = ClassMethod::name('test')->setBody(Block::fromArray([]));
+
+
+		$body = $method->body();
+
+
+		$this->assertInstanceOf(Block::class, $body);
+	}
+
+	/** @test */
+	public function body_will_delegate_imports_to_method()
+	{
+		$method = ClassMethod::name('test')->setBody(
+			Block::fromArray([
+				Block::assign(
+					Variable::name('user'),
+					Block::instantiate(new Importable('App\Models\User'))
+				),
+				Block::assign(
+					Reference::objectProperty(
+						Variable::name('user'),
+						'carMark',
+					),
+					Reference::classReference(new Importable('App\Cars\BMW')),
+				)
+			])
+		);
+
+
+		/** @var \Shomisha\Stubless\Templates\UseStatement[] $imports */
+		$imports = $method->getDelegatedImports();
+
+
+		$this->assertCount(2, $imports);
+		$this->assertEquals('App\Models\User', $imports['App\Models\User']->getName());
+		$this->assertEquals('App\Cars\BMW', $imports['App\Cars\BMW']->getName());
 	}
 }
