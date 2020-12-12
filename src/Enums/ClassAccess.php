@@ -8,7 +8,7 @@ class ClassAccess extends BaseEnum
 {
 	protected int $phpParserAccessModifier;
 
-	public function __construct(string $value, int $phpParserAccessModifier)
+	protected function __construct(string $value, int $phpParserAccessModifier)
 	{
 		parent::__construct($value);
 		$this->phpParserAccessModifier = $phpParserAccessModifier;
@@ -17,6 +17,20 @@ class ClassAccess extends BaseEnum
 	public function getPhpParserAccessModifier(): int
 	{
 		return $this->phpParserAccessModifier;
+	}
+
+	public static function fromString(string $value): BaseEnum
+	{
+		switch ($value) {
+			case 'public':
+				return self::PUBLIC();
+			case 'protected':
+				return self::PROTECTED();
+			case 'private':
+				return self::PRIVATE();
+		}
+
+		throw new \InvalidArgumentException("Invalid class access provided: {$value}");
 	}
 
 	public static function PUBLIC(): self

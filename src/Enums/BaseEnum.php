@@ -6,7 +6,7 @@ abstract class BaseEnum
 {
 	private string $value;
 
-	public function __construct(string $value)
+	protected function __construct(string $value)
 	{
 		$this->value = $value;
 	}
