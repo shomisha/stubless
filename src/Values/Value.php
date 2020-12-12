@@ -23,9 +23,7 @@ abstract class Value extends AssignableValue
 
 	public static function array(array $raw): ArrayValue
 	{
-		return new ArrayValue(array_map(function ($element) {
-			return Value::normalize($element);
-		}, $raw));
+		return new ArrayValue($raw);
 	}
 
 	public static function boolean(bool $raw): BooleanValue

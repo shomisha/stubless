@@ -3,8 +3,13 @@
 namespace Shomisha\Stubless\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Shomisha\Stubless\Blocks\Block;
+use Shomisha\Stubless\Blocks\InstantiateBlock;
+use Shomisha\Stubless\Blocks\InvokeFunctionBlock;
+use Shomisha\Stubless\References\Reference;
 use Shomisha\Stubless\References\Variable;
 use Shomisha\Stubless\Templates\ClassMethod;
+use Shomisha\Stubless\Utilities\Importable;
 use Shomisha\Stubless\Values\ArrayValue;
 use Shomisha\Stubless\Values\AssignableValue;
 use Shomisha\Stubless\Values\BooleanValue;
@@ -159,6 +164,73 @@ class ValueTest extends TestCase
 
 
 		$this->assertStringContainsString("[15, 22, false, 'a string']", $printed);
+	}/** @test */
+	public function array_value_can_contain_instantiate_blocks()
+	{
+		$array = [
+			Block::instantiate('App\Test\TestClass'),
+			new InstantiateBlock('App\Test\AnotherTestClass', [1, 3, Reference::variable('test')]),
+		];
+
+
+		$printed = Value::array($array)->print();
+
+
+		$this->assertStringContainsString("[new App\Test\TestClass(), new App\Test\AnotherTestClass(1, 3, \$test)]", $printed);
+	}
+
+	/** @test */
+	public function array_values_can_contain_subarrays()
+	{
+		$array = [
+			1,
+			[1, 2],
+			[3, 4, 5],
+			['test'],
+		];
+
+
+		$printed = Value::array($array)->print();
+
+
+		$this->assertStringContainsString("[1, [1, 2], [3, 4, 5], ['test']]", $printed);
+	}
+
+	/** @test */
+	public function array_subarrays_can_contain_instantiate_blocks()
+	{
+		$array = [
+			1,
+			[1, 2, 3],
+			[
+				Block::instantiate(new Importable('App\Test\TestClass')),
+			],
+		];
+
+
+		$printed = (new ArrayValue($array))->print();
+
+
+		$this->assertStringContainsString("[1, [1, 2, 3], [new TestClass()]]", $printed);
+	}
+
+	/** @test */
+	public function array_values_can_return_underlying_raw_arrays()
+	{
+		$arrayValue = Value::array([
+			1, 2, false, 'string', true, Block::invokeFunction('setEnv', ['dev']),
+		]);
+
+
+		$raw = $arrayValue->getRaw();
+
+
+		$this->assertEquals(1, $raw[0]);
+		$this->assertEquals(2, $raw[1]);
+		$this->assertEquals(false, $raw[2]);
+		$this->assertEquals('string', $raw[3]);
+		$this->assertEquals(true, $raw[4]);
+		$this->assertInstanceOf(InvokeFunctionBlock::class, $raw[5]);
 	}
 
 	/** @test */
@@ -179,7 +251,6 @@ class ValueTest extends TestCase
 		$this->assertInstanceOf(ArrayValue::class, $normalized);
 		$this->assertStringContainsString("['first element', 'second element', true, 15, 22.4]", $normalized->print());
 	}
-
 
 	/** @test */
 	public function user_can_create_boolean_value_using_direct_constructor()

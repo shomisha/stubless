@@ -4,26 +4,30 @@ namespace Shomisha\Stubless\Values;
 
 class ArrayValue extends Value
 {
-	protected array $raw;
+	protected array $elements;
 
 	public function __construct(array $raw)
 	{
-		$this->raw = $raw;
+		$this->elements = array_map(function ($element) {
+			return Value::normalize($element);
+		}, $raw);
 	}
 
 	public function getRaw()
 	{
-		return $this->raw;
+		return array_map(function (AssignableValue $value) {
+			if ($value instanceof Value) {
+				return $value->getRaw();
+			}
+
+			return $value;
+		}, $this->elements);
 	}
 
 	protected function getPrintableRaw()
 	{
-		return array_map(function ($value) {
-			if ($value instanceof AssignableValue) {
-				return $value->getPrintableNodes()[0];
-			}
-
-			return $value;
-		}, $this->raw);
+		return array_map(function (AssignableValue $value) {
+			return $value->getPrintableNodes()[0];
+		}, $this->elements);
 	}
 }
