@@ -2,6 +2,7 @@
 
 namespace Shomisha\Stubless\Blocks;
 
+use PhpParser\Node;
 use PhpParser\Node\Stmt\Expression;
 use Shomisha\Stubless\Contracts\AssignableContainer;
 use Shomisha\Stubless\Contracts\DelegatesImports;
@@ -9,6 +10,7 @@ use Shomisha\Stubless\References\ClassReference;
 use Shomisha\Stubless\References\Variable;
 use Shomisha\Stubless\Templates\Concerns\HasImports;
 use Shomisha\Stubless\Templates\Template;
+use Shomisha\Stubless\Templates\UseStatement;
 use Shomisha\Stubless\Values\Value;
 
 class Block extends Template implements DelegatesImports
@@ -45,11 +47,17 @@ class Block extends Template implements DelegatesImports
 
 	public function print(): string
 	{
-		$expression = new Expression($this->getPrintableNodes()[0]);
+		$importNodes = array_map(function (UseStatement $statement) {
+			return $statement->getPrintableNodes()[0];
+		}, $this->getDelegatedImports());
+
+		$expressions = array_map(function (Node $node) {
+			return new Expression($node);
+		}, $this->getPrintableNodes());
 
 		return $this->getFormatter()->format(
 			$this->getPrinter()->prettyPrintFile(
-				[$expression]
+				[...array_values($importNodes), ...$expressions]
 			)
 		);
 	}

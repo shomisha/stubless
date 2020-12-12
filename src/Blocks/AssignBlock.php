@@ -27,4 +27,11 @@ class AssignBlock extends Block
 			)
 		];
 	}
+
+	public function getDelegatedImports(): array
+	{
+		return $this->gatherImportsFromDelegates(
+			$this->extractImportDelegatesFromArray([$this->container, $this->value])
+		);
+	}
 }
