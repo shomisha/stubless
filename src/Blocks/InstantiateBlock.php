@@ -17,7 +17,7 @@ class InstantiateBlock extends InvokeBlock implements DelegatesImports
 		parent::__construct((string) $class, $arguments);
 	}
 
-	public function getPrintableNodes(): array
+	public function getInvokablePrintableNodes(): array
 	{
 		return [
 			new New_(new Name($this->name), $this->normalizedArguments()),

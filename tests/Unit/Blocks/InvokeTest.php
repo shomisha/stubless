@@ -50,6 +50,33 @@ class InvokeTest extends TestCase
 	}
 
 	/** @test */
+	public function user_can_create_the_invoke_function_block_using_block_factory()
+	{
+		$invokeFunction = Block::invokeFunction('doSomething', [
+			'firstParameter', true
+		]);
+
+
+		$printed = $invokeFunction->print();
+
+
+		$this->assertStringContainsString("doSomething('firstParameter', true);", $printed);
+	}
+
+	/** @test */
+	public function user_can_chain_method_calls_on_function_call()
+	{
+		$invokeFunction = Block::invokeFunction('findUser', [1]);
+
+
+		$invokeFunction->chain('initialize')->chain('setUsername', ['testuser'])->chain('save');
+		$printed = $invokeFunction->print();
+
+
+		$this->assertStringContainsString("findUser(1)->initialize()->setUsername('testuser')->save();", $printed);
+	}
+
+	/** @test */
 	public function user_can_create_invoke_method_block_using_direct_constructor()
 	{
 		$invokeMethod = new InvokeMethodBlock(Variable::name('user'), 'promote', ['project-manager']);
@@ -71,6 +98,19 @@ class InvokeTest extends TestCase
 
 
 		$this->assertStringContainsString('$this->isImportant()', $printed);
+	}
+
+	/** @test */
+	public function user_can_chain_method_calls_on_invoke_method_block()
+	{
+		$invokeMethod = Block::invokeMethod(Variable::name('user'), 'initialize');
+
+
+		$invokeMethod->chain('setUsername', ['nix224'])->chain('save')->chain('refresh');
+		$printed = $invokeMethod->print();
+
+
+		$this->assertStringContainsString("\$user->initialize()->setUsername('nix224')->save()->refresh();", $printed);
 	}
 
 	/** @test */
@@ -137,6 +177,19 @@ class InvokeTest extends TestCase
 
 
 		$this->assertStringContainsString('Car::stopManufacturing(CarFactory::getMain())', $printed);
+	}
+
+	/** @test */
+	public function user_can_chain_method_calls_on_invoke_static_method_block()
+	{
+		$invokeStaticMethod = Block::invokeStaticMethod(Reference::classReference('User'), 'find', [1]);
+
+
+		$invokeStaticMethod->chain('setActive', [true])->chain('setExpired', [false])->chain('notify');
+		$printed = $invokeStaticMethod->print();
+
+
+		$this->assertStringContainsString("User::find(1)->setActive(true)->setExpired(false)->notify();", $printed);
 	}
 
 	public function rawValuesDataProvider()
@@ -228,5 +281,31 @@ class InvokeTest extends TestCase
 
 
 		$this->assertStringContainsString('doSomething()', $printed);
+	}
+
+	/** @test */
+	public function chained_calls_will_delegate_imports()
+	{
+		$invokeBlock = Block::invokeFunction('db');
+
+
+		$invokeBlock->chain('table', [
+			Block::invokeStaticMethod(
+				Reference::classReference(new Importable('App\Models\Changelog')),
+				'getTable'
+			)
+		])->chain('where', [
+			'changeable_type',
+			Block::invokeStaticMethod(
+				Reference::classReference(new Importable('App\Models\User')),
+				'getMorphableType'
+			)
+		])->chain('first');
+		$printed = $invokeBlock->print();
+
+
+		$this->assertStringContainsString('use App\Models\Changelog;', $printed);
+		$this->assertStringContainsString('use App\Models\User;', $printed);
+		$this->assertStringContainsString("db()->table(Changelog::getTable())->where('changeable_type', User::getMorphableType())->first();", $printed);
 	}
 }

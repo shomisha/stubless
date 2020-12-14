@@ -7,7 +7,7 @@ use PhpParser\Node\Name;
 
 class InvokeFunctionBlock extends InvokeBlock
 {
-	public function getPrintableNodes(): array
+	public function getInvokablePrintableNodes(): array
 	{
 		return [
 			new FuncCall(

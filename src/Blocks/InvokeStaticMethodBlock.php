@@ -5,7 +5,6 @@ namespace Shomisha\Stubless\Blocks;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use Shomisha\Stubless\References\ClassReference;
-use Shomisha\Stubless\References\Reference;
 
 class InvokeStaticMethodBlock extends InvokeBlock
 {
@@ -18,7 +17,7 @@ class InvokeStaticMethodBlock extends InvokeBlock
 		$this->class = $class;
 	}
 
-	public function getPrintableNodes(): array
+	public function getInvokablePrintableNodes(): array
 	{
 		return [
 			new StaticCall(new Name($this->class->getName()), $this->name, $this->normalizedArguments())

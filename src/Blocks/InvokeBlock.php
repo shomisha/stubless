@@ -4,7 +4,6 @@ namespace Shomisha\Stubless\Blocks;
 
 use PhpParser\BuilderHelpers;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr;
 use Shomisha\Stubless\Contracts\DelegatesImports;
 use Shomisha\Stubless\Values\AssignableValue;
 
@@ -14,11 +13,63 @@ abstract class InvokeBlock extends AssignableValue implements DelegatesImports
 
 	protected array $arguments;
 
+	protected ?ChainedMethodBlock $chainedMethod = null;
+
 	public function __construct(string $name, array $arguments = [])
 	{
 		$this->name = $name;
 		$this->arguments = $arguments;
 	}
+
+	public function chain(string $name = null, array $arguments = [])
+	{
+		if ($name !== null) {
+			$chainedMethod = new ChainedMethodBlock($this, $name, $arguments);
+			return $this->setChain($chainedMethod);
+		}
+
+		return $this->getChainedMethod();
+	}
+
+	public function setChain(?ChainedMethodBlock $block): ChainedMethodBlock
+	{
+		$this->chainedMethod = $block;
+
+		return $block;
+	}
+
+	/** @return \Shomisha\Stubless\Blocks\ChainedMethodBlock[] */
+	public function getChainedMethod(): ?ChainedMethodBlock
+	{
+		return $this->chainedMethod;
+	}
+
+	public function hasChainedMethod(): bool
+	{
+		return $this->chainedMethod !== null;
+	}
+
+	public function getDelegatedImports(): array
+	{
+		return $this->gatherImportsFromDelegates(
+			$this->extractImportDelegatesFromArray([
+				...$this->arguments,
+				$this->chainedMethod
+			]),
+		);
+	}
+
+	final public function getPrintableNodes(): array
+	{
+		if ($this->hasChainedMethod()) {
+			return $this->getChainedMethod()->getPrintableNodes();
+		}
+
+		return $this->getInvokablePrintableNodes();
+	}
+
+	/** @return \PhpParser\Node[] */
+	protected abstract function getInvokablePrintableNodes(): array;
 
 	/** @return \PhpParser\Node\Arg[] */
 	protected function normalizedArguments(): array
@@ -30,12 +81,5 @@ abstract class InvokeBlock extends AssignableValue implements DelegatesImports
 
 			return BuilderHelpers::normalizeValue($argument);
 		}, $this->arguments);
-	}
-
-	public function getDelegatedImports(): array
-	{
-		return $this->gatherImportsFromDelegates(
-			$this->extractImportDelegatesFromArray($this->arguments)
-		);
 	}
 }

@@ -16,7 +16,7 @@ class InvokeMethodBlock extends InvokeBlock
 		$this->object = $object;
 	}
 
-	public function getPrintableNodes(): array
+	public function getInvokablePrintableNodes(): array
 	{
 		return [
 			new Expr\MethodCall(
