@@ -52,6 +52,10 @@ class Block extends Template implements DelegatesImports
 		}, $this->getDelegatedImports());
 
 		$expressions = array_map(function (Node $node) {
+			if ($node instanceof Node\Stmt) {
+				return $node;
+			}
+
 			return new Expression($node);
 		}, $this->getPrintableNodes());
 
