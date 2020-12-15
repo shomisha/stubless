@@ -13,7 +13,10 @@ class CsFixerFormatter implements Formatter
 		'no_leading_import_slash' => true,
 		'ordered_imports' => true,
 		'single_line_after_imports' => true,
-		'array_syntax' => ['syntax' => 'short'], // TODO: figure out how to pass this without implementing the complete configuration system
+		'blank_line_before_statement' => true,
+		'array_indentation' => true,
+		'method_chaining_indentation' => true,
+		'array_syntax' => ['syntax' => 'short'],
 	];
 
 	public function format(string $code): string
