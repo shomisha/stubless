@@ -47,7 +47,7 @@ class InvokeTest extends TestCase
 
 		$imports = $invokeFunction->getDelegatedImports();
 		$this->assertCount(1, $imports);
-		$this->assertEquals('App\Models\User', $imports[0]->getName());
+		$this->assertEquals('App\Models\User', $imports['App\Models\User']->getName());
 	}
 
 	/** @test */
@@ -140,7 +140,7 @@ class InvokeTest extends TestCase
 
 		$imports = $invokeStaticMethod->getDelegatedImports();
 		$this->assertCount(1, $imports);
-		$this->assertEquals('App\Models\User', $imports[0]->getName());
+		$this->assertEquals('App\Models\User', $imports['App\Models\User']->getName());
 	}
 
 	/** @test */

@@ -35,7 +35,7 @@ class InstantiateTest extends TestCase
 
 		$imports = $instantiate->getDelegatedImports();
 		$this->assertCount(1, $imports);
-		$this->assertEquals('App\Models\User', $imports[0]->getName());
+		$this->assertEquals('App\Models\User', $imports['App\Models\User']->getName());
 	}
 
 	/** @test */

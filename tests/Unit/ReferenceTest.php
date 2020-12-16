@@ -235,6 +235,6 @@ class ReferenceTest extends TestCase
 
 		$delegatedImports = $class->getDelegatedImports();
 		$this->assertCount(1, $delegatedImports);
-		$this->assertEquals('Test\Unit\ReferenceTest', $delegatedImports[0]->getName());
+		$this->assertEquals('Test\Unit\ReferenceTest', $delegatedImports['Test\Unit\ReferenceTest']->getName());
 	}
 }
