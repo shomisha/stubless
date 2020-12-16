@@ -2,14 +2,15 @@
 
 namespace Shomisha\Stubless\Templates;
 
-use Shomisha\Stubless\Contracts\DelegatesImports;
+use Shomisha\Stubless\Contracts\DelegatesImports as DelegatesImportsContract;
+use Shomisha\Stubless\Templates\Concerns\DelegatesImports as DelegatesImportsConcern;
 use Shomisha\Stubless\Templates\Concerns\HasImports;
 use Shomisha\Stubless\Templates\Concerns\HasName;
 use Shomisha\Stubless\Templates\Concerns\HasValue;
 
-class Argument extends Template implements DelegatesImports
+class Argument extends Template implements DelegatesImportsContract
 {
-	use HasName, HasValue, HasImports;
+	use HasName, HasValue, HasImports, DelegatesImportsConcern;
 
 	private ?string $type;
 
@@ -62,8 +63,8 @@ class Argument extends Template implements DelegatesImports
 		return [$this->convertBuilderToNode($argument)];
 	}
 
-	public function getDelegatedImports(): array
+	public function getImportSubDelegates(): array
 	{
-		return $this->getImports();
+		return [];
 	}
 }

@@ -530,7 +530,7 @@ class ClassMethodTest extends TestCase
 
 
 		$this->assertCount(2, $imports);
-		$this->assertEquals('App\Models\User', $imports['App\Models\User']->getName());
-		$this->assertEquals('App\Cars\BMW', $imports['App\Cars\BMW']->getName());
+		$this->assertEquals('App\Models\User', $imports[0]->getName());
+		$this->assertEquals('App\Cars\BMW', $imports[1]->getName());
 	}
 }

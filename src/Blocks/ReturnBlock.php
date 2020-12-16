@@ -27,4 +27,9 @@ class ReturnBlock extends Block
 			)
 		);
 	}
+
+	public function getImportSubDelegates(): array
+	{
+		return [$this->value];
+	}
 }

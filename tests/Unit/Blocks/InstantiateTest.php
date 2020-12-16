@@ -30,11 +30,12 @@ class InstantiateTest extends TestCase
 		$printed = $instantiate->print();
 
 
+		$this->assertStringContainsString('use App\Models\User;', $printed);
 		$this->assertStringContainsString('new User()', $printed);
 
 		$imports = $instantiate->getDelegatedImports();
 		$this->assertCount(1, $imports);
-		$this->assertEquals('App\Models\User', $imports['App\Models\User']->getName());
+		$this->assertEquals('App\Models\User', $imports[0]->getName());
 	}
 
 	/** @test */

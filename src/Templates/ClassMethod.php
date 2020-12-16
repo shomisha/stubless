@@ -3,19 +3,20 @@
 namespace Shomisha\Stubless\Templates;
 
 use Shomisha\Stubless\Blocks\Block;
-use Shomisha\Stubless\Contracts\DelegatesImports;
+use Shomisha\Stubless\Contracts\DelegatesImports as DelegatesImportsContract;
 use Shomisha\Stubless\Enums\ClassAccess;
 use Shomisha\Stubless\Templates\Concerns\CanBeAbstract;
 use Shomisha\Stubless\Templates\Concerns\CanBeFinal;
 use Shomisha\Stubless\Templates\Concerns\CanBeStatic;
+use Shomisha\Stubless\Templates\Concerns\DelegatesImports as DelegatesImportsConcern;
 use Shomisha\Stubless\Templates\Concerns\HasAccessModifier;
 use Shomisha\Stubless\Templates\Concerns\HasArguments;
 use Shomisha\Stubless\Templates\Concerns\HasImports;
 use Shomisha\Stubless\Templates\Concerns\HasName;
 
-class ClassMethod extends Template implements DelegatesImports
+class ClassMethod extends Template implements DelegatesImportsContract
 {
-	use CanBeFinal, CanBeAbstract, HasAccessModifier, CanBeStatic, HasName, HasArguments, HasImports;
+	use CanBeFinal, CanBeAbstract, HasAccessModifier, CanBeStatic, HasName, HasArguments, HasImports, DelegatesImportsConcern;
 
 	private ?string $returnType;
 
@@ -104,17 +105,16 @@ class ClassMethod extends Template implements DelegatesImports
 		return [$this->convertBuilderToNode($method)];
 	}
 
-	public function getDelegatedImports(): array
+	public function getImportSubDelegates(): array
 	{
-		$delegates = [...array_values($this->arguments)];
+		$subDelegates = [
+			...array_values($this->arguments),
+		];
 
 		if ($this->hasBody()) {
-			$delegates[] = $this->body;
+			$subDelegates[] = $this->body;
 		}
 
-		return array_merge(
-			$this->imports,
-			$this->gatherImportsFromDelegates($delegates),
-		);
+		return $subDelegates;
 	}
 }

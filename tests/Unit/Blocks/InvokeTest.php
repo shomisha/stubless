@@ -42,11 +42,12 @@ class InvokeTest extends TestCase
 		$printed = $invokeFunction->print();
 
 
+		$this->assertStringContainsString('use App\Models\User;', $printed);
 		$this->assertStringContainsString("testFunction('first-argument', User::class)", $printed);
 
 		$imports = $invokeFunction->getDelegatedImports();
 		$this->assertCount(1, $imports);
-		$this->assertEquals('App\Models\User', $imports['App\Models\User']->getName());
+		$this->assertEquals('App\Models\User', $imports[0]->getName());
 	}
 
 	/** @test */
@@ -134,11 +135,12 @@ class InvokeTest extends TestCase
 		$printed = $invokeStaticMethod->print();
 
 
+		$this->assertStringContainsString('use App\Models\User;', $printed);
 		$this->assertStringContainsString('User::find(15)', $printed);
 
 		$imports = $invokeStaticMethod->getDelegatedImports();
 		$this->assertCount(1, $imports);
-		$this->assertEquals('App\Models\User', $imports['App\Models\User']->getName());
+		$this->assertEquals('App\Models\User', $imports[0]->getName());
 	}
 
 	/** @test */

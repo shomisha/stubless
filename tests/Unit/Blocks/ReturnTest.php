@@ -94,7 +94,6 @@ class ReturnTest extends TestCase
 
 		$this->assertStringContainsString('return User::finalize()', $printed);
 
-		// TODO: think about what to do here. Try figuring out a better, more abstract, way of handling importables.
 		$imports = $return->getDelegatedImports();
 		$this->assertCount(1, $imports);
 	}

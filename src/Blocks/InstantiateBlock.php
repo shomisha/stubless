@@ -4,9 +4,9 @@ namespace Shomisha\Stubless\Blocks;
 
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
-use Shomisha\Stubless\Contracts\DelegatesImports;
+use Shomisha\Stubless\Contracts\DelegatesImports as DelegatesImportsContract;
 
-class InstantiateBlock extends InvokeBlock implements DelegatesImports
+class InstantiateBlock extends InvokeBlock implements DelegatesImportsContract
 {
 	public function __construct($class, array $arguments = [])
 	{
@@ -22,10 +22,5 @@ class InstantiateBlock extends InvokeBlock implements DelegatesImports
 		return [
 			new New_(new Name($this->name), $this->normalizedArguments()),
 		];
-	}
-
-	public function getDelegatedImports(): array
-	{
-		return $this->imports;
 	}
 }

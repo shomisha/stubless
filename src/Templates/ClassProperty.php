@@ -2,17 +2,18 @@
 
 namespace Shomisha\Stubless\Templates;
 
-use Shomisha\Stubless\Contracts\DelegatesImports;
+use Shomisha\Stubless\Contracts\DelegatesImports as DelegatesImportsContract;
 use Shomisha\Stubless\Enums\ClassAccess;
 use Shomisha\Stubless\Templates\Concerns\CanBeStatic;
+use Shomisha\Stubless\Templates\Concerns\DelegatesImports as DelegatesImportsConcern;
 use Shomisha\Stubless\Templates\Concerns\HasAccessModifier;
 use Shomisha\Stubless\Templates\Concerns\HasImports;
 use Shomisha\Stubless\Templates\Concerns\HasName;
 use Shomisha\Stubless\Templates\Concerns\HasValue;
 
-class ClassProperty extends Template implements DelegatesImports
+class ClassProperty extends Template implements DelegatesImportsContract
 {
-	use HasAccessModifier, CanBeStatic, HasName, HasValue, HasImports;
+	use HasAccessModifier, CanBeStatic, HasName, HasValue, HasImports, DelegatesImportsConcern;
 
 	private ?string $type;
 
@@ -70,8 +71,8 @@ class ClassProperty extends Template implements DelegatesImports
 		return [$this->convertBuilderToNode($property)];
 	}
 
-	public function getDelegatedImports(): array
+	public function getImportSubDelegates(): array
 	{
-		return $this->imports;
+		return [];
 	}
 }

@@ -5,17 +5,18 @@ namespace Shomisha\Stubless\Blocks;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Expression;
 use Shomisha\Stubless\Contracts\AssignableContainer;
-use Shomisha\Stubless\Contracts\DelegatesImports;
+use Shomisha\Stubless\Contracts\DelegatesImports as DelegatesImportsContract;
 use Shomisha\Stubless\References\ClassReference;
 use Shomisha\Stubless\References\Variable;
+use Shomisha\Stubless\Templates\Concerns\DelegatesImports as DelegatesImportsConcern;
 use Shomisha\Stubless\Templates\Concerns\HasImports;
 use Shomisha\Stubless\Templates\Template;
 use Shomisha\Stubless\Templates\UseStatement;
 use Shomisha\Stubless\Values\Value;
 
-class Block extends Template implements DelegatesImports
+class Block extends Template implements DelegatesImportsContract
 {
-	use HasImports;
+	use HasImports, DelegatesImportsConcern;
 
 	/** @var \Shomisha\Stubless\Blocks\Block[] */
 	private array $subBlocks;
@@ -77,15 +78,9 @@ class Block extends Template implements DelegatesImports
 		return $nodes;
 	}
 
-	public function getDelegatedImports(): array
+	public function getImportSubDelegates(): array
 	{
-		if (!isset($this->subBlocks)) {
-			return [];
-		}
-
-		return $this->gatherImportsFromDelegates(
-			$this->extractImportDelegatesFromArray($this->subBlocks)
-		);
+		return $this->subBlocks ?? [];
 	}
 
 	public static function assign($variable, $value): AssignBlock

@@ -202,7 +202,7 @@ class ClassTemplateTest extends TestCase
 		$imports = $class->getImports();
 
 
-		$import = $imports['App\Test\SomeClass'];
+		$import = $imports[0];
 		$this->assertInstanceOf(UseStatement::class, $import);
 		$this->assertEquals('App\Test\SomeClass', $import->getName());
 		$this->assertNull($import->getAs());

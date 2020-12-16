@@ -24,11 +24,11 @@ class InvokeStaticMethodBlock extends InvokeBlock
 		];
 	}
 
-	public function getDelegatedImports(): array
+	public function getImportSubDelegates(): array
 	{
-		return $this->gatherImportsFromDelegates([
-			...$this->extractImportDelegatesFromArray($this->arguments),
-			$this->class
-		]);
+		return array_merge(
+			parent::getImportSubDelegates(),
+			[$this->class]
+		);
 	}
 }

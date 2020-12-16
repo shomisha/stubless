@@ -4,10 +4,10 @@ namespace Shomisha\Stubless\Blocks;
 
 use PhpParser\BuilderHelpers;
 use PhpParser\Node\Arg;
-use Shomisha\Stubless\Contracts\DelegatesImports;
+use Shomisha\Stubless\Contracts\DelegatesImports as DelegatesImportsContract;
 use Shomisha\Stubless\Values\AssignableValue;
 
-abstract class InvokeBlock extends AssignableValue implements DelegatesImports
+abstract class InvokeBlock extends AssignableValue implements DelegatesImportsContract
 {
 	protected string $name;
 
@@ -49,16 +49,6 @@ abstract class InvokeBlock extends AssignableValue implements DelegatesImports
 		return $this->chainedMethod !== null;
 	}
 
-	public function getDelegatedImports(): array
-	{
-		return $this->gatherImportsFromDelegates(
-			$this->extractImportDelegatesFromArray([
-				...$this->arguments,
-				$this->chainedMethod
-			]),
-		);
-	}
-
 	final public function getPrintableNodes(): array
 	{
 		if ($this->hasChainedMethod()) {
@@ -81,5 +71,16 @@ abstract class InvokeBlock extends AssignableValue implements DelegatesImports
 
 			return BuilderHelpers::normalizeValue($argument);
 		}, $this->arguments);
+	}
+
+	public function getImportSubDelegates(): array
+	{
+		$subDelegates = $this->extractImportDelegatesFromArray($this->arguments);
+
+		if ($this->hasChainedMethod()) {
+			$subDelegates[] = $this->chainedMethod;
+		}
+
+		return $subDelegates;
 	}
 }

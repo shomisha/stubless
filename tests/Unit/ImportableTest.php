@@ -3,6 +3,9 @@
 namespace Shomisha\Stubless\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Shomisha\Stubless\Blocks\Block;
+use Shomisha\Stubless\References\Reference;
+use Shomisha\Stubless\References\Variable;
 use Shomisha\Stubless\Templates\UseStatement;
 use Shomisha\Stubless\Utilities\Importable;
 
@@ -74,5 +77,37 @@ class ImportableTest extends TestCase
 
 
 		$this->assertEquals('App\Http\Controllers\CustomersController', $fullClassName);
+	}
+
+	/** @test */
+	public function importable_will_not_be_printed_more_than_once()
+	{
+		$userVar = Variable::name('user');
+		$block = Block::fromArray([
+			Block::assign(
+				$userVar,
+				Block::invokeStaticMethod(
+					Reference::classReference(new Importable('App\Models\User')),
+					'first'
+				)
+			),
+			Block::invokeMethod(
+				$userVar,
+				'assignMentor',
+				[
+					Block::invokeStaticMethod(
+						Reference::classReference(new Importable('App\Models\User')),
+						'find',
+						[15]
+					)
+				]
+			)
+		]);
+
+
+		$printed = $block->print();
+
+
+		$this->assertEquals(1, substr_count($printed, 'use App\Models\User;'));
 	}
 }

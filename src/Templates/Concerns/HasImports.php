@@ -2,8 +2,6 @@
 
 namespace Shomisha\Stubless\Templates\Concerns;
 
-use PhpParser\Builder\Declaration;
-use Shomisha\Stubless\Contracts\DelegatesImports;
 use Shomisha\Stubless\Templates\UseStatement;
 use Shomisha\Stubless\Utilities\Importable;
 
@@ -21,11 +19,6 @@ trait HasImports
 		}
 
 		return $this->withImports($imports);
-	}
-
-	public function addImportable(Importable $importable): self
-	{
-		return $this->addImport($importable->getImportStatement());
 	}
 
 	public function addImport(UseStatement $import): self
@@ -62,12 +55,22 @@ trait HasImports
 		return $this->imports;
 	}
 
+	public function addImportable(Importable $importable): self
+	{
+		$this->imports[$importable->getFullName()] = $importable->getImportStatement();
+
+		return $this;
+	}
+
 	protected function isImportable($value): bool
 	{
 		return $value instanceof Importable;
 	}
 
-	/** @param \Shomisha\Stubless\Contracts\DelegatesImports[] $delegates */
+	/**
+	 * @param \Shomisha\Stubless\Contracts\DelegatesImports[] $delegates
+	 * @return \Shomisha\Stubless\Templates\UseStatement[]
+	 */
 	protected function gatherImportsFromDelegates(array $delegates): array
 	{
 		$imports = [];
@@ -77,13 +80,5 @@ trait HasImports
 		}
 
 		return $imports;
-	}
-
-	/** @return \Shomisha\Stubless\Contracts\DelegatesImports[] */
-	protected function extractImportDelegatesFromArray(array $potentialDelegates): array
-	{
-		return array_filter($potentialDelegates, function ($potentialDelegate) {
-			return $potentialDelegate instanceof DelegatesImports;
-		});
 	}
 }

@@ -4,9 +4,9 @@ namespace Shomisha\Stubless\References;
 
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Name;
-use Shomisha\Stubless\Contracts\DelegatesImports;
+use Shomisha\Stubless\Contracts\DelegatesImports as DelegatesImportsContract;
 
-class StaticProperty extends Variable implements DelegatesImports
+class StaticProperty extends Variable implements DelegatesImportsContract
 {
 	private string $class;
 
@@ -24,10 +24,5 @@ class StaticProperty extends Variable implements DelegatesImports
 	public function getPrintableNodes(): array
 	{
 		return [new StaticPropertyFetch(new Name($this->class), $this->name)];
-	}
-
-	public function getDelegatedImports(): array
-	{
-		return $this->imports;
 	}
 }

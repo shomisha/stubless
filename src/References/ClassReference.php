@@ -5,10 +5,10 @@ namespace Shomisha\Stubless\References;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name;
-use Shomisha\Stubless\Contracts\DelegatesImports;
+use Shomisha\Stubless\Contracts\DelegatesImports as DelegatesImportsContract;
 use Shomisha\Stubless\Templates\Concerns\HasName;
 
-class ClassReference extends Reference implements DelegatesImports
+class ClassReference extends Reference implements DelegatesImportsContract
 {
 	use HasName;
 
@@ -28,9 +28,9 @@ class ClassReference extends Reference implements DelegatesImports
 		];
 	}
 
-	public function getDelegatedImports(): array
+	public function getImportSubDelegates(): array
 	{
-		return $this->imports;
+		return [];
 	}
 
 	public function getAssignableValueExpression(): Expr
