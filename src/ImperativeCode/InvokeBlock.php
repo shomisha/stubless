@@ -30,7 +30,7 @@ abstract class InvokeBlock extends AssignableValue
 		return $this->getChainedMethod();
 	}
 
-	public function setChain(?ChainedMethodBlock $block): ChainedMethodBlock
+	public function setChain(?ChainedMethodBlock $block): ?ChainedMethodBlock
 	{
 		$this->chainedMethod = $block;
 

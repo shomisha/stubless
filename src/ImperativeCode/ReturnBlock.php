@@ -20,15 +20,6 @@ class ReturnBlock extends ImperativeCode
 		return [new Return_($this->value->getAssignableValueExpression())];
 	}
 
-	public function print(): string
-	{
-		return $this->getFormatter()->format(
-			$this->getPrinter()->prettyPrintFile(
-				$this->getPrintableNodes()
-			)
-		);
-	}
-
 	public function getImportSubDelegates(): array
 	{
 		return [$this->value];
