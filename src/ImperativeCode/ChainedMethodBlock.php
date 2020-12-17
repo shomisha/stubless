@@ -14,6 +14,11 @@ class ChainedMethodBlock extends InvokeBlock
 		$this->parent = $parent;
 	}
 
+	public function print(): string
+	{
+		return $this->parent->print();
+	}
+
 	protected function getInvokablePrintableNodes(): array
 	{
 		return [
