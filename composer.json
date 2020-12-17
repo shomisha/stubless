@@ -11,6 +11,7 @@
     ],
     "require": {
         "php": "^7.4",
+        "ext-json": "*",
         "nikic/php-parser": "^4.10"
     },
     "require-dev": {
