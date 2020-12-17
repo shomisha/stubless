@@ -3,12 +3,12 @@
 namespace Shomisha\Stubless\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Shomisha\Stubless\Blocks\Block;
-use Shomisha\Stubless\Blocks\InstantiateBlock;
-use Shomisha\Stubless\Blocks\InvokeFunctionBlock;
+use Shomisha\Stubless\ImperativeCode\Block;
+use Shomisha\Stubless\ImperativeCode\InstantiateBlock;
+use Shomisha\Stubless\ImperativeCode\InvokeFunctionBlock;
 use Shomisha\Stubless\References\Reference;
 use Shomisha\Stubless\References\Variable;
-use Shomisha\Stubless\Templates\ClassMethod;
+use Shomisha\Stubless\DeclarativeCode\ClassMethod;
 use Shomisha\Stubless\Utilities\Importable;
 use Shomisha\Stubless\Values\ArrayValue;
 use Shomisha\Stubless\Values\AssignableValue;

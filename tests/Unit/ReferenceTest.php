@@ -11,7 +11,7 @@ use Shomisha\Stubless\References\StaticProperty;
 use Shomisha\Stubless\References\StaticReference;
 use Shomisha\Stubless\References\This;
 use Shomisha\Stubless\References\Variable;
-use Shomisha\Stubless\Templates\Argument;
+use Shomisha\Stubless\DeclarativeCode\Argument;
 use Shomisha\Stubless\Utilities\Importable;
 
 class ReferenceTest extends TestCase

@@ -3,7 +3,7 @@
 namespace Shomisha\Stubless\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Shomisha\Stubless\Templates\Constant;
+use Shomisha\Stubless\DeclarativeCode\Constant;
 
 class TemplateTest extends TestCase
 {

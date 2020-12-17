@@ -2,7 +2,7 @@
 
 namespace Shomisha\Stubless\Utilities;
 
-use Shomisha\Stubless\Templates\UseStatement;
+use Shomisha\Stubless\DeclarativeCode\UseStatement;
 
 class Importable
 {

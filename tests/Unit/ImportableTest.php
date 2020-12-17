@@ -3,10 +3,10 @@
 namespace Shomisha\Stubless\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Shomisha\Stubless\Blocks\Block;
+use Shomisha\Stubless\ImperativeCode\Block;
 use Shomisha\Stubless\References\Reference;
 use Shomisha\Stubless\References\Variable;
-use Shomisha\Stubless\Templates\UseStatement;
+use Shomisha\Stubless\DeclarativeCode\UseStatement;
 use Shomisha\Stubless\Utilities\Importable;
 
 class ImportableTest extends TestCase

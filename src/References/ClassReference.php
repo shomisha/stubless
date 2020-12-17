@@ -5,10 +5,9 @@ namespace Shomisha\Stubless\References;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name;
-use Shomisha\Stubless\Contracts\DelegatesImports as DelegatesImportsContract;
-use Shomisha\Stubless\Templates\Concerns\HasName;
+use Shomisha\Stubless\Concerns\HasName;
 
-class ClassReference extends Reference implements DelegatesImportsContract
+class ClassReference extends Reference
 {
 	use HasName;
 

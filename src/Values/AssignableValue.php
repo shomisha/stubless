@@ -3,9 +3,9 @@
 namespace Shomisha\Stubless\Values;
 
 use PhpParser\Node\Expr;
-use Shomisha\Stubless\Blocks\Block;
+use Shomisha\Stubless\Abstractions\ImperativeCode;
 
-abstract class AssignableValue extends Block
+abstract class AssignableValue extends ImperativeCode
 {
 	public function getAssignableValueExpression(): Expr
 	{

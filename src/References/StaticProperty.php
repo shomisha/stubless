@@ -4,9 +4,8 @@ namespace Shomisha\Stubless\References;
 
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Name;
-use Shomisha\Stubless\Contracts\DelegatesImports as DelegatesImportsContract;
 
-class StaticProperty extends Variable implements DelegatesImportsContract
+class StaticProperty extends Variable
 {
 	private string $class;
 

@@ -4,9 +4,6 @@ namespace Shomisha\Stubless\Contracts;
 
 interface DelegatesImports
 {
-	/** @return \Shomisha\Stubless\Templates\UseStatement[] */
+	/** @return \Shomisha\Stubless\DeclarativeCode\UseStatement[] */
 	public function getDelegatedImports(): array;
-
-	/** @return \Shomisha\Stubless\Contracts\DelegatesImports[] */
-	public function getImportSubDelegates(): array;
 }
