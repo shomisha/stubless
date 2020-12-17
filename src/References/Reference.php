@@ -21,7 +21,7 @@ abstract class Reference extends AssignableValue
 		return new ObjectProperty($variable, $name);
 	}
 
-	public static function staticProperty(string $class, string $property): StaticProperty
+	public static function staticProperty($class, string $property): StaticProperty
 	{
 		return new StaticProperty($class, $property);
 	}
