@@ -59,12 +59,12 @@ class InstantiateTest extends TestCase
 	/** @test */
 	public function user_can_create_instantiate_block_using_block_factory()
 	{
-		$instantiate = Block::instantiate('App\Models\User');
+		$instantiate = Block::instantiate('App\Models\User', [1]);
 
 
 		$printed = $instantiate->print();
 
 
-		$this->assertStringContainsString('new App\Models\User', $printed);
+		$this->assertStringContainsString('new App\Models\User(1);', $printed);
 	}
 }

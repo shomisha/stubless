@@ -78,9 +78,9 @@ class Block extends ImperativeCode
 	}
 
 	/** @param \Shomisha\Stubless\Utilities\Importable|string $class */
-	public static function instantiate($class): InstantiateBlock
+	public static function instantiate($class, array $arguments = []): InstantiateBlock
 	{
-		return new InstantiateBlock($class);
+		return new InstantiateBlock($class, $arguments);
 	}
 
 	public static function invokeMethod(Variable $variable, string $name, array $arguments = []): InvokeMethodBlock
