@@ -117,7 +117,7 @@ class ReferenceTest extends TestCase
 	/** @test */
 	public function user_can_create_static_property_reference_using_direct_constructor()
 	{
-		$staticProperty = new StaticProperty('App\Models\User', 'totalCount');
+		$staticProperty = new StaticProperty(Reference::classReference('App\Models\User'), 'totalCount');
 
 
 		$printed = $staticProperty->print();
@@ -141,13 +141,25 @@ class ReferenceTest extends TestCase
 	/** @test */
 	public function user_can_create_static_property_reference_using_importable()
 	{
-		$staticProperty = new StaticProperty(new Importable('App\Models\Animals'), 'uniqueSpecies');
+		$staticProperty = Reference::staticProperty(new Importable('App\Models\Animals'), 'uniqueSpecies');
 
 
 		$printed = $staticProperty->print();
 
 
 		$this->assertStringContainsString('Animals::$uniqueSpecies', $printed);
+	}
+
+	/** @test */
+	public function user_can_create_static_property_reference_using_string_as_class_name()
+	{
+		$staticProperty = Reference::staticProperty('User', 'databaseConnection');
+
+
+		$printed = $staticProperty->print();
+
+
+		$this->assertStringContainsString('User::$databaseConnection;', $printed);
 	}
 
 	/** @test */
@@ -236,5 +248,39 @@ class ReferenceTest extends TestCase
 		$delegatedImports = $class->getDelegatedImports();
 		$this->assertCount(1, $delegatedImports);
 		$this->assertEquals('Test\Unit\ReferenceTest', $delegatedImports['Test\Unit\ReferenceTest']->getName());
+	}
+
+	public function validClassReferenceNormalizationValues()
+	{
+		return [
+			[new ClassReference('ClassName'), 'ClassName'],
+			[new Importable('Some\Namespace\ClassName'), 'ClassName'],
+			['SomeClass', 'SomeClass']
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider validClassReferenceNormalizationValues
+	 */
+	public function values_can_be_normalized_to_class_reference($value, string $expectedName)
+	{
+		$normalized = ClassReference::normalize($value);
+
+
+		$this->assertInstanceOf(ClassReference::class, $normalized);
+		$this->assertEquals($expectedName, $normalized->getName());
+	}
+
+	/** @test */
+	public function invalid_values_cannot_be_normalized_to_class_reference()
+	{
+		$invalidValue = 15;
+
+
+		$this->expectException(\InvalidArgumentException::class);
+
+
+		ClassReference::normalize($invalidValue);
 	}
 }

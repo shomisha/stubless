@@ -6,6 +6,8 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name;
 use Shomisha\Stubless\Concerns\HasName;
+use Shomisha\Stubless\Utilities\Importable;
+use Shomisha\Stubless\Values\AssignableValue;
 
 class ClassReference extends Reference
 {
@@ -18,6 +20,23 @@ class ClassReference extends Reference
 		if ($this->isImportable($class)) {
 			$this->addImportable($class);
 		}
+	}
+
+	public static function normalize($value): ClassReference
+	{
+		if ($value instanceof ClassReference) {
+			return $value;
+		}
+
+		if (is_string($value)) {
+			return new self($value);
+		}
+
+		if ($value instanceof Importable) {
+			return new self($value);
+		}
+
+		throw new \InvalidArgumentException("Value cannot be safely normalized to a ClassReference instance.");
 	}
 
 	public function getPrintableNodes(): array

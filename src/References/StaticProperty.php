@@ -7,21 +7,24 @@ use PhpParser\Node\Name;
 
 class StaticProperty extends Variable
 {
-	private string $class;
+	private ClassReference $class;
 
-	public function __construct($class, string $name)
+	public function __construct(ClassReference $class, string $name)
 	{
 		parent::__construct($name);
 
 		$this->class = $class;
-
-		if ($this->isImportable($class)) {
-			$this->addImportable($class);
-		}
 	}
 
 	public function getPrintableNodes(): array
 	{
-		return [new StaticPropertyFetch(new Name($this->class), $this->name)];
+		return [new StaticPropertyFetch(new Name($this->class->getName()), $this->name)];
+	}
+
+	protected function getImportSubDelegates(): array
+	{
+		return [
+			$this->class
+		];
 	}
 }

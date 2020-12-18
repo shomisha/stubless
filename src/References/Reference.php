@@ -23,6 +23,8 @@ abstract class Reference extends AssignableValue
 
 	public static function staticProperty($class, string $property): StaticProperty
 	{
+		$class = ClassReference::normalize($class);
+
 		return new StaticProperty($class, $property);
 	}
 
