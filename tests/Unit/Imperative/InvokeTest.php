@@ -4,6 +4,7 @@ namespace Shomisha\Stubless\Test\Unit\Imperative;
 
 use PHPUnit\Framework\TestCase;
 use Shomisha\Stubless\ImperativeCode\Block;
+use Shomisha\Stubless\ImperativeCode\ChainedMethodBlock;
 use Shomisha\Stubless\ImperativeCode\InvokeFunctionBlock;
 use Shomisha\Stubless\ImperativeCode\InvokeMethodBlock;
 use Shomisha\Stubless\ImperativeCode\InvokeStaticMethodBlock;
@@ -75,6 +76,19 @@ class InvokeTest extends TestCase
 
 
 		$this->assertStringContainsString("findUser(1)->initialize()->setUsername('testuser')->save();", $printed);
+	}
+
+	/** @test */
+	public function user_can_get_chained_method_using_fluent_alias_method()
+	{
+		$invokeFunction = Block::invokeFunction('findUser', [1]);
+		$invokeFunction->chain('activate');
+
+
+		$chainedBlock = $invokeFunction->chain();
+
+
+		$this->assertInstanceOf(ChainedMethodBlock::class, $chainedBlock);
 	}
 
 	/** @test */
@@ -309,5 +323,17 @@ class InvokeTest extends TestCase
 		$this->assertStringContainsString('use App\Models\Changelog;', $printed);
 		$this->assertStringContainsString('use App\Models\User;', $printed);
 		$this->assertStringContainsString("db()->table(Changelog::getTable())->where('changeable_type', User::getMorphableType())->first();", $printed);
+	}
+
+	/** @test */
+	public function chained_method_blocks_will_delegate_printing_to_parent()
+	{
+		$parentBlock = $this->getMockBuilder(InvokeFunctionBlock::class)->disableOriginalConstructor()->getMock();
+		$chainedMethod = new ChainedMethodBlock($parentBlock, 'doSomething');
+
+		$parentBlock->expects($this->once())->method('print');
+
+
+		$chainedMethod->print();
 	}
 }
