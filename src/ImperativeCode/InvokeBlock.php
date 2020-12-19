@@ -2,7 +2,6 @@
 
 namespace Shomisha\Stubless\ImperativeCode;
 
-use PhpParser\BuilderHelpers;
 use PhpParser\Node\Arg;
 use Shomisha\Stubless\Values\AssignableValue;
 
@@ -17,7 +16,9 @@ abstract class InvokeBlock extends AssignableValue
 	public function __construct(string $name, array $arguments = [])
 	{
 		$this->name = $name;
-		$this->arguments = $arguments;
+		$this->arguments = array_map(function ($value) {
+			return AssignableValue::normalize($value);
+		}, $arguments);
 	}
 
 	public function chain(string $name = null, array $arguments = [])
@@ -63,12 +64,8 @@ abstract class InvokeBlock extends AssignableValue
 	/** @return \PhpParser\Node\Arg[] */
 	protected function normalizedArguments(): array
 	{
-		return array_map(function ($argument) {
-			if ($argument instanceof AssignableValue) {
-				return new Arg($argument->getAssignableValueExpression());
-			}
-
-			return BuilderHelpers::normalizeValue($argument);
+		return array_map(function (AssignableValue $argument) {
+			return new Arg($argument->getAssignableValueExpression());
 		}, $this->arguments);
 	}
 
