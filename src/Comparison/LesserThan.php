@@ -2,14 +2,13 @@
 
 namespace Shomisha\Stubless\Comparison;
 
+use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Smaller;
 
 class LesserThan extends Comparison
 {
-	public function getPrintableNodes(): array
+	protected function getComparableNode(): Node
 	{
-		return [
-			new Smaller($this->first->getAssignableValueExpression(), $this->second->getAssignableValueExpression())
-		];
+		return new Smaller($this->first->getAssignableValueExpression(), $this->second->getAssignableValueExpression());
 	}
 }

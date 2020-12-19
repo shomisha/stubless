@@ -2,14 +2,13 @@
 
 namespace Shomisha\Stubless\Comparison;
 
+use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 
 class Equals extends Comparison
 {
-	public function getPrintableNodes(): array
+	protected function getComparableNode(): Node
 	{
-		return [
-			new Equal($this->first->getAssignableValueExpression(), $this->second->getAssignableValueExpression()),
-		];
+		return new Equal($this->first->getAssignableValueExpression(), $this->second->getAssignableValueExpression());
 	}
 }

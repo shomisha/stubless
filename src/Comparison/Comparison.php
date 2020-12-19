@@ -2,6 +2,7 @@
 
 namespace Shomisha\Stubless\Comparison;
 
+use PhpParser\Node;
 use Shomisha\Stubless\Contracts\DelegatesImports;
 use Shomisha\Stubless\Values\AssignableValue;
 
@@ -34,6 +35,29 @@ abstract class Comparison extends AssignableValue implements DelegatesImports
 		$this->negated = $negate;
 
 		return $this;
+	}
+
+	final public function getPrintableNodes(): array
+	{
+		$comparableNode = $this->getComparableNode();
+
+		if ($this->negated) {
+			$comparableNode = new Node\Expr\BooleanNot($comparableNode);
+		}
+
+		return [
+			$comparableNode
+		];
+	}
+
+	abstract protected function getComparableNode(): Node;
+
+	protected function getImportSubDelegates(): array
+	{
+		return [
+			$this->first,
+			$this->second
+		];
 	}
 
 	public static function equals($first, $second): Equals
@@ -74,13 +98,5 @@ abstract class Comparison extends AssignableValue implements DelegatesImports
 	public static function lesserThanEquals($first, $second): LesserThanEquals
 	{
 		return new LesserThanEquals(AssignableValue::normalize($first), AssignableValue::normalize($second));
-	}
-
-	protected function getImportSubDelegates(): array
-	{
-		return [
-			$this->first,
-			$this->second
-		];
 	}
 }
