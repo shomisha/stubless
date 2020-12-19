@@ -88,9 +88,9 @@ class Block extends ImperativeCode
 		return new InvokeMethodBlock($variable, $name, $arguments);
 	}
 
-	public static function invokeStaticMethod(ClassReference $class, string $name, array $arguments = []): InvokeStaticMethodBlock
+	public static function invokeStaticMethod($class, string $name, array $arguments = []): InvokeStaticMethodBlock
 	{
-		return new InvokeStaticMethodBlock($class, $name, $arguments);
+		return new InvokeStaticMethodBlock(ClassReference::normalize($class), $name, $arguments);
 	}
 
 	public static function invokeFunction(string $name, array $arguments = []): InvokeFunctionBlock

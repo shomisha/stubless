@@ -196,6 +196,31 @@ class InvokeTest extends TestCase
 	}
 
 	/** @test */
+	public function user_can_create_the_invoke_static_method_block_using_string_as_class()
+	{
+		$invokeStaticMethod = Block::invokeStaticMethod('App\Models\User', 'doSomething');
+
+
+		$printed = $invokeStaticMethod->print();
+
+
+		$this->assertStringContainsString('App\Models\User::doSomething();', $printed);
+	}
+
+	/** @test */
+	public function user_can_create_the_invoke_static_method_block_using_importable_as_class()
+	{
+		$invokeStaticMethod = Block::invokeStaticMethod(new Importable('App\Models\User'), 'doSomething');
+
+
+		$printed = $invokeStaticMethod->print();
+
+
+		$this->assertStringContainsString('use App\Models\User;', $printed);
+		$this->assertStringContainsString('User::doSomething();', $printed);
+	}
+
+	/** @test */
 	public function user_can_chain_method_calls_on_invoke_static_method_block()
 	{
 		$invokeStaticMethod = Block::invokeStaticMethod(Reference::classReference('User'), 'find', [1]);
