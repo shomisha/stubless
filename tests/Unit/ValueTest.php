@@ -59,6 +59,20 @@ class ValueTest extends TestCase
 	}
 
 	/** @test */
+	public function user_can_normalize_importables_to_values()
+	{
+		$importable = new Importable('App\Models\User');
+
+
+		$value = AssignableValue::normalize($importable);
+
+
+		$this->assertInstanceOf(StringValue::class, $value);
+		$this->assertEquals('User', $value->getRaw());
+		$this->assertEquals('App\Models\User', $value->getImports()['App\Models\User']->getName());
+	}
+
+	/** @test */
 	public function user_can_create_integer_value_using_direct_constructor()
 	{
 		$integer = new IntegerValue(15);

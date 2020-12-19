@@ -4,6 +4,7 @@ namespace Shomisha\Stubless\Values;
 
 use PhpParser\Node\Expr;
 use Shomisha\Stubless\Abstractions\ImperativeCode;
+use Shomisha\Stubless\Utilities\Importable;
 
 abstract class AssignableValue extends ImperativeCode
 {
@@ -24,6 +25,10 @@ abstract class AssignableValue extends ImperativeCode
 
 		if (is_string($value)) {
 			return Value::string($value);
+		}
+
+		if ($value instanceof Importable) {
+			return Value::string($value)->addImportable($value);
 		}
 
 		if (is_integer($value)) {
