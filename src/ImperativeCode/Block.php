@@ -4,8 +4,10 @@ namespace Shomisha\Stubless\ImperativeCode;
 
 use Shomisha\Stubless\Abstractions\ImperativeCode;
 use Shomisha\Stubless\Contracts\AssignableContainer;
+use Shomisha\Stubless\ImperativeCode\ControlBlocks\IfBlock;
 use Shomisha\Stubless\References\ClassReference;
 use Shomisha\Stubless\References\Variable;
+use Shomisha\Stubless\Values\AssignableValue;
 use Shomisha\Stubless\Values\Value;
 
 class Block extends ImperativeCode
@@ -96,5 +98,10 @@ class Block extends ImperativeCode
 	public static function invokeFunction(string $name, array $arguments = []): InvokeFunctionBlock
 	{
 		return new InvokeFunctionBlock($name, $arguments);
+	}
+
+	public static function if($condition): IfBlock
+	{
+		return new IfBlock(AssignableValue::normalize($condition));
 	}
 }

@@ -19,18 +19,23 @@ abstract class ImperativeCode extends Code implements DelegatesImports
 			return $statement->getPrintableNodes()[0];
 		}, $this->getDelegatedImports());
 
-		$expressions = array_map(function (Node $node) {
-			if ($node instanceof Node\Stmt) {
-				return $node;
-			}
-
-			return new Expression($node);
-		}, $this->getPrintableNodes());
+		$expressions = $this->normalizeNodesToExpressions($this->getPrintableNodes());
 
 		return $this->getFormatter()->format(
 			$this->getPrinter()->prettyPrintFile(
 				[...array_values($importNodes), ...$expressions]
 			)
 		);
+	}
+
+	protected function normalizeNodesToExpressions(array $nodes): array
+	{
+		return array_map(function (Node $node) {
+			if ($node instanceof Node\Stmt) {
+				return $node;
+			}
+
+			return new Expression($node);
+		}, $nodes);
 	}
 }

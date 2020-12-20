@@ -12,14 +12,15 @@ use Shomisha\Stubless\Comparisons\LesserThan;
 use Shomisha\Stubless\Comparisons\LesserThanEquals;
 use Shomisha\Stubless\Comparisons\NotEquals;
 use Shomisha\Stubless\Comparisons\NotEqualsStrict;
-use Shomisha\Stubless\ImperativeCode\Block;
 use Shomisha\Stubless\ImperativeCode\InvokeBlock;
 use Shomisha\Stubless\References\Reference;
+use Shomisha\Stubless\Test\Concerns\AssignableValueDataProviders;
 use Shomisha\Stubless\Values\AssignableValue;
-use Shomisha\Stubless\Values\Value;
 
 class ComparisonTest extends TestCase
 {
+	use AssignableValueDataProviders;
+
 	/** @test */
 	public function user_can_perform_equal_comparison()
 	{
@@ -212,19 +213,6 @@ class ComparisonTest extends TestCase
 		$this->assertStringContainsString("1 <= 'less than one'", $printed);
 	}
 
-	public function referencesDataProvider()
-	{
-		return [
-			"Variable" => [Reference::variable('testVar'), '$testVar'],
-			"This" => [Reference::this(), '$this'],
-			"Object Property" => [Reference::objectProperty(Reference::variable('$testVar'), 'testProperty'), '$testVar->testProperty'],
-			"Class Reference" => [Reference::classReference('User'), 'User::class'],
-			"Static Reference" => [Reference::staticReference(), 'static::class'],
-			"Self Reference" => [Reference::selfReference(), 'self::class'],
-			"Static Property" => [Reference::staticProperty('User', 'totalCount'), 'User::$totalCount'],
-		];
-	}
-
 	/**
 	 * @test
 	 * @dataProvider referencesDataProvider
@@ -238,16 +226,6 @@ class ComparisonTest extends TestCase
 
 
 		$this->assertStringContainsString("{$printedReference} !== 'testValue'", $printed);
-	}
-
-	public function invocationsDataProvider()
-	{
-		return [
-			"Function" => [Block::invokeFunction('doSomething', [5]), 'doSomething(5)'],
-			"Method" => [Block::invokeMethod(Reference::this(), 'doSomethingElse', ['test']), "\$this->doSomethingElse('test')"],
-			"Static method" => [Block::invokeStaticMethod('User', 'setAvailable', [true]), 'User::setAvailable(true)'],
-			"Instantiation" => [Block::instantiate('User'), 'new User()'],
-		];
 	}
 
 	/**
@@ -265,25 +243,9 @@ class ComparisonTest extends TestCase
 		$this->assertStringContainsString("'Am I Your Equal?' >= {$printedInvocation};", $printed);
 	}
 
-	public function primeValueDataProvider()
-	{
-		return [
-			"String" => ["test string", "'test string'"],
-			"Wrapped String" => [Value::string("another test string"), "'another test string'"],
-			"Integer" => [1, '1'],
-			"Wrapped Integer" => [Value::integer(1), '1'],
-			"Float" => [3.14, "3.14"],
-			"Wrapped Float" => [Value::float(24.42), "24.42"],
-			"Array" => [[1, 2, 3], "[1, 2, 3]"],
-			"Wrapped Array" => [Value::array([1, 'string', false]), "[1, 'string', false]"],
-			"Boolean" => [true, "true"],
-			"Wrapped Boolean" => [Value::boolean(false), "false"],
-		];
-	}
-
 	/**
 	 * @test
-	 * @dataProvider primeValueDataProvider
+	 * @dataProvider primeValuesDataProvider
 	 */
 	public function user_can_perform_comparisons_with_prime_values($value, string $printedValue)
 	{
