@@ -89,4 +89,20 @@ class IfBlock extends ImperativeCode
 			)
 		];
 	}
+
+	protected function getImportSubDelegates(): array
+	{
+		$allElements = [
+			$this->condition,
+			$this->body,
+			$this->elseBlock,
+		];
+
+		foreach ($this->elseIfs as $conditionAndBody) {
+			$allElements[] = $conditionAndBody[self::ELSEIF_KEY_CONDITION];
+			$allElements[] = $conditionAndBody[self::ELSEIF_KEY_BODY];
+		}
+
+		return $this->extractImportDelegatesFromArray($allElements);
+	}
 }

@@ -8,8 +8,10 @@ use Shomisha\Stubless\Comparisons\Comparison;
 use Shomisha\Stubless\ImperativeCode\Block;
 use Shomisha\Stubless\ImperativeCode\ControlBlocks\IfBlock;
 use Shomisha\Stubless\ImperativeCode\InvokeBlock;
+use Shomisha\Stubless\References\ClassReference;
 use Shomisha\Stubless\References\Reference;
 use Shomisha\Stubless\Test\Concerns\ImperativeCodeDataProviders;
+use Shomisha\Stubless\Utilities\Importable;
 use Shomisha\Stubless\Values\Value;
 
 class IfBlockTest extends TestCase
@@ -162,5 +164,29 @@ class IfBlockTest extends TestCase
 
 
 		$this->assertStringContainsString("if (5) {\n    doSomething();\n} elseif (3) {\n    doSomethingElse();\n} elseif (7) {\n    doAnotherThing();\n}", $printed);
+	}
+
+	/** @test */
+	public function if_block_will_delegate_imports_from_its_elements()
+	{
+		$ifBlock = Block::if(Reference::classReference(new Importable('App\Models\User')))->then(
+			Block::invokeStaticMethod(new Importable('App\Models\Post'), 'publishAll')
+		)->elseif(
+			Block::invokeStaticMethod(new Importable('App\Models\Author'), 'exists'),
+			Block::invokeStaticMethod(new Importable('App\Models\Book'), 'publishAll')
+		);
+
+
+		$printed = $ifBlock->print();
+
+
+		$this->assertStringContainsString('use App\Models\User;', $printed);
+		$this->assertStringContainsString('if (User::class)', $printed);
+		$this->assertStringContainsString('use App\Models\Post;', $printed);
+		$this->assertStringContainsString('Post::publishAll();', $printed);
+		$this->assertStringContainsString('use App\Models\Author', $printed);
+		$this->assertStringContainsString('Author::exists()', $printed);
+		$this->assertStringContainsString('use App\Models\Book', $printed);
+		$this->assertStringContainsString('Book::publishAll()', $printed);
 	}
 }

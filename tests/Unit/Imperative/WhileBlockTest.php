@@ -11,6 +11,7 @@ use Shomisha\Stubless\ImperativeCode\ControlBlocks\WhileBlock;
 use Shomisha\Stubless\ImperativeCode\InvokeBlock;
 use Shomisha\Stubless\References\Reference;
 use Shomisha\Stubless\Test\Concerns\ImperativeCodeDataProviders;
+use Shomisha\Stubless\Utilities\Importable;
 
 class WhileBlockTest extends TestCase
 {
@@ -127,6 +128,46 @@ class WhileBlockTest extends TestCase
 
 
 		$this->assertStringContainsString("while (5) {\n    {$printedCode}\n}", $printed);
+	}
+
+	/** @test */
+	public function while_block_will_delegate_imports_from_its_elements()
+	{
+		$ifBlock = Block::while(Reference::classReference(new Importable('App\Models\User')))->do(Block::fromArray([
+			Block::invokeStaticMethod(new Importable('App\Models\Author'), 'exists'),
+			Block::invokeStaticMethod(new Importable('App\Models\Book'), 'publishAll')
+		]));
+
+
+		$printed = $ifBlock->print();
+
+
+		$this->assertStringContainsString('use App\Models\User;', $printed);
+		$this->assertStringContainsString('while (User::class)', $printed);
+		$this->assertStringContainsString('use App\Models\Author', $printed);
+		$this->assertStringContainsString('Author::exists()', $printed);
+		$this->assertStringContainsString('use App\Models\Book', $printed);
+		$this->assertStringContainsString('Book::publishAll()', $printed);
+	}
+
+	/** @test */
+	public function do_while_block_will_delegate_imports_from_its_elements()
+	{
+		$ifBlock = Block::doWhile(Reference::classReference(new Importable('App\Models\User')))->do(Block::fromArray([
+			Block::invokeStaticMethod(new Importable('App\Models\Author'), 'exists'),
+			Block::invokeStaticMethod(new Importable('App\Models\Book'), 'publishAll')
+		]));
+
+
+		$printed = $ifBlock->print();
+
+
+		$this->assertStringContainsString('use App\Models\User;', $printed);
+		$this->assertStringContainsString('while (User::class)', $printed);
+		$this->assertStringContainsString('use App\Models\Author', $printed);
+		$this->assertStringContainsString('Author::exists()', $printed);
+		$this->assertStringContainsString('use App\Models\Book', $printed);
+		$this->assertStringContainsString('Book::publishAll()', $printed);
 	}
 
 	/** @test */

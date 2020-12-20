@@ -51,4 +51,12 @@ class WhileBlock extends ImperativeCode
 			$this->body->getPrintableNodes()
 		);
 	}
+
+	protected function getImportSubDelegates(): array
+	{
+		return $this->extractImportDelegatesFromArray([
+			$this->condition,
+			$this->body
+		]);
+	}
 }
