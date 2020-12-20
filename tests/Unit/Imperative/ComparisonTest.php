@@ -14,12 +14,12 @@ use Shomisha\Stubless\Comparisons\NotEquals;
 use Shomisha\Stubless\Comparisons\NotEqualsStrict;
 use Shomisha\Stubless\ImperativeCode\InvokeBlock;
 use Shomisha\Stubless\References\Reference;
-use Shomisha\Stubless\Test\Concerns\AssignableValueDataProviders;
+use Shomisha\Stubless\Test\Concerns\ImperativeCodeDataProviders;
 use Shomisha\Stubless\Values\AssignableValue;
 
 class ComparisonTest extends TestCase
 {
-	use AssignableValueDataProviders;
+	use ImperativeCodeDataProviders;
 
 	/** @test */
 	public function user_can_perform_equal_comparison()

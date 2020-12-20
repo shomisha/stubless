@@ -4,7 +4,9 @@ namespace Shomisha\Stubless\ImperativeCode;
 
 use Shomisha\Stubless\Abstractions\ImperativeCode;
 use Shomisha\Stubless\Contracts\AssignableContainer;
+use Shomisha\Stubless\ImperativeCode\ControlBlocks\DoWhileBlock;
 use Shomisha\Stubless\ImperativeCode\ControlBlocks\IfBlock;
+use Shomisha\Stubless\ImperativeCode\ControlBlocks\WhileBlock;
 use Shomisha\Stubless\References\ClassReference;
 use Shomisha\Stubless\References\Variable;
 use Shomisha\Stubless\Values\AssignableValue;
@@ -103,5 +105,15 @@ class Block extends ImperativeCode
 	public static function if($condition): IfBlock
 	{
 		return new IfBlock(AssignableValue::normalize($condition));
+	}
+
+	public static function while($condition): WhileBlock
+	{
+		return new WhileBlock(AssignableValue::normalize($condition));
+	}
+
+	public static function doWhile($condition): DoWhileBlock
+	{
+		return new DoWhileBlock(AssignableValue::normalize($condition));
 	}
 }

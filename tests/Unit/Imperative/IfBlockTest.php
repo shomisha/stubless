@@ -9,12 +9,12 @@ use Shomisha\Stubless\ImperativeCode\Block;
 use Shomisha\Stubless\ImperativeCode\ControlBlocks\IfBlock;
 use Shomisha\Stubless\ImperativeCode\InvokeBlock;
 use Shomisha\Stubless\References\Reference;
-use Shomisha\Stubless\Test\Concerns\AssignableValueDataProviders;
+use Shomisha\Stubless\Test\Concerns\ImperativeCodeDataProviders;
 use Shomisha\Stubless\Values\Value;
 
 class IfBlockTest extends TestCase
 {
-	use AssignableValueDataProviders;
+	use ImperativeCodeDataProviders;
 
 	/** @test */
 	public function user_can_create_if_block_using_factory_method()
@@ -111,27 +111,6 @@ class IfBlockTest extends TestCase
 
 
 		$this->assertStringContainsString("if (checkSomething()) {\n    doSomething();\n}", $printed);
-	}
-
-	public function imperativeCodeDataProvider()
-	{
-		return [
-			'Invoke function' => [Block::invokeFunction('doSomething'), 'doSomething();'],
-			'Invoke static method' => [Block::invokeStaticMethod(Reference::staticReference(), 'doSomething'), 'static::doSomething();'],
-			'Invoke method' => [Block::invokeMethod(Reference::this(), 'doSomething'), '$this->doSomething();'],
-			'Return value' => [Block::return(15), 'return 15;'],
-			'Assign value' => [Block::assign(Reference::objectProperty(Reference::this(), 'someProperty'), 'someValue'), "\$this->someProperty = 'someValue';"],
-			'Standalone reference' => [Reference::variable('test'), '$test;'],
-			'Standalon value' => [Value::string('I am alone.'), "'I am alone.';"],
-			'Block of code' => [
-				Block::fromArray([
-					Block::assign(Reference::variable('user'), Block::invokeStaticMethod('User', 'find', [22])),
-					Block::invokeMethod(Reference::variable('user'), 'deactivate'),
-					Block::return(Reference::variable('user')),
-				]),
-				"\$user = User::find(22);\n    \$user->deactivate();\n\n    return \$user;"
-			]
-		];
 	}
 
 	/**
