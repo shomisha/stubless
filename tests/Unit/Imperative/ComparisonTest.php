@@ -3,15 +3,15 @@
 namespace Shomisha\Stubless\Test\Unit\Imperative;
 
 use PHPUnit\Framework\TestCase;
-use Shomisha\Stubless\Comparison\Comparison;
-use Shomisha\Stubless\Comparison\Equals;
-use Shomisha\Stubless\Comparison\EqualsStrict;
-use Shomisha\Stubless\Comparison\GreaterThan;
-use Shomisha\Stubless\Comparison\GreaterThanEquals;
-use Shomisha\Stubless\Comparison\LesserThan;
-use Shomisha\Stubless\Comparison\LesserThanEquals;
-use Shomisha\Stubless\Comparison\NotEquals;
-use Shomisha\Stubless\Comparison\NotEqualsStrict;
+use Shomisha\Stubless\Comparisons\Comparison;
+use Shomisha\Stubless\Comparisons\Equals;
+use Shomisha\Stubless\Comparisons\EqualsStrict;
+use Shomisha\Stubless\Comparisons\GreaterThan;
+use Shomisha\Stubless\Comparisons\GreaterThanEquals;
+use Shomisha\Stubless\Comparisons\LesserThan;
+use Shomisha\Stubless\Comparisons\LesserThanEquals;
+use Shomisha\Stubless\Comparisons\NotEquals;
+use Shomisha\Stubless\Comparisons\NotEqualsStrict;
 use Shomisha\Stubless\ImperativeCode\Block;
 use Shomisha\Stubless\ImperativeCode\InvokeBlock;
 use Shomisha\Stubless\References\Reference;

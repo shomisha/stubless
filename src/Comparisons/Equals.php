@@ -1,6 +1,6 @@
 <?php
 
-namespace Shomisha\Stubless\Comparison;
+namespace Shomisha\Stubless\Comparisons;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Equal;
