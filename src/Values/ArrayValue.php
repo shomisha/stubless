@@ -2,7 +2,10 @@
 
 namespace Shomisha\Stubless\Values;
 
-class ArrayValue extends Value
+use PhpParser\Node\Expr;
+use Shomisha\Stubless\Contracts\Arrayable;
+
+class ArrayValue extends Value implements Arrayable
 {
 	protected array $elements;
 
@@ -29,5 +32,10 @@ class ArrayValue extends Value
 		return array_map(function (AssignableValue $value) {
 			return $value->getPrintableNodes()[0];
 		}, $this->elements);
+	}
+
+	public function getPrintableArrayExpr(): Expr
+	{
+		return $this->getPrintableNodes()[0];
 	}
 }

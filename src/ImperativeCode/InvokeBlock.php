@@ -3,9 +3,11 @@
 namespace Shomisha\Stubless\ImperativeCode;
 
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
+use Shomisha\Stubless\Contracts\Arrayable;
 use Shomisha\Stubless\Values\AssignableValue;
 
-abstract class InvokeBlock extends AssignableValue
+abstract class InvokeBlock extends AssignableValue implements Arrayable
 {
 	protected string $name;
 
@@ -78,5 +80,10 @@ abstract class InvokeBlock extends AssignableValue
 		}
 
 		return $subDelegates;
+	}
+
+	public function getPrintableArrayExpr(): Expr
+	{
+		return $this->getPrintableNodes()[0];
 	}
 }

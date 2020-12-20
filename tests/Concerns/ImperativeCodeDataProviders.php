@@ -82,4 +82,16 @@ trait ImperativeCodeDataProviders
 			"Wrapped Boolean" => [Value::boolean(false), "false"],
 		];
 	}
+
+	public function arrayablesDataProvider()
+	{
+		return [
+			'Invoke function' => [Block::invokeFunction('doSomething'), 'doSomething()'],
+			'Invoke static method' => [Block::invokeStaticMethod(Reference::staticReference(), 'doSomething'), 'static::doSomething()'],
+			'Invoke method' => [Block::invokeMethod(Reference::this(), 'doSomething'), '$this->doSomething()'],
+			"Variable" => [Reference::variable('testVar'), '$testVar'],
+			"Object Property" => [Reference::objectProperty(Reference::variable('testVar'), 'testProperty'), '$testVar->testProperty'],
+			"Static Property" => [Reference::staticProperty('User', 'totalCount'), 'User::$totalCount'],
+		];
+	}
 }

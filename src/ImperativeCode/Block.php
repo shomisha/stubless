@@ -3,8 +3,10 @@
 namespace Shomisha\Stubless\ImperativeCode;
 
 use Shomisha\Stubless\Abstractions\ImperativeCode;
+use Shomisha\Stubless\Contracts\Arrayable;
 use Shomisha\Stubless\Contracts\AssignableContainer;
 use Shomisha\Stubless\ImperativeCode\ControlBlocks\DoWhileBlock;
+use Shomisha\Stubless\ImperativeCode\ControlBlocks\ForeachBlock;
 use Shomisha\Stubless\ImperativeCode\ControlBlocks\IfBlock;
 use Shomisha\Stubless\ImperativeCode\ControlBlocks\WhileBlock;
 use Shomisha\Stubless\References\ClassReference;
@@ -115,5 +117,18 @@ class Block extends ImperativeCode
 	public static function doWhile($condition): DoWhileBlock
 	{
 		return new DoWhileBlock(AssignableValue::normalize($condition));
+	}
+
+	public static function foreach(Arrayable $array, $valueContainer): ForeachBlock
+	{
+		if (!$valueContainer instanceof Variable) {
+			if (is_string($valueContainer)) {
+				$valueContainer = Variable::name($valueContainer);
+			} else {
+				throw new \InvalidArgumentException(sprintf("Value cannot be safely normalized to a %s instance.", Value::class));
+			}
+		}
+
+		return new ForeachBlock($array, $valueContainer);
 	}
 }
