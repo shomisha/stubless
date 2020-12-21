@@ -35,6 +35,7 @@ trait ImperativeCodeDataProviders
 		return [
 			"Variable" => [Reference::variable('testVar'), '$testVar'],
 			"This" => [Reference::this(), '$this'],
+			"Array Key Reference" => [Reference::arrayFetch(Reference::variable('testArray'), 'testKey'), "\$testArray['testKey']"],
 			"Object Property" => [Reference::objectProperty(Reference::variable('testVar'), 'testProperty'), '$testVar->testProperty'],
 			"Class Reference" => [Reference::classReference('User'), 'User::class'],
 			"Static Reference" => [Reference::staticReference(), 'static::class'],
@@ -93,5 +94,15 @@ trait ImperativeCodeDataProviders
 			"Object Property" => [Reference::objectProperty(Reference::variable('testVar'), 'testProperty'), '$testVar->testProperty'],
 			"Static Property" => [Reference::staticProperty('User', 'totalCount'), 'User::$totalCount'],
 		];
+	}
+
+	public function assignableValuesDataProvider()
+	{
+		return array_merge(
+			$this->referencesDataProvider(),
+			$this->invocationsDataProvider(),
+			$this->comparisonsDataProvider(),
+			$this->primeValuesDataProvider(),
+		);
 	}
 }

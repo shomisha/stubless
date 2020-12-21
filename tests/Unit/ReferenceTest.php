@@ -3,6 +3,9 @@
 namespace Shomisha\Stubless\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Shomisha\Stubless\Contracts\Arrayable;
+use Shomisha\Stubless\ImperativeCode\Block;
+use Shomisha\Stubless\References\ArrayKeyReference;
 use Shomisha\Stubless\References\ClassReference;
 use Shomisha\Stubless\References\ObjectProperty;
 use Shomisha\Stubless\References\Reference;
@@ -12,10 +15,14 @@ use Shomisha\Stubless\References\StaticReference;
 use Shomisha\Stubless\References\This;
 use Shomisha\Stubless\References\Variable;
 use Shomisha\Stubless\DeclarativeCode\Argument;
+use Shomisha\Stubless\Test\Concerns\ImperativeCodeDataProviders;
 use Shomisha\Stubless\Utilities\Importable;
+use Shomisha\Stubless\Values\Value;
 
 class ReferenceTest extends TestCase
 {
+	use ImperativeCodeDataProviders;
+
 	/** @test */
 	public function user_can_create_variable_reference_using_direct_constructor()
 	{
@@ -282,5 +289,72 @@ class ReferenceTest extends TestCase
 
 
 		ClassReference::normalize($invalidValue);
+	}
+
+	/** @test */
+	public function user_can_create_array_key_reference_using_direct_instructor()
+	{
+		$arrayKeyReference = new ArrayKeyReference(Variable::name('test'), Value::string('test-key'));
+
+
+		$printed = $arrayKeyReference->print();
+
+
+		$this->assertStringContainsString("\$test['test-key'];", $printed);
+	}
+
+	/** @test */
+	public function user_can_create_array_key_reference_using_factory_method()
+	{
+		$arrayKeyReference = Reference::arrayFetch(Block::invokeFunction('getArray'), 'test');
+
+
+		$printed = $arrayKeyReference->print();
+
+
+		$this->assertStringContainsString("getArray()['test'];", $printed);
+	}
+
+	/**
+	 * @test
+	 * @dataProvider arrayablesDataProvider
+	 */
+	public function user_can_create_array_key_reference_using_any_arrayable(Arrayable $array, string $printedArray)
+	{
+		$arrayKeyReference = Reference::arrayFetch($array, 'test');
+
+
+		$printed = $arrayKeyReference->print();
+
+
+		$this->assertStringContainsString("{$printedArray}['test'];", $printed);
+	}
+
+	/**
+	 * @test
+	 * @dataProvider assignableValuesDataProvider
+	 */
+	public function user_can_create_array_key_reference_using_any_assignable_value($key, string $printedKey)
+	{
+		$arrayKeyReference = Reference::arrayFetch(Reference::variable('test'), $key);
+
+
+		$printed = $arrayKeyReference->print();
+
+
+		$this->assertStringContainsString("\$test[{$printedKey}];", $printed);
+	}
+
+	/** @test */
+	public function user_can_create_nested_array_key_reference()
+	{
+		$arrayKeyReference = Reference::arrayFetch(Reference::variable('test'), 'first-level');
+
+
+		$arrayKeyReference->nest('second-level', Block::invokeFunction('getThirdLevel'))->nest(Block::invokeStaticMethod('ArrayClass', 'getFourthLevel'));
+		$printed = $arrayKeyReference->print();
+
+
+		$this->assertStringContainsString("\$test['first-level']['second-level'][getThirdLevel()][ArrayClass::getFourthLevel()];", $printed);
 	}
 }
