@@ -257,4 +257,19 @@ class ComparisonTest extends TestCase
 
 		$this->assertStringContainsString("{$printedValue} < 24;", $printed);
 	}
+
+	/**
+	 * @test
+	 * @dataProvider comparisonsDataProvider
+	 */
+	public function user_can_perform_comparisons_with_other_comparisons(Comparison $otherComparison, string $printedOtherComparison)
+	{
+		$mainComparison = Comparison::greaterThan(22, $otherComparison);
+
+
+		$printed = $mainComparison->print();
+
+
+		$this->assertStringContainsString("22 > ({$printedOtherComparison});", $printed);
+	}
 }

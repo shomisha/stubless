@@ -34,60 +34,9 @@ class IfBlockTest extends TestCase
 
 	/**
 	 * @test
-	 * @dataProvider comparisonsDataProvider
+	 * @dataProvider assignableValuesDataProvider
 	 */
-	public function user_can_create_if_block_using_comparison(Comparison $comparison, string $printedComparison)
-	{
-		$ifBlock = Block::if($comparison)->then(Block::fromArray([
-			Block::invokeFunction('doSomething')
-		]));
-
-
-		$printed = $ifBlock->print();
-
-
-		$this->assertStringContainsString("if ({$printedComparison}) {\n    doSomething();\n}", $printed);
-	}
-
-	/**
-	 * @test
-	 * @dataProvider invocationsDataProvider
-	 */
-	public function user_can_create_if_block_using_invokable(InvokeBlock $invocation, string $printedInvocation)
-	{
-		$ifBlock = Block::if($invocation)->then(Block::fromArray([
-			Block::invokeFunction('doSomething')
-		]));
-
-
-		$printed = $ifBlock->print();
-
-
-		$this->assertStringContainsString("if ({$printedInvocation}) {\n    doSomething();\n}", $printed);
-	}
-
-	/**
-	 * @test
-	 * @dataProvider referencesDataProvider
-	 */
-	public function user_can_create_if_block_using_reference(Reference $reference, string $printedReference)
-	{
-		$ifBlock = Block::if($reference)->then(Block::fromArray([
-			Block::invokeFunction('doSomething')
-		]));
-
-
-		$printed = $ifBlock->print();
-
-
-		$this->assertStringContainsString("if ({$printedReference}) {\n    doSomething();\n}", $printed);
-	}
-
-	/**
-	 * @test
-	 * @dataProvider primeValuesDataProvider
-	 */
-	public function user_can_create_if_block_using_prime_value($value, string $printedValue)
+	public function user_can_create_if_block_using_any_assignable_value($value, string $printedValue)
 	{
 		$ifBlock = Block::if($value)->then(Block::fromArray([
 			Block::invokeFunction('doSomething')
@@ -115,7 +64,7 @@ class IfBlockTest extends TestCase
 		$this->assertStringContainsString("if (checkSomething()) {\n    doSomething();\n}", $printed);
 	}
 
-	/**
+	/**w
 	 * @test
 	 * @dataProvider imperativeCodeDataProvider
 	 */

@@ -7,11 +7,14 @@ use Shomisha\Stubless\ImperativeCode\Block;
 use Shomisha\Stubless\ImperativeCode\ReturnBlock;
 use Shomisha\Stubless\References\Reference;
 use Shomisha\Stubless\References\Variable;
+use Shomisha\Stubless\Test\Concerns\ImperativeCodeDataProviders;
 use Shomisha\Stubless\Utilities\Importable;
 use Shomisha\Stubless\Values\Value;
 
 class ReturnTest extends TestCase
 {
+	use ImperativeCodeDataProviders;
+
 	/** @test */
 	public function user_can_create_return_block_using_direct_constructor()
 	{
@@ -51,33 +54,6 @@ class ReturnTest extends TestCase
 		$this->assertStringContainsString($expectedPrint, $printed);
 	}
 
-	public function rawPrimeValuesDataProvider()
-	{
-		return [
-			[15, 'return 15'],
-			[42.22, 'return 42.22'],
-			['some test string', "return 'some test string'"],
-			[[1, 2, 3], 'return [1, 2, 3]'],
-			[false, 'return false'],
-			[null, 'return null'],
-		];
-	}
-
-	/**
-	 * @test
-	 * @dataProvider rawPrimeValuesDataProvider
-	 */
-	public function user_can_add_raw_prime_values_when_creating_return_value_using_factory($value, $expectedPrint)
-	{
-		$return = Block::return($value);
-
-
-		$printed = $return->print();
-
-
-		$this->assertStringContainsString($expectedPrint, $printed);
-	}
-
 	/** @test */
 	public function user_can_create_return_block_using_block_factory()
 	{
@@ -96,5 +72,20 @@ class ReturnTest extends TestCase
 
 		$imports = $return->getDelegatedImports();
 		$this->assertCount(1, $imports);
+	}
+
+	/**
+	 * @test
+	 * @dataProvider assignableValuesDataProvider
+	 */
+	public function user_can_add_any_assignable_values_to_return_block($value, string $printedValue)
+	{
+		$return = Block::return($value);
+
+
+		$printed = $return->print();
+
+
+		$this->assertStringContainsString("return {$printedValue};", $printed);
 	}
 }

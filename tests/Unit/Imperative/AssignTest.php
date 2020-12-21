@@ -3,14 +3,18 @@
 namespace Shomisha\Stubless\Test\Unit\Imperative;
 
 use PHPUnit\Framework\TestCase;
+use Shomisha\Stubless\Contracts\AssignableContainer;
 use Shomisha\Stubless\ImperativeCode\AssignBlock;
 use Shomisha\Stubless\ImperativeCode\Block;
 use Shomisha\Stubless\References\Reference;
 use Shomisha\Stubless\References\Variable;
 use Shomisha\Stubless\DeclarativeCode\ClassMethod;
+use Shomisha\Stubless\Test\Concerns\ImperativeCodeDataProviders;
 
 class AssignTest extends TestCase
 {
+	use ImperativeCodeDataProviders;
+
 	/** @test */
 	public function user_can_create_assign_block_using_direct_constructor()
 	{
@@ -56,78 +60,34 @@ class AssignTest extends TestCase
 		$this->assertStringContainsString('$test = false', $printed);
 	}
 
-	/** @test */
-	public function user_can_assign_to_object_properties()
+	/**
+	 * @test
+	 * @dataProvider assignableContainersDataProvider
+	 */
+	public function user_can_create_assign_blocks_with_any_assignable_container(AssignableContainer $container, string $printedContainer)
 	{
-		$property = Reference::objectProperty(Variable::name('test'), 'testProperty');
+		$assign = Block::assign($container, 'test');
 
 
-		$assign = Block::assign($property, 'test');
 		$printed = $assign->print();
 
 
-		$this->assertStringContainsString("\$test->testProperty = 'test'", $printed);
+		$this->assertStringContainsString("{$printedContainer} = 'test';", $printed);
 	}
 
-	/** @test */
-	public function user_can_assign_to_variables()
+	/**
+	 * @test
+	 * @dataProvider assignableValuesDataProvider
+	 */
+	public function user_can_create_assign_blocks_with_any_assignable_value($value, string $printedValue)
 	{
-		$variable = Variable::name('testVariable');
+		$assignBlock = Block::assign('test', $value);
 
 
-		$assign = Block::assign($variable, 'test');
-		$printed = $assign->print();
+		$printed = $assignBlock->print();
 
 
-		$this->assertStringContainsString("\$testVariable = 'test'", $printed);
-	}
-
-	/** @test */
-	public function user_can_assign_raw_values()
-	{
-		$value = 15;
-
-
-		$printed = Block::assign('test', $value)->print();
-
-
-		$this->assertStringContainsString("\$test = 15", $printed);
-	}
-
-	/** @test */
-	public function user_can_assign_invocations()
-	{
-		$invocation = Block::invokeFunction('testFunction', [true]);
-
-
-		$printed = Block::assign('test', $invocation)->print();
-
-
-		$this->assertStringContainsString("\$test = testFunction(true)", $printed);
-	}
-
-	/** @test */
-	public function user_can_assign_variables()
-	{
-		$variable = Variable::name('assignMe');
-
-
-		$printed = Block::assign('test', $variable)->print();
-
-
-		$this->assertStringContainsString("\$test = \$assignMe", $printed);
-	}
-
-	/** @test */
-	public function user_can_assign_class_properties()
-	{
-		$property = Reference::staticProperty('TestClass', 'testProperty');
-
-
-		$printed = Block::assign('test', $property)->print();
-
-
-		$this->assertStringContainsString("\$test = TestClass::\$testProperty;", $printed);
+		$this->assertStringContainsString("\$test = {$printedValue};", $printed);
 	}
 
 	public function invalidAssignBlockArgumentDataProvider()

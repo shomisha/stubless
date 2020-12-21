@@ -105,4 +105,14 @@ trait ImperativeCodeDataProviders
 			$this->primeValuesDataProvider(),
 		);
 	}
+
+	public function assignableContainersDataProvider()
+	{
+		return [
+			'Variable' => [Reference::variable('test'), "\$test"],
+			'Array key' => [Reference::arrayFetch(Reference::variable('testArray'), 'testKey'), "\$testArray['testKey']"],
+			'Object property' => [Reference::objectProperty(Reference::variable('testObject'), 'testProperty'), "\$testObject->testProperty"],
+			'Static property' => [Reference::staticProperty('TestClass', 'testProperty'), "TestClass::\$testProperty"],
+		];
+	}
 }

@@ -33,60 +33,9 @@ class WhileBlockTest extends TestCase
 
 	/**
 	 * @test
-	 * @dataProvider comparisonsDataProvider
+	 * @dataProvider assignableValuesDataProvider
 	 */
-	public function user_can_create_while_block_using_comparison(Comparison $comparison, string $printedComparison)
-	{
-		$whileBlock = Block::while($comparison)->do(Block::fromArray([
-			Block::invokeFunction('doSomething')
-		]));
-
-
-		$printed = $whileBlock->print();
-
-
-		$this->assertStringContainsString("while ({$printedComparison}) {\n    doSomething();\n}", $printed);
-	}
-
-	/**
-	 * @test
-	 * @dataProvider invocationsDataProvider
-	 */
-	public function user_can_create_while_block_using_invokable(InvokeBlock $invocation, string $printedInvocation)
-	{
-		$whileBlock = Block::while($invocation)->do(Block::fromArray([
-			Block::invokeFunction('doSomething')
-		]));
-
-
-		$printed = $whileBlock->print();
-
-
-		$this->assertStringContainsString("while ({$printedInvocation}) {\n    doSomething();\n}", $printed);
-	}
-
-	/**
-	 * @test
-	 * @dataProvider referencesDataProvider
-	 */
-	public function user_can_create_while_block_using_reference(Reference $reference, string $printedReference)
-	{
-		$whileBlock = Block::while($reference)->do(Block::fromArray([
-			Block::invokeFunction('doSomething')
-		]));
-
-
-		$printed = $whileBlock->print();
-
-
-		$this->assertStringContainsString("while ({$printedReference}) {\n    doSomething();\n}", $printed);
-	}
-
-	/**
-	 * @test
-	 * @dataProvider primeValuesDataProvider
-	 */
-	public function user_can_create_while_block_using_prime_value($value, string $printedValue)
+	public function user_can_create_while_block_using_any_assignable_values($value, string $printedValue)
 	{
 		$whileBlock = Block::while($value)->do(Block::fromArray([
 			Block::invokeFunction('doSomething')
@@ -186,60 +135,9 @@ class WhileBlockTest extends TestCase
 
 	/**
 	 * @test
-	 * @dataProvider comparisonsDataProvider
+	 * @dataProvider assignableValuesDataProvider
 	 */
-	public function user_can_create_do_while_block_using_comparison(Comparison $comparison, string $printedComparison)
-	{
-		$doWhileBlock = Block::doWhile($comparison)->do(Block::fromArray([
-			Block::invokeFunction('doSomething')
-		]));
-
-
-		$printed = $doWhileBlock->print();
-
-
-		$this->assertStringContainsString("do {\n    doSomething();\n} while ({$printedComparison});", $printed);
-	}
-
-	/**
-	 * @test
-	 * @dataProvider invocationsDataProvider
-	 */
-	public function user_can_create_do_while_block_using_invokable(InvokeBlock $invocation, string $printedInvocation)
-	{
-		$doWhileBlock = Block::doWhile($invocation)->do(Block::fromArray([
-			Block::invokeFunction('doSomething')
-		]));
-
-
-		$printed = $doWhileBlock->print();
-
-
-		$this->assertStringContainsString("do {\n    doSomething();\n} while ({$printedInvocation});", $printed);
-	}
-
-	/**
-	 * @test
-	 * @dataProvider referencesDataProvider
-	 */
-	public function user_can_create_do_while_block_using_reference(Reference $reference, string $printedReference)
-	{
-		$doWhileBlock = Block::doWhile($reference)->do(Block::fromArray([
-			Block::invokeFunction('doSomething')
-		]));
-
-
-		$printed = $doWhileBlock->print();
-
-
-		$this->assertStringContainsString("do {\n    doSomething();\n} while ({$printedReference});", $printed);
-	}
-
-	/**
-	 * @test
-	 * @dataProvider primeValuesDataProvider
-	 */
-	public function user_can_create_do_while_block_using_prime_value($value, string $printedValue)
+	public function user_can_create_do_while_block_using_any_assignable_value($value, string $printedValue)
 	{
 		$doWhileBlock = Block::doWhile($value)->do(Block::fromArray([
 			Block::invokeFunction('doSomething')
