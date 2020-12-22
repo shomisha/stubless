@@ -3,7 +3,7 @@
 namespace Shomisha\Stubless\DeclarativeCode;
 
 use Shomisha\Stubless\Abstractions\DeclarativeCode;
-use Shomisha\Stubless\ImperativeCode\Block;
+use Shomisha\Stubless\Abstractions\ImperativeCode;
 use Shomisha\Stubless\Contracts\DelegatesImports as DelegatesImportsContract;
 use Shomisha\Stubless\Enums\ClassAccess;
 use Shomisha\Stubless\Concerns\CanBeAbstract;
@@ -21,7 +21,7 @@ class ClassMethod extends DeclarativeCode implements DelegatesImportsContract
 
 	private ?string $returnType;
 
-	private Block $body;
+	private ImperativeCode $body;
 
 	public function __construct(string $name, array $arguments = [], ClassAccess $access = null, string $returnType = null)
 	{
@@ -31,7 +31,7 @@ class ClassMethod extends DeclarativeCode implements DelegatesImportsContract
 		$this->returnType = $returnType;
 	}
 
-	public function body(Block $body = null)
+	public function body(ImperativeCode $body = null)
 	{
 		if ($body !== null) {
 			return $this->setBody($body);
@@ -40,14 +40,14 @@ class ClassMethod extends DeclarativeCode implements DelegatesImportsContract
 		return $this->getBody();
 	}
 
-	public function setBody(Block $body): self
+	public function setBody(ImperativeCode $body): self
 	{
 		$this->body = $body;
 
 		return $this;
 	}
 
-	public function getBody(): ?Block
+	public function getBody(): ?ImperativeCode
 	{
 		return $this->body;
 	}
