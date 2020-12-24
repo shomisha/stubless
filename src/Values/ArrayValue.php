@@ -38,4 +38,9 @@ class ArrayValue extends Value implements Arrayable
 	{
 		return $this->getPrintableNodes()[0];
 	}
+
+	protected function getImportSubDelegates(): array
+	{
+		return $this->extractImportDelegatesFromArray($this->elements);
+	}
 }

@@ -3,6 +3,7 @@
 namespace Shomisha\Stubless\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Shomisha\Stubless\DeclarativeCode\UseStatement;
 use Shomisha\Stubless\ImperativeCode\Block;
 use Shomisha\Stubless\ImperativeCode\InstantiateBlock;
 use Shomisha\Stubless\ImperativeCode\InvokeFunctionBlock;
@@ -161,6 +162,23 @@ class ValueTest extends TestCase
 
 
 		$this->assertStringContainsString("[15, 22, false, 'a string']", $printed);
+	}
+
+	/** @test */
+	public function array_value_will_delegate_imports()
+	{
+		$array = Value::array([
+			Block::instantiate(new Importable('App\Models\User')),
+			Block::invokeStaticMethod('Post', 'publishAll')->addImport(UseStatement::name('App\Models\Post')),
+		]);
+
+
+		$imports = $array->getDelegatedImports();
+
+
+		$this->assertCount(2, $imports);
+		$this->assertEquals('App\Models\User', $imports['App\Models\User']->getName());
+		$this->assertEquals('App\Models\Post', $imports['App\Models\Post']->getName());
 	}
 
 	/** @test */
