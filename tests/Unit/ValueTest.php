@@ -3,6 +3,7 @@
 namespace Shomisha\Stubless\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Shomisha\Stubless\DeclarativeCode\Argument;
 use Shomisha\Stubless\DeclarativeCode\UseStatement;
 use Shomisha\Stubless\ImperativeCode\Block;
 use Shomisha\Stubless\ImperativeCode\InstantiateBlock;
@@ -14,6 +15,7 @@ use Shomisha\Stubless\Utilities\Importable;
 use Shomisha\Stubless\Values\ArrayValue;
 use Shomisha\Stubless\Values\AssignableValue;
 use Shomisha\Stubless\Values\BooleanValue;
+use Shomisha\Stubless\Values\Closure;
 use Shomisha\Stubless\Values\FloatValue;
 use Shomisha\Stubless\Values\IntegerValue;
 use Shomisha\Stubless\Values\NullValue;
@@ -196,7 +198,9 @@ class ValueTest extends TestCase
 
 
 		$this->assertStringContainsString("[15, 22, false, 'a string']", $printed);
-	}/** @test */
+	}
+	
+	/** @test */
 	public function array_value_can_contain_instantiate_blocks()
 	{
 		$array = [
@@ -319,6 +323,78 @@ class ValueTest extends TestCase
 
 		$this->assertInstanceOf(BooleanValue::class, $normalized);
 		$this->assertStringContainsString('false', $normalized->print());
+	}
+
+	/** @test */
+	public function user_can_create_closure_values_using_direct_constructor()
+	{
+		$testVar = Variable::name('test');
+		$anotherTestVar = Variable::name('anotherTest');
+		$closure = new Closure([
+			Argument::name('test')->type('TestClass'),
+			Argument::name('anotherTest')->type(new Importable('App\Classes\TestClass', 'AnotherTestClass'))
+		], Block::fromArray([
+			Block::invokeMethod($testVar, 'doSomething', [$anotherTestVar]),
+			Block::invokeFunction('doSomethingElse', [$anotherTestVar])
+		]));
+
+
+		$printed = $closure->print();
+
+
+		$this->assertStringContainsString('use App\Classes\TestClass as AnotherTestClass;', $printed);
+		$this->assertStringContainsString("function (TestClass \$test, AnotherTestClass \$anotherTest) {\n    \$test->doSomething(\$anotherTest);\n    doSomethingElse(\$anotherTest);\n};", $printed);
+	}
+
+	/** @test */
+	public function user_can_create_closure_values_using_factory()
+	{
+		$tableVar = Variable::name('table');
+		$closure = Value::closure([
+			Argument::name('table')->type(new Importable('Illuminate\Database\Schema\Blueprint'))
+		], Block::fromArray([
+			Block::invokeMethod($tableVar, 'increments', ['id']),
+			Block::invokeMethod($tableVar, 'bigInteger', ['country_id'])->chain('unsigned'),
+			Block::invokeMethod($tableVar, 'string', ['name']),
+			Block::invokeMethod($tableVar, 'string', ['email'])->chain('unique'),
+			Block::invokeMethod($tableVar, 'foreign', ['country_id'])->chain('references', ['id'])->chain('on', ['countries'])->chain('onDelete', ['set null']),
+		]));
+
+
+		$printed = $closure->print();
+
+
+		$this->assertStringContainsString('use Illuminate\Database\Schema\Blueprint;', $printed);
+		$this->assertStringContainsString('function (Blueprint $table) {', $printed);
+		$this->assertStringContainsString("\$table->increments('id');", $printed);
+		$this->assertStringContainsString("\$table->bigInteger('country_id')->unsigned();", $printed);
+		$this->assertStringContainsString("\$table->string('name');", $printed);
+		$this->assertStringContainsString("\$table->string('email')->unique();", $printed);
+		$this->assertStringContainsString("\$table->foreign('country_id')->references('id')->on('countries')->onDelete('set null');", $printed);
+	}
+
+	/** @test */
+	public function user_can_create_closure_with_no_arguments_and_no_body()
+	{
+		$closure = Value::closure([]);
+
+
+		$printed = $closure->print();
+
+
+		$this->assertStringContainsString("function () {\n};", $printed);
+	}
+
+	/** @test */
+	public function user_can_add_uses_variables_to_closure_methods()
+	{
+		$closure = Value::closure([])->uses(Variable::name('test'));
+
+
+		$printed = $closure->print();
+
+
+		$this->assertStringContainsString("function () use(\$test) {\n};", $printed);
 	}
 
 	/** @test */

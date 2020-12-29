@@ -3,6 +3,7 @@
 namespace Shomisha\Stubless\Values;
 
 use PhpParser\Node\Expr;
+use Shomisha\Stubless\Abstractions\ImperativeCode;
 
 abstract class Value extends AssignableValue
 {
@@ -29,6 +30,11 @@ abstract class Value extends AssignableValue
 	public static function boolean(bool $raw): BooleanValue
 	{
 		return new BooleanValue($raw);
+	}
+
+	public static function closure(array $arguments, ?ImperativeCode $body = null): Closure
+	{
+		return new Closure($arguments, $body);
 	}
 
 	public static function null(): NullValue
