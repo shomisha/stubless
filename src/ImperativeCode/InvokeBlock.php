@@ -5,9 +5,10 @@ namespace Shomisha\Stubless\ImperativeCode;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use Shomisha\Stubless\Contracts\Arrayable;
+use Shomisha\Stubless\Contracts\ObjectContainer;
 use Shomisha\Stubless\Values\AssignableValue;
 
-abstract class InvokeBlock extends AssignableValue implements Arrayable
+abstract class InvokeBlock extends AssignableValue implements Arrayable, ObjectContainer
 {
 	protected string $name;
 
@@ -83,6 +84,11 @@ abstract class InvokeBlock extends AssignableValue implements Arrayable
 	}
 
 	public function getPrintableArrayExpr(): Expr
+	{
+		return $this->getPrintableNodes()[0];
+	}
+
+	public function getObjectContainerExpression(): Expr
 	{
 		return $this->getPrintableNodes()[0];
 	}

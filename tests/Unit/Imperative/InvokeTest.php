@@ -3,6 +3,7 @@
 namespace Shomisha\Stubless\Test\Unit\Imperative;
 
 use PHPUnit\Framework\TestCase;
+use Shomisha\Stubless\Contracts\ObjectContainer;
 use Shomisha\Stubless\ImperativeCode\Block;
 use Shomisha\Stubless\ImperativeCode\ChainedMethodBlock;
 use Shomisha\Stubless\ImperativeCode\InvokeFunctionBlock;
@@ -129,6 +130,21 @@ class InvokeTest extends TestCase
 
 
 		$this->assertStringContainsString("\$user->initialize()->setUsername('nix224')->save()->refresh();", $printed);
+	}
+
+	/**
+	 * @test
+	 * @dataProvider objectContainersDataProvider
+	 */
+	public function user_can_create_the_invoke_method_block_using_any_object_container_instance(ObjectContainer $object, string $printedObjectContainer)
+	{
+		$invokeMethod = Block::invokeMethod($object, 'doSomething');
+
+
+		$printed = $invokeMethod->print();
+
+
+		$this->assertStringContainsString("{$printedObjectContainer}->doSomething()", $printed);
 	}
 
 	/** @test */

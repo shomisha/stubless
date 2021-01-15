@@ -3,6 +3,7 @@
 namespace Shomisha\Stubless\References;
 
 use Shomisha\Stubless\Contracts\Arrayable;
+use Shomisha\Stubless\Contracts\ObjectContainer;
 use Shomisha\Stubless\Values\AssignableValue;
 
 abstract class Reference extends AssignableValue
@@ -22,7 +23,7 @@ abstract class Reference extends AssignableValue
 		return new ArrayKeyReference($array, AssignableValue::normalize($key));
 	}
 
-	public static function objectProperty(Variable $variable, string $name): ObjectProperty
+	public static function objectProperty(ObjectContainer $variable, string $name): ObjectProperty
 	{
 		return new ObjectProperty($variable, $name);
 	}

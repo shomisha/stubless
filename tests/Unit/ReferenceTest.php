@@ -4,6 +4,7 @@ namespace Shomisha\Stubless\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Shomisha\Stubless\Contracts\Arrayable;
+use Shomisha\Stubless\Contracts\ObjectContainer;
 use Shomisha\Stubless\ImperativeCode\Block;
 use Shomisha\Stubless\References\ArrayKeyReference;
 use Shomisha\Stubless\References\ClassReference;
@@ -12,7 +13,6 @@ use Shomisha\Stubless\References\Reference;
 use Shomisha\Stubless\References\SelfReference;
 use Shomisha\Stubless\References\StaticProperty;
 use Shomisha\Stubless\References\StaticReference;
-use Shomisha\Stubless\References\This;
 use Shomisha\Stubless\References\Variable;
 use Shomisha\Stubless\DeclarativeCode\Argument;
 use Shomisha\Stubless\Test\Concerns\ImperativeCodeDataProviders;
@@ -119,6 +119,21 @@ class ReferenceTest extends TestCase
 
 
 		$this->assertStringContainsString('$user->email', $printed);
+	}
+
+	/**
+	 * @test
+	 * @dataProvider objectContainersDataProvider
+	 */
+	public function user_can_create_object_property_using_any_object_container(ObjectContainer $object, string $printedObjectContainer)
+	{
+		$objectProperty = Reference::objectProperty($object, 'someProperty');
+
+
+		$printed = $objectProperty->print();
+
+
+		$this->assertStringContainsString("{$printedObjectContainer}->someProperty", $printed);
 	}
 
 	/** @test */

@@ -5,6 +5,7 @@ namespace Shomisha\Stubless\ImperativeCode;
 use Shomisha\Stubless\Abstractions\ImperativeCode;
 use Shomisha\Stubless\Contracts\Arrayable;
 use Shomisha\Stubless\Contracts\AssignableContainer;
+use Shomisha\Stubless\Contracts\ObjectContainer;
 use Shomisha\Stubless\ImperativeCode\ControlBlocks\DoWhileBlock;
 use Shomisha\Stubless\ImperativeCode\ControlBlocks\ForeachBlock;
 use Shomisha\Stubless\ImperativeCode\ControlBlocks\IfBlock;
@@ -89,7 +90,7 @@ class Block extends ImperativeCode
 		return new InstantiateBlock($class, $arguments);
 	}
 
-	public static function invokeMethod(Variable $variable, string $name, array $arguments = []): InvokeMethodBlock
+	public static function invokeMethod(ObjectContainer $variable, string $name, array $arguments = []): InvokeMethodBlock
 	{
 		return new InvokeMethodBlock($variable, $name, $arguments);
 	}

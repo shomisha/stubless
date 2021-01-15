@@ -3,14 +3,15 @@
 namespace Shomisha\Stubless\References;
 
 use PhpParser\Node\Expr\PropertyFetch;
+use Shomisha\Stubless\Contracts\ObjectContainer;
 
 class ObjectProperty extends Variable
 {
-	private Variable $variable;
+	private ObjectContainer $object;
 
-	public function __construct(Variable $variable, string $name)
+	public function __construct(ObjectContainer $object, string $name)
 	{
-		$this->variable = $variable;
+		$this->variable = $object;
 		$this->name = $name;
 	}
 

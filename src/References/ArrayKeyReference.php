@@ -6,9 +6,10 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use Shomisha\Stubless\Contracts\Arrayable;
 use Shomisha\Stubless\Contracts\AssignableContainer;
+use Shomisha\Stubless\Contracts\ObjectContainer;
 use Shomisha\Stubless\Values\AssignableValue;
 
-class ArrayKeyReference extends Reference implements AssignableContainer
+class ArrayKeyReference extends Reference implements AssignableContainer, ObjectContainer
 {
 	private Arrayable $array;
 
@@ -46,6 +47,11 @@ class ArrayKeyReference extends Reference implements AssignableContainer
 	}
 
 	public function getAssignableContainerExpression(): Expr
+	{
+		return $this->getPrintableNodes()[0];
+	}
+
+	public function getObjectContainerExpression(): Expr
 	{
 		return $this->getPrintableNodes()[0];
 	}

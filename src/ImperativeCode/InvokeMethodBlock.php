@@ -3,13 +3,13 @@
 namespace Shomisha\Stubless\ImperativeCode;
 
 use PhpParser\Node\Expr;
-use Shomisha\Stubless\References\Variable;
+use Shomisha\Stubless\Contracts\ObjectContainer;
 
 class InvokeMethodBlock extends InvokeBlock
 {
-	private Variable $object;
+	private ObjectContainer $object;
 
-	public function __construct(Variable $object, string $name, array $arguments = [])
+	public function __construct(ObjectContainer $object, string $name, array $arguments = [])
 	{
 		parent::__construct($name, $arguments);
 

@@ -115,4 +115,18 @@ trait ImperativeCodeDataProviders
 			'Static property' => [Reference::staticProperty('TestClass', 'testProperty'), "TestClass::\$testProperty"],
 		];
 	}
+
+	public function objectContainersDataProvider()
+	{
+		return [
+			'Variable' => [Reference::variable('test'), "\$test"],
+			'Array key' => [Reference::arrayFetch(Reference::variable('testArray'), 'testKey'), "\$testArray['testKey']"],
+			'Object property' => [Reference::objectProperty(Reference::variable('testObject'), 'testProperty'), "\$testObject->testProperty"],
+			'Static property' => [Reference::staticProperty('TestClass', 'testProperty'), "TestClass::\$testProperty"],
+			'Function invocation' => [Block::invokeFunction('getFactory'), 'getFactory()'],
+			'Method invocation' => [Block::invokeMethod(Reference::this(), 'getFactory'), '$this->getFactory()'],
+			'Static method invocation' => [Block::invokeStaticMethod(Reference::classReference('SomeClass'), 'getFactory'), 'SomeClass::getFactory()'],
+			'Instantiations' => [Block::instantiate('SomeClass'), '(new SomeClass())'],
+		];
+	}
 }

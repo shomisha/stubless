@@ -5,10 +5,11 @@ namespace Shomisha\Stubless\References;
 use PhpParser\Node\Expr;
 use Shomisha\Stubless\Contracts\Arrayable;
 use Shomisha\Stubless\Contracts\AssignableContainer;
+use Shomisha\Stubless\Contracts\ObjectContainer;
 use Shomisha\Stubless\DeclarativeCode\Argument;
 use Shomisha\Stubless\Concerns\HasName;
 
-class Variable extends Reference implements AssignableContainer, Arrayable
+class Variable extends Reference implements AssignableContainer, ObjectContainer, Arrayable
 {
 	use HasName;
 
@@ -33,6 +34,11 @@ class Variable extends Reference implements AssignableContainer, Arrayable
 	}
 
 	public function getPrintableArrayExpr(): Expr
+	{
+		return $this->getPrintableNodes()[0];
+	}
+
+	public function getObjectContainerExpression(): Expr
 	{
 		return $this->getPrintableNodes()[0];
 	}
