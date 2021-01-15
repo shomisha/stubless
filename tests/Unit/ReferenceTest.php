@@ -13,6 +13,7 @@ use Shomisha\Stubless\References\Reference;
 use Shomisha\Stubless\References\SelfReference;
 use Shomisha\Stubless\References\StaticProperty;
 use Shomisha\Stubless\References\StaticReference;
+use Shomisha\Stubless\References\This;
 use Shomisha\Stubless\References\Variable;
 use Shomisha\Stubless\DeclarativeCode\Argument;
 use Shomisha\Stubless\Test\Concerns\ImperativeCodeDataProviders;
@@ -95,18 +96,6 @@ class ReferenceTest extends TestCase
 
 
 		$this->assertStringContainsString('$test->first_attribute', $printed);
-	}
-
-	/** @test */
-	public function user_can_create_object_property_using_this()
-	{
-		$objectProperty = new ObjectProperty(new This(), 'first_name');
-
-
-		$printed = $objectProperty->print();
-
-
-		$this->assertStringContainsString('$this->first_name', $printed);
 	}
 
 	/** @test */
