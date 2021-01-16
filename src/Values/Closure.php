@@ -44,9 +44,7 @@ class Closure extends AssignableValue
 
 		$body = [];
 		if ($this->body !== null) {
-			$body = array_map(function (Expr $node) {
-				return new Expression($node);
-			}, $this->body->getPrintableNodes());
+			$body = $this->normalizeNodesToExpressions($this->body->getPrintableNodes());
 		}
 
 		return [

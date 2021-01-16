@@ -398,6 +398,22 @@ class ValueTest extends TestCase
 	}
 
 	/** @test */
+	public function user_can_return_values_from_closures()
+	{
+		$closure = Value::closure([], Block::fromArray([
+			Block::return(
+				Block::invokeStaticMethod('SomeClass', 'doSomething')
+			)
+		]));
+
+
+		$printed = $closure->print();
+
+
+		$this->assertStringContainsString("function () {\n    return SomeClass::doSomething();\n};", $printed);
+	}
+
+	/** @test */
 	public function user_can_create_null_value_using_direct_constructor()
 	{
 		$null = new NullValue();
