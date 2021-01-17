@@ -126,6 +126,28 @@ class ReferenceTest extends TestCase
 	}
 
 	/** @test */
+	public function object_proprety_will_delegate_imports()
+	{
+		$loadInstanceBlock = Block::invokeStaticMethod(
+			new Importable('Illuminate\Support\Facades\DB'),
+			'table',
+			['someTable']
+		)->chain('inRandomOrder')->chain('first');
+
+		$getKeyBlock = Reference::objectProperty(
+			$loadInstanceBlock,
+			'someProperty'
+		);
+
+
+		$printed = $getKeyBlock->print();
+
+
+		$this->assertStringContainsString('use Illuminate\Support\Facades\DB;', $printed);
+		$this->assertStringContainsString("DB::table('someTable')->inRandomOrder()->first()->someProperty;", $printed);
+	}
+
+	/** @test */
 	public function user_can_create_static_property_reference_using_direct_constructor()
 	{
 		$staticProperty = new StaticProperty(Reference::classReference('App\Models\User'), 'totalCount');

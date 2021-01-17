@@ -21,4 +21,9 @@ class ObjectProperty extends Variable
 			new PropertyFetch($this->variable->getPrintableNodes()[0], $this->name),
 		];
 	}
+
+	protected function getImportSubDelegates(): array
+	{
+		return [$this->variable];
+	}
 }
