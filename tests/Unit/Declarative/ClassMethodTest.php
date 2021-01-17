@@ -520,6 +520,15 @@ class ClassMethodTest extends TestCase
 						'carMark',
 					),
 					Reference::classReference(new Importable('App\Cars\BMW')),
+				),
+				Block::return(
+					Block::invokeStaticMethod(
+						new Importable('App\Services\CarManufacturer'),
+						'queueManufacture',
+						[
+							Reference::objectProperty(Variable::name('user'), 'carMark'),
+						]
+					)
 				)
 			])
 		);
@@ -529,8 +538,9 @@ class ClassMethodTest extends TestCase
 		$imports = $method->getDelegatedImports();
 
 
-		$this->assertCount(2, $imports);
+		$this->assertCount(3, $imports);
 		$this->assertEquals('App\Models\User', $imports['App\Models\User']->getName());
 		$this->assertEquals('App\Cars\BMW', $imports['App\Cars\BMW']->getName());
+		$this->assertEquals('App\Services\CarManufacturer', $imports['App\Services\CarManufacturer']->getName());
 	}
 }

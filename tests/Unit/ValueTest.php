@@ -270,6 +270,33 @@ class ValueTest extends TestCase
 	}
 
 	/** @test */
+	public function array_will_delegate_imports()
+	{
+		$array = Value::array([
+			Block::invokeStaticMethod(
+				new Importable('App\Services\SomeClass'),
+				'doSomething'
+			),
+			Reference::classReference(new Importable('App\Services\AnotherClass')),
+			Value::closure([], Block::fromArray([
+				Block::return(Reference::classReference(
+					new Importable('App\Services\ThirdClass')
+				))
+			])),
+		]);
+
+
+		$printed = $array->print();
+
+
+		$this->assertStringContainsString('use App\Services\SomeClass;', $printed);
+		$this->assertStringContainsString('use App\Services\AnotherClass;', $printed);
+		$this->assertStringContainsString('use App\Services\ThirdClass;', $printed);
+
+		$this->assertStringContainsString("[SomeClass::doSomething(), AnotherClass::class, function () {\n    return ThirdClass::class;\n}];", $printed);
+	}
+
+	/** @test */
 	public function user_can_normalize_arrays_to_values()
 	{
 		$array = [
@@ -411,6 +438,31 @@ class ValueTest extends TestCase
 
 
 		$this->assertStringContainsString("function () {\n    return SomeClass::doSomething();\n};", $printed);
+	}
+
+	/** @test */
+	public function closures_will_delegate_imports()
+	{
+		$closure = Value::closure([], Block::fromArray([
+			Block::return(
+				Block::invokeStaticMethod(
+					new Importable('App\Services\SomeClass'),
+					'doSomething',
+					[
+						Reference::classReference(new Importable('App\Services\AnotherClass'))
+					]
+				)->chain('doSomethingElse')->chain('with', [Block::instantiate(new Importable('App\Models\User'))])
+			)
+		]));
+
+
+		$printed = $closure->print();
+
+
+		$this->assertStringContainsString('use App\Services\SomeClass;', $printed);
+		$this->assertStringContainsString('use App\Services\AnotherClass;', $printed);
+		$this->assertStringContainsString('use App\Models\User;', $printed);
+		$this->assertStringContainsString("function () {\n    return SomeClass::doSomething(AnotherClass::class)->doSomethingElse()->with(new User());\n};", $printed);
 	}
 
 	/** @test */
