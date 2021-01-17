@@ -316,4 +316,22 @@ class InvokeTest extends TestCase
 
 		$chainedMethod->print();
 	}
+
+	/** @test */
+	public function chained_method_blocks_will_delegate_imports()
+	{
+		$chainedInvocation = Block::invokeStaticMethod(
+			new Importable('App\Services\SomeClass'),
+			'doSomething'
+		)->chain('doSomethingElse')->chain('clean', [Reference::classReference(new Importable('App\Services\AnotherClass'))]);
+
+
+		$printed = $chainedInvocation->print();
+
+
+		$this->assertStringContainsString('use App\Services\SomeClass;', $printed);
+		$this->assertStringContainsString('use App\Services\AnotherClass;', $printed);
+
+		$this->assertStringContainsString('SomeClass::doSomething()->doSomethingElse()->clean(AnotherClass::class);', $printed);
+	}
 }

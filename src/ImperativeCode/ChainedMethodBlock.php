@@ -29,4 +29,24 @@ class ChainedMethodBlock extends InvokeBlock
 			)
 		];
 	}
+
+	public function getDelegatedImports(): array
+	{
+		return $this->parent->getDelegatedImports();
+	}
+
+	protected function getChainedImports(): array
+	{
+		$imports = $this->getImports();
+
+		if ($this->hasChainedMethod()) {
+			$imports = array_merge($this->chainedMethod->getChainedImports());
+		}
+
+		foreach ($this->extractImportDelegatesFromArray($this->arguments) as $argument) {
+			$imports = array_merge($imports, $argument->getDelegatedImports());
+		}
+
+		return $imports;
+	}
 }

@@ -72,15 +72,24 @@ abstract class InvokeBlock extends AssignableValue implements Arrayable, ObjectC
 		}, $this->arguments);
 	}
 
-	public function getImportSubDelegates(): array
+	public function getDelegatedImports(): array
 	{
-		$subDelegates = $this->extractImportDelegatesFromArray($this->arguments);
+		$imports = $this->getImports();
 
 		if ($this->hasChainedMethod()) {
-			$subDelegates[] = $this->chainedMethod;
+			$imports = array_merge($imports, $this->chainedMethod->getChainedImports());
 		}
 
-		return $subDelegates;
+		foreach ($this->getImportSubDelegates() as $subDelegate) {
+			$imports = array_merge($imports, $subDelegate->getDelegatedImports());
+		}
+
+		return $imports;
+	}
+
+	public function getImportSubDelegates(): array
+	{
+		return $this->extractImportDelegatesFromArray($this->arguments);
 	}
 
 	public function getPrintableArrayExpr(): Expr
