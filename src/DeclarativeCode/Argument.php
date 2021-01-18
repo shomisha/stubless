@@ -57,8 +57,8 @@ class Argument extends DeclarativeCode implements DelegatesImportsContract
 			$argument->setType($this->type);
 		}
 
-		if (isset($this->value)) {
-			$argument->setDefault($this->value);
+		if ($value = $this->getValueExpr()) {
+			$argument->setDefault($value);
 		}
 
 		return [$this->convertBuilderToNode($argument)];
@@ -66,6 +66,8 @@ class Argument extends DeclarativeCode implements DelegatesImportsContract
 
 	public function getImportSubDelegates(): array
 	{
-		return [];
+		return $this->extractImportDelegatesFromArray([
+			$this->value
+		]);
 	}
 }

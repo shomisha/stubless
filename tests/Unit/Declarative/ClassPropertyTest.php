@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Shomisha\Stubless\Enums\ClassAccess;
 use Shomisha\Stubless\DeclarativeCode\ClassProperty;
 use Shomisha\Stubless\DeclarativeCode\ClassTemplate;
+use Shomisha\Stubless\References\Reference;
 use Shomisha\Stubless\Utilities\Importable;
 
 class ClassPropertyTest extends TestCase
@@ -206,6 +207,34 @@ class ClassPropertyTest extends TestCase
 
 
 		$property->value(new \stdClass());
+	}
+
+	/** @test */
+	public function user_can_user_importables_as_class_property_values()
+	{
+		$classTemplate = ClassTemplate::name('SomeClass')->withProperties([
+			ClassProperty::name('anotherClassName')->value(new Importable('App\Services\AnotherClass'))
+		]);
+
+		$printed = $classTemplate->print();
+
+
+		$this->assertStringContainsString('use App\Services\AnotherClass;', $printed);
+		$this->assertStringContainsString("public \$anotherClassName = AnotherClass::class", $printed);
+	}
+
+	/** @test */
+	public function user_can_use_class_references_as_class_property_values()
+	{
+		$classTemplate = ClassTemplate::name('SomeCLass')->withProperties([
+			ClassProperty::name('anotherClassName')->value(Reference::classReference('AnotherClass'))
+		]);
+
+
+		$printed = $classTemplate->print();
+
+
+		$this->assertStringContainsString('public $anotherClassName = AnotherClass::class', $printed);
 	}
 
 	/** @test */

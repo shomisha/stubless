@@ -7,7 +7,6 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name;
 use Shomisha\Stubless\Concerns\HasName;
 use Shomisha\Stubless\Utilities\Importable;
-use Shomisha\Stubless\Values\AssignableValue;
 
 class ClassReference extends Reference
 {

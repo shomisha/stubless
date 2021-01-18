@@ -63,10 +63,8 @@ class ClassProperty extends DeclarativeCode implements DelegatesImportsContract
 			$property->setType($this->type);
 		}
 
-		if ($this->value) {
-			$property->setDefault(
-				$this->getFactory()->val($this->value)
-			);
+		if ($value = $this->getValueExpr()) {
+			$property->setDefault($value);
 		}
 
 		return [$this->convertBuilderToNode($property)];
@@ -74,6 +72,8 @@ class ClassProperty extends DeclarativeCode implements DelegatesImportsContract
 
 	public function getImportSubDelegates(): array
 	{
-		return [];
+		return $this->extractImportDelegatesFromArray([
+			$this->value
+		]);
 	}
 }

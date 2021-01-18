@@ -4,7 +4,10 @@ namespace Shomisha\Stubless\Test\Unit\Declarative;
 
 use PHPUnit\Framework\TestCase;
 use Shomisha\Stubless\DeclarativeCode\Argument;
+use Shomisha\Stubless\DeclarativeCode\ClassMethod;
 use Shomisha\Stubless\DeclarativeCode\ClassTemplate;
+use Shomisha\Stubless\References\ClassReference;
+use Shomisha\Stubless\Utilities\Importable;
 
 class ArgumentTest extends TestCase
 {
@@ -79,6 +82,35 @@ class ArgumentTest extends TestCase
 
 
 		$argument->setValue(new \stdClass());
+	}
+
+	/** @test */
+	public function user_can_use_importables_as_argument_default_values()
+	{
+		$classTemplate = ClassTemplate::name('ParentClass')->withMethods([
+			ClassMethod::name('someMethod')->addArgument(
+				Argument::name('someClassName')->value(new Importable('App\Services\SomeClass'))
+			)
+		]);
+
+
+		$printed = $classTemplate->print();
+
+
+		$this->assertStringContainsString('use App\Services\SomeClass;', $printed);
+		$this->assertStringContainsString('public function someMethod($someClassName = SomeClass::class)', $printed);
+	}
+
+	/** @test */
+	public function user_can_use_class_references_as_argument_default_values()
+	{
+		$argument = Argument::name('someArgument')->value(ClassReference::name('SomeClass'));
+
+
+		$printed = $argument->print();
+
+
+		$this->assertStringContainsString('$someArgument = SomeClass::class', $printed);
 	}
 
 	/** @test */
