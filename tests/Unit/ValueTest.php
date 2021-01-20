@@ -4,7 +4,7 @@ namespace Shomisha\Stubless\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Shomisha\Stubless\DeclarativeCode\Argument;
-use Shomisha\Stubless\DeclarativeCode\UseStatement;
+use Shomisha\Stubless\ImperativeCode\UseStatement;
 use Shomisha\Stubless\ImperativeCode\Block;
 use Shomisha\Stubless\ImperativeCode\InstantiateBlock;
 use Shomisha\Stubless\ImperativeCode\InvokeFunctionBlock;

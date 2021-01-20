@@ -3,7 +3,7 @@
 namespace Shomisha\Stubless\Test\Unit\Declarative;
 
 use PHPUnit\Framework\TestCase;
-use Shomisha\Stubless\DeclarativeCode\UseStatement;
+use Shomisha\Stubless\ImperativeCode\UseStatement;
 
 class UseStatementTest extends TestCase
 {

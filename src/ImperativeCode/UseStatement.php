@@ -1,11 +1,11 @@
 <?php
 
-namespace Shomisha\Stubless\DeclarativeCode;
+namespace Shomisha\Stubless\ImperativeCode;
 
-use Shomisha\Stubless\Abstractions\DeclarativeCode;
+use Shomisha\Stubless\Abstractions\ImperativeCode;
 use Shomisha\Stubless\Concerns\HasName;
 
-class UseStatement extends DeclarativeCode
+class UseStatement extends ImperativeCode
 {
 	use HasName;
 

@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Shomisha\Stubless\ImperativeCode\Block;
 use Shomisha\Stubless\References\Reference;
 use Shomisha\Stubless\References\Variable;
-use Shomisha\Stubless\DeclarativeCode\UseStatement;
+use Shomisha\Stubless\ImperativeCode\UseStatement;
 use Shomisha\Stubless\Utilities\Importable;
 
 class ImportableTest extends TestCase

@@ -2,16 +2,16 @@
 
 namespace Shomisha\Stubless\Concerns;
 
-use Shomisha\Stubless\DeclarativeCode\UseStatement;
+use Shomisha\Stubless\ImperativeCode\UseStatement;
 use Shomisha\Stubless\Utilities\Importable;
 
 /** @mixin \Shomisha\Stubless\Abstractions\DeclarativeCode */
 trait HasImports
 {
-	/** @var \Shomisha\Stubless\DeclarativeCode\UseStatement[] */
+	/** @var \Shomisha\Stubless\ImperativeCode\UseStatement[] */
 	protected array $imports = [];
 
-	/** @param \Shomisha\Stubless\DeclarativeCode\UseStatement[] */
+	/** @param \Shomisha\Stubless\ImperativeCode\UseStatement[] */
 	public function imports(array $imports = null)
 	{
 		if ($imports === null) {
@@ -35,7 +35,7 @@ trait HasImports
 		return $this;
 	}
 
-	/** @param \Shomisha\Stubless\DeclarativeCode\UseStatement[] $imports */
+	/** @param \Shomisha\Stubless\ImperativeCode\UseStatement[] $imports */
 	public function withImports(array $imports): self
 	{
 		$this->validateArrayElements($imports, UseStatement::class);
@@ -49,7 +49,7 @@ trait HasImports
 		return $this;
 	}
 
-	/** @return \Shomisha\Stubless\DeclarativeCode\UseStatement[] */
+	/** @return \Shomisha\Stubless\ImperativeCode\UseStatement[] */
 	public function getImports(): array
 	{
 		return $this->imports;
@@ -69,7 +69,7 @@ trait HasImports
 
 	/**
 	 * @param \Shomisha\Stubless\Contracts\DelegatesImports[] $delegates
-	 * @return \Shomisha\Stubless\DeclarativeCode\UseStatement[]
+	 * @return \Shomisha\Stubless\ImperativeCode\UseStatement[]
 	 */
 	protected function gatherImportsFromDelegates(array $delegates): array
 	{

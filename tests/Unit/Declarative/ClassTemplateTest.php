@@ -8,7 +8,7 @@ use Shomisha\Stubless\DeclarativeCode\ClassConstant;
 use Shomisha\Stubless\DeclarativeCode\ClassMethod;
 use Shomisha\Stubless\DeclarativeCode\ClassProperty;
 use Shomisha\Stubless\DeclarativeCode\ClassTemplate;
-use Shomisha\Stubless\DeclarativeCode\UseStatement;
+use Shomisha\Stubless\ImperativeCode\UseStatement;
 use Shomisha\Stubless\Utilities\Importable;
 
 class ClassTemplateTest extends TestCase

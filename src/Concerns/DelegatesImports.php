@@ -8,7 +8,7 @@ use Shomisha\Stubless\Contracts\DelegatesImports as DelegatesImportsContract;
 /** @mixin \Shomisha\Stubless\Concerns\HasImports */
 trait DelegatesImports
 {
-	/** @return \Shomisha\Stubless\DeclarativeCode\UseStatement[] */
+	/** @return \Shomisha\Stubless\ImperativeCode\UseStatement[] */
 	public function getDelegatedImports(): array
 	{
 		$imports = $this->getImports();

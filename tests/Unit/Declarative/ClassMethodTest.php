@@ -534,7 +534,7 @@ class ClassMethodTest extends TestCase
 		);
 
 
-		/** @var \Shomisha\Stubless\DeclarativeCode\UseStatement[] $imports */
+		/** @var \Shomisha\Stubless\ImperativeCode\UseStatement[] $imports */
 		$imports = $method->getDelegatedImports();
 
 

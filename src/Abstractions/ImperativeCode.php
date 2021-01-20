@@ -7,7 +7,7 @@ use PhpParser\Node\Stmt\Expression;
 use Shomisha\Stubless\Concerns\DelegatesImports as DelegatesImportsConcern;
 use Shomisha\Stubless\Concerns\HasImports;
 use Shomisha\Stubless\Contracts\DelegatesImports;
-use Shomisha\Stubless\DeclarativeCode\UseStatement;
+use Shomisha\Stubless\ImperativeCode\UseStatement;
 
 abstract class ImperativeCode extends Code implements DelegatesImports
 {

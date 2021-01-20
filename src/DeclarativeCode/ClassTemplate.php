@@ -254,7 +254,7 @@ class ClassTemplate extends DeclarativeCode
 		return $imports;
 	}
 
-	/** @return \Shomisha\Stubless\DeclarativeCode\UseStatement[] */
+	/** @return \Shomisha\Stubless\ImperativeCode\UseStatement[] */
 	protected function gatherAllImports(): array
 	{
 		return array_merge(
