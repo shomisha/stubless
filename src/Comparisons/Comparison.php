@@ -99,4 +99,9 @@ abstract class Comparison extends AssignableValue implements DelegatesImports
 	{
 		return new LesserThanEquals(AssignableValue::normalize($first), AssignableValue::normalize($second));
 	}
+
+	public static function not($condition): Not
+	{
+		return new Not(AssignableValue::normalize($condition));
+	}
 }

@@ -10,8 +10,10 @@ use Shomisha\Stubless\Comparisons\GreaterThan;
 use Shomisha\Stubless\Comparisons\GreaterThanEquals;
 use Shomisha\Stubless\Comparisons\LesserThan;
 use Shomisha\Stubless\Comparisons\LesserThanEquals;
+use Shomisha\Stubless\Comparisons\Not;
 use Shomisha\Stubless\Comparisons\NotEquals;
 use Shomisha\Stubless\Comparisons\NotEqualsStrict;
+use Shomisha\Stubless\ImperativeCode\Block;
 use Shomisha\Stubless\ImperativeCode\InvokeBlock;
 use Shomisha\Stubless\References\Reference;
 use Shomisha\Stubless\Test\Concerns\ImperativeCodeDataProviders;
@@ -271,5 +273,67 @@ class ComparisonTest extends TestCase
 
 
 		$this->assertStringContainsString("22 > ({$printedOtherComparison});", $printed);
+	}
+
+	/** @test */
+	public function user_can_create_not_comparison_using_direct_constructor()
+	{
+		$notComparison = new Not(Block::invokeStaticMethod(
+			'User',
+			'exists',
+			[5]
+		));
+
+
+		$printed = $notComparison->print();
+
+
+		$this->assertStringContainsString("!User::exists(5);", $printed);
+	}
+
+	/** @test */
+	public function user_can_create_not_comparison_using_factory_method()
+	{
+		$notComparison = Comparison::not(
+			Block::invokeFunction('array_key_exists', ['some_property', Reference::variable('override')])
+		);
+
+
+		$printed = $notComparison->print();
+
+
+		$this->assertStringContainsString("!array_key_exists('some_property', \$override);", $printed);
+	}
+
+	/**
+	 * @test
+	 * @dataProvider assignableValuesDataProvider
+	 */
+	public function user_can_create_not_comparison_using_any_assignable_value($assignableValue, string $printedAssignableValue)
+	{
+		$notComparison = Comparison::not($assignableValue);
+
+
+		$printed = $notComparison->print();
+
+
+		if ($assignableValue instanceof Comparison) {
+			$printedAssignableValue = "({$printedAssignableValue})";
+		}
+
+		$this->assertStringContainsString("!{$printedAssignableValue};", $printed);
+	}
+
+	/** @test */
+	public function not_comparison_can_be_doubly_negated()
+	{
+		$notComparison = Comparison::not('test');
+
+
+		$notComparison->negate();
+		$printed = $notComparison->print();
+
+
+		$this->assertStringContainsString("!!'test';", $printed);
 	}
 }
