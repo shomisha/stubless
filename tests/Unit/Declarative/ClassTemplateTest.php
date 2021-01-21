@@ -1175,6 +1175,54 @@ class ClassTemplateTest extends TestCase
 	}
 
 	/** @test */
+	public function user_can_set_doc_block_using_fluent_method()
+	{
+		$class = ClassTemplate::name('test')->docBlock('This is a doc block.');
+
+
+		$printed = $class->print();
+
+
+		$this->assertStringContainsString("* This is a doc block.\n", $printed);
+	}
+
+	/** @test */
+	public function user_can_remove_doc_block_using_fluent_method()
+	{
+		$class = ClassProperty::name('test')->docBlock('This is a doc block.');
+
+
+		$class->docBlock(null);
+
+
+		$this->assertNull($class->getDocBlock());
+	}
+
+	/** @test */
+	public function user_can_get_doc_block_from_class_property()
+	{
+		$class = ClassProperty::name('test')->docBlock('This is a doc block.');
+
+
+		$docBlock = $class->getDocBlock();
+
+
+		$this->assertEquals('This is a doc block.', $docBlock);
+	}
+
+	/** @test */
+	public function user_can_get_doc_block_using_fluent_method()
+	{
+		$class = ClassProperty::name('test')->docBlock('This is a doc block.');
+
+
+		$docBlock = $class->docBlock();
+
+
+		$this->assertEquals('This is a doc block.', $docBlock);
+	}
+
+	/** @test */
 	public function class_can_generate_default_doc_blocks_automatically()
 	{
 		$class = ClassTemplate::name('AnotherClass')->withDefaultDocBlock();

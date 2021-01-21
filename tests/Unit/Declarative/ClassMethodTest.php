@@ -557,6 +557,54 @@ class ClassMethodTest extends TestCase
 	}
 
 	/** @test */
+	public function user_can_set_doc_block_using_fluent_method()
+	{
+		$classMethod = ClassMethod::name('test')->docBlock('This is a doc block.');
+
+
+		$printed = ClassTemplate::name('TestClass')->addMethod($classMethod)->print();
+
+
+		$this->assertStringContainsString("* This is a doc block.\n", $printed);
+	}
+
+	/** @test */
+	public function user_can_remove_doc_block_using_fluent_method()
+	{
+		$classMethod = ClassMethod::name('test')->docBlock('This is a doc block.');
+
+
+		$classMethod->docBlock(null);
+
+
+		$this->assertNull($classMethod->getDocBlock());
+	}
+
+	/** @test */
+	public function user_can_get_doc_block_from_class_property()
+	{
+		$classMethod = ClassMethod::name('test')->docBlock('This is a doc block.');
+
+
+		$docBlock = $classMethod->getDocBlock();
+
+
+		$this->assertEquals('This is a doc block.', $docBlock);
+	}
+
+	/** @test */
+	public function user_can_get_doc_block_using_fluent_method()
+	{
+		$classMethod = ClassMethod::name('test')->docBlock('This is a doc block.');
+
+
+		$docBlock = $classMethod->docBlock();
+
+
+		$this->assertEquals('This is a doc block.', $docBlock);
+	}
+
+	/** @test */
 	public function class_methods_can_generate_default_doc_blocks_automatically()
 	{
 		$method = ClassMethod::name('someMethod')->return(new Importable('App\Models\User'))->withArguments([

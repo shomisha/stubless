@@ -332,6 +332,54 @@ class ClassPropertyTest extends TestCase
 	}
 
 	/** @test */
+	public function user_can_set_doc_block_using_fluent_method()
+	{
+		$classProperty = ClassProperty::name('test')->docBlock('This is a doc block.');
+
+
+		$printed = ClassTemplate::name('TestClass')->addProperty($classProperty)->print();
+
+
+		$this->assertStringContainsString("* This is a doc block.\n", $printed);
+	}
+
+	/** @test */
+	public function user_can_remove_doc_block_using_fluent_method()
+	{
+		$classProperty = ClassProperty::name('test')->docBlock('This is a doc block.');
+
+
+		$classProperty->docBlock(null);
+
+
+		$this->assertNull($classProperty->getDocBlock());
+	}
+
+	/** @test */
+	public function user_can_get_doc_block_from_class_property()
+	{
+		$classProperty = ClassProperty::name('test')->docBlock('This is a doc block.');
+
+
+		$docBlock = $classProperty->getDocBlock();
+
+
+		$this->assertEquals('This is a doc block.', $docBlock);
+	}
+
+	/** @test */
+	public function user_can_get_doc_block_using_fluent_method()
+	{
+		$classProperty = ClassProperty::name('test')->docBlock('This is a doc block.');
+
+
+		$docBlock = $classProperty->docBlock();
+
+
+		$this->assertEquals('This is a doc block.', $docBlock);
+	}
+
+	/** @test */
 	public function class_property_can_generate_default_doc_block_automatically()
 	{
 		$classProperty = ClassProperty::name('anotherTest')->type('bool');
