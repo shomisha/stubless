@@ -12,6 +12,7 @@ use Shomisha\Stubless\ImperativeCode\ControlBlocks\IfBlock;
 use Shomisha\Stubless\ImperativeCode\ControlBlocks\WhileBlock;
 use Shomisha\Stubless\References\ClassReference;
 use Shomisha\Stubless\References\Variable;
+use Shomisha\Stubless\Utilities\Importable;
 use Shomisha\Stubless\Values\AssignableValue;
 use Shomisha\Stubless\Values\Value;
 
@@ -103,6 +104,11 @@ class Block extends ImperativeCode
 	public static function invokeFunction(string $name, array $arguments = []): InvokeFunctionBlock
 	{
 		return new InvokeFunctionBlock($name, $arguments);
+	}
+
+	public static function throw(ObjectContainer $exception): ThrowBlock
+	{
+		return new ThrowBlock($exception);
 	}
 
 	public static function if($condition): IfBlock
