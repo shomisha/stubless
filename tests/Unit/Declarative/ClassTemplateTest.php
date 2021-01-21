@@ -1161,4 +1161,28 @@ class ClassTemplateTest extends TestCase
 		$this->assertEquals('doesSomethingMoreImportant', $methods['doesSomethingMoreImportant']->getName());
 		$this->assertEquals('string', $methods['doesSomethingMoreImportant']->getReturnType());
 	}
+
+	/** @test */
+	public function class_can_have_doc_blocks()
+	{
+		$class = ClassTemplate::name('SomeClass')->withDocBlock('This is a doc block.');
+
+
+		$printed = $class->print();
+
+
+		$this->assertStringContainsString("/**\n * This is a doc block.\n */", $printed);
+	}
+
+	/** @test */
+	public function class_can_generate_default_doc_blocks_automatically()
+	{
+		$class = ClassTemplate::name('AnotherClass')->withDefaultDocBlock();
+
+
+		$printed = $class->print();
+
+
+		$this->assertStringContainsString("/**\n * Class AnotherClass\n */", $printed);
+	}
 }

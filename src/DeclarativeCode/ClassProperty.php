@@ -3,6 +3,7 @@
 namespace Shomisha\Stubless\DeclarativeCode;
 
 use Shomisha\Stubless\Abstractions\DeclarativeCode;
+use Shomisha\Stubless\Concerns\HasDocBlock;
 use Shomisha\Stubless\Contracts\DelegatesImports as DelegatesImportsContract;
 use Shomisha\Stubless\Enums\ClassAccess;
 use Shomisha\Stubless\Concerns\CanBeStatic;
@@ -14,8 +15,15 @@ use Shomisha\Stubless\Concerns\HasValue;
 
 class ClassProperty extends DeclarativeCode implements DelegatesImportsContract
 {
-	use HasAccessModifier, CanBeStatic, HasName, HasValue, HasImports, DelegatesImportsConcern;
+	use HasAccessModifier,
+		CanBeStatic,
+		HasName,
+		HasValue,
+		HasImports,
+		DelegatesImportsConcern,
+		HasDocBlock;
 
+	/** @var string|null  */
 	private ?string $type;
 
 	public function __construct(string $name, string $type = null, string $value = null, ClassAccess $access = null)
@@ -52,6 +60,19 @@ class ClassProperty extends DeclarativeCode implements DelegatesImportsContract
 		return $this;
 	}
 
+	public function withDefaultDocBlock(): self
+	{
+		$docBlock = "@var";
+
+		if ($type = $this->type) {
+			$docBlock .= " {$type}";
+		}
+
+		$docBlock .= " \${$this->name}";
+
+		return $this->withDocBlock($docBlock);
+	}
+
 	public function getPrintableNodes(): array
 	{
 		$property = $this->getFactory()->property($this->name);
@@ -66,6 +87,8 @@ class ClassProperty extends DeclarativeCode implements DelegatesImportsContract
 		if ($value = $this->getValueExpr()) {
 			$property->setDefault($value);
 		}
+
+		$this->setDocBlockCommentOnBuilder($property);
 
 		return [$this->convertBuilderToNode($property)];
 	}

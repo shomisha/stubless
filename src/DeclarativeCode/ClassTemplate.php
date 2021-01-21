@@ -6,6 +6,7 @@ use PhpParser\Node;
 use Shomisha\Stubless\Abstractions\DeclarativeCode;
 use Shomisha\Stubless\Concerns\CanBeAbstract;
 use Shomisha\Stubless\Concerns\CanBeFinal;
+use Shomisha\Stubless\Concerns\HasDocBlock;
 use Shomisha\Stubless\Concerns\HasImports;
 use Shomisha\Stubless\Concerns\HasMethods;
 use Shomisha\Stubless\Concerns\HasName;
@@ -14,7 +15,14 @@ use Shomisha\Stubless\Concerns\HasProperties;
 
 class ClassTemplate extends DeclarativeCode
 {
-	use HasNamespace, HasImports, CanBeAbstract, CanBeFinal, HasName, HasProperties, HasMethods;
+	use HasNamespace,
+		HasImports,
+		CanBeAbstract,
+		CanBeFinal,
+		HasName,
+		HasProperties,
+		HasMethods,
+		HasDocBlock;
 
 	private ?string $extends = null;
 
@@ -191,6 +199,11 @@ class ClassTemplate extends DeclarativeCode
 		return $this->constants;
 	}
 
+	public function withDefaultDocBlock(): self
+	{
+		return $this->withDocBlock("Class {$this->name}");
+	}
+
 	public function getPrintableNodes(): array
 	{
 		return array_values(
@@ -227,6 +240,8 @@ class ClassTemplate extends DeclarativeCode
 
 		$this->addPropertiesToDeclaration($class);
 		$this->addMethodsToDeclaration($class);
+
+		$this->setDocBlockCommentOnBuilder($class);
 
 		return $this->convertBuilderToNode($class);
 	}

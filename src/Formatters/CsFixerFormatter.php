@@ -16,6 +16,9 @@ class CsFixerFormatter implements Formatter
 		'blank_line_before_statement' => true,
 		'array_indentation' => true,
 		'method_chaining_indentation' => true,
+		'align_multiline_comment' => ['comment_type' => 'all_multiline'],
+		'no_empty_phpdoc' => true,
+		'phpdoc_indent' => true,
 		'array_syntax' => ['syntax' => 'short'],
 	];
 

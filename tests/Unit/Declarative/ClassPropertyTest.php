@@ -318,4 +318,29 @@ class ClassPropertyTest extends TestCase
 
 		$this->assertEquals($shouldBeStatic, $isStatic);
 	}
+
+	/** @test */
+	public function class_property_can_have_doc_block()
+	{
+		$classProperty = ClassProperty::name('test')->withDocBlock('This is a doc block.');
+
+
+		$printed = ClassTemplate::name('TestClass')->addProperty($classProperty)->print();
+
+
+		$this->assertStringContainsString("    /**\n     * This is a doc block.\n     */", $printed);
+	}
+
+	/** @test */
+	public function class_property_can_generate_default_doc_block_automatically()
+	{
+		$classProperty = ClassProperty::name('anotherTest')->type('bool');
+
+
+		$classProperty->withDefaultDocBlock();
+		$printed = ClassTemplate::name('TestClass')->addProperty($classProperty)->print();
+
+
+		$this->assertStringContainsString("    /**\n     * @var bool \$anotherTest\n     */", $printed);
+	}
 }

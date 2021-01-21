@@ -4,6 +4,7 @@ namespace Shomisha\Stubless\DeclarativeCode;
 
 use Shomisha\Stubless\Abstractions\DeclarativeCode;
 use Shomisha\Stubless\Abstractions\ImperativeCode;
+use Shomisha\Stubless\Concerns\HasDocBlock;
 use Shomisha\Stubless\Contracts\DelegatesImports as DelegatesImportsContract;
 use Shomisha\Stubless\Enums\ClassAccess;
 use Shomisha\Stubless\Concerns\CanBeAbstract;
@@ -17,7 +18,16 @@ use Shomisha\Stubless\Concerns\HasName;
 
 class ClassMethod extends DeclarativeCode implements DelegatesImportsContract
 {
-	use CanBeFinal, CanBeAbstract, HasAccessModifier, CanBeStatic, HasName, HasArguments, HasImports, DelegatesImportsConcern;
+	use
+		CanBeFinal,
+		CanBeAbstract,
+		HasAccessModifier,
+		CanBeStatic,
+		HasName,
+		HasArguments,
+		HasImports,
+		DelegatesImportsConcern,
+		HasDocBlock;
 
 	private ?string $returnType;
 
@@ -82,6 +92,30 @@ class ClassMethod extends DeclarativeCode implements DelegatesImportsContract
 		return $this;
 	}
 
+	public function withDefaultDocBlock(): self
+	{
+		$docBlock = '';
+
+		/** @var \Shomisha\Stubless\DeclarativeCode\Argument $argument */
+		foreach ($this->arguments as $argument) {
+			$argumentDoc = "@param";
+
+			if ($type = $argument->getType()) {
+				$argumentDoc .= " {$type}";
+			}
+
+			$argumentDoc .= " \${$argument->getName()}";
+
+			$docBlock .= "{$argumentDoc}\n";
+		}
+
+		if ($returnType = $this->returnType) {
+			$docBlock .= "@return {$returnType}";
+		}
+
+		return $this->withDocBlock($docBlock);
+	}
+
 	/** @return \PhpParser\Node\Stmt\ClassMethod[] */
 	public function getPrintableNodes(): array
 	{
@@ -102,6 +136,8 @@ class ClassMethod extends DeclarativeCode implements DelegatesImportsContract
 		if ($this->returnType !== null) {
 			$method->setReturnType($this->returnType);
 		}
+
+		$this->setDocBlockCommentOnBuilder($method);
 
 		return [$this->convertBuilderToNode($method)];
 	}

@@ -543,4 +543,33 @@ class ClassMethodTest extends TestCase
 		$this->assertEquals('App\Cars\BMW', $imports['App\Cars\BMW']->getName());
 		$this->assertEquals('App\Services\CarManufacturer', $imports['App\Services\CarManufacturer']->getName());
 	}
+
+	/** @test */
+	public function class_methods_can_have_doc_blocks()
+	{
+		$method = ClassMethod::name('someMethod')->withDocBlock('This is a doc block');
+
+
+		$printed = ClassTemplate::name('TestClass')->addMethod($method)->print();
+
+
+		$this->assertStringContainsString("    /**\n     * This is a doc block\n     */\n", $printed);
+	}
+
+	/** @test */
+	public function class_methods_can_generate_default_doc_blocks_automatically()
+	{
+		$method = ClassMethod::name('someMethod')->return(new Importable('App\Models\User'))->withArguments([
+			Argument::name('test'),
+			Argument::name('anotherTest')->type('string'),
+			Argument::name('thirdTest')->type(new Importable('App\Models\ThirdTest', 'ThirdTestModel'))
+		]);
+
+
+		$method->withDefaultDocBlock();
+		$printed = ClassTemplate::name('TestClass')->addMethod($method)->print();
+
+
+		$this->assertStringContainsString("    /**\n     * @param \$test\n     * @param string \$anotherTest\n     * @param ThirdTestModel \$thirdTest\n     * @return User\n     */", $printed);
+	}
 }
