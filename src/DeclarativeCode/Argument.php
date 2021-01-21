@@ -30,7 +30,7 @@ class Argument extends DeclarativeCode implements DelegatesImportsContract
 		return $this->setType($type);
 	}
 
-	public function getType(): string
+	public function getType(): ?string
 	{
 		return $this->type;
 	}
