@@ -8,6 +8,7 @@ use Shomisha\Stubless\DeclarativeCode\ClassMethod;
 use Shomisha\Stubless\DeclarativeCode\ClassTemplate;
 use Shomisha\Stubless\References\ClassReference;
 use Shomisha\Stubless\Utilities\Importable;
+use Shomisha\Stubless\Values\Value;
 
 class ArgumentTest extends TestCase
 {
@@ -124,6 +125,18 @@ class ArgumentTest extends TestCase
 
 
 		$this->assertStringContainsString("string \$test = 'testValue'", $printed);
+	}
+
+	/** @test */
+	public function user_can_use_empty_array_as_argument_default_value()
+	{
+		$argument = Argument::name('override')->type('array')->value([]);
+
+
+		$printed = Value::closure([$argument])->print();
+
+
+		$this->assertStringContainsString("function (array \$override = [])", $printed);
 	}
 
 	/** @test */
