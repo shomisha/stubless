@@ -11,9 +11,11 @@ use Shomisha\Stubless\ImperativeCode\InvokeFunctionBlock;
 use Shomisha\Stubless\References\Reference;
 use Shomisha\Stubless\References\Variable;
 use Shomisha\Stubless\DeclarativeCode\ClassMethod;
+use Shomisha\Stubless\Test\Concerns\ImperativeCodeDataProviders;
 use Shomisha\Stubless\Utilities\Importable;
 use Shomisha\Stubless\Values\ArrayValue;
 use Shomisha\Stubless\Values\AssignableValue;
+use Shomisha\Stubless\Values\AssociativeArrayValue;
 use Shomisha\Stubless\Values\BooleanValue;
 use Shomisha\Stubless\Values\Closure;
 use Shomisha\Stubless\Values\FloatValue;
@@ -24,6 +26,8 @@ use Shomisha\Stubless\Values\Value;
 
 class ValueTest extends TestCase
 {
+	use ImperativeCodeDataProviders;
+
 	/** @test */
 	public function user_can_create_string_value_using_direct_constructor()
 	{
@@ -294,6 +298,129 @@ class ValueTest extends TestCase
 		$this->assertStringContainsString('use App\Services\ThirdClass;', $printed);
 
 		$this->assertStringContainsString("[SomeClass::doSomething(), AnotherClass::class, function () {\n    return ThirdClass::class;\n}];", $printed);
+	}
+
+	/** @test */
+	public function user_can_create_associative_arrays_using_direct_constructor()
+	{
+		$associativeArray = new AssociativeArrayValue(
+			[1, 'test', Block::invokeFunction('someFunction')],
+			['first element', false, Reference::objectProperty(Reference::this(), 'someProperty')]
+		);
+
+
+		$printed = $associativeArray->print();
+
+
+		$this->assertStringContainsString("[1 => 'first element', 'test' => false, someFunction() => \$this->someProperty];", $printed);
+	}
+
+	/** @test */
+	public function user_can_create_associative_arrays_using_factory_method()
+	{
+		$associativeArray = Value::associativeArray(
+			[Block::invokeStaticMethod('User', 'someStaticMethod'), Block::invokeMethod(Reference::this(), 'someMethod')],
+			[Value::array([1, 2, 3]), Reference::classReference('User')]
+		);
+
+
+		$printed = $associativeArray->print();
+
+
+		$this->assertStringContainsString("[User::someStaticMethod() => [1, 2, 3], \$this->someMethod() => User::class];", $printed);
+	}
+
+	/** @test */
+	public function user_can_create_associative_array_with_more_keys_than_values()
+	{
+		$associativeArray = Value::associativeArray(
+			[5, 4, 3, 2, 1],
+			[1, 2, 3]
+		);
+
+
+		$printed = $associativeArray->print();
+
+
+		$this->assertStringContainsString("[5 => 1, 4 => 2, 3 => 3, 2 => null, 1 => null];", $printed);
+	}
+
+	/** @test */
+	public function user_can_create_associative_array_with_more_values_than_keys()
+	{
+		$associativeArray = Value::associativeArray(
+			[1, 2, 3],
+			[1, 2, 3, 4, 5]
+		);
+
+
+		$printed = $associativeArray->print();
+
+
+		$this->assertStringContainsString("[1 => 1, 2 => 2, 3 => 3];", $printed);
+	}
+
+	/**
+	* @test
+	* @dataProvider assignableValuesDataProvider
+	**/
+	public function user_can_create_associative_arrays_using_any_assignable_values_as_keys($assignableValue, string $printedAssignableValue)
+	{
+		$associativeArray = Value::associativeArray(
+			[$assignableValue],
+			['some value']
+		);
+
+
+		$printed = $associativeArray->print();
+
+
+		$this->assertStringContainsString("[{$printedAssignableValue} => 'some value'];", $printed);
+	}
+
+	/** @test */
+	public function user_can_create_empty_associative_arrays()
+	{
+		$associativeArray = Value::associativeArray([], []);
+
+
+		$printed = $associativeArray->print();
+
+
+		$this->assertStringContainsString("[];", $printed);
+	}
+
+	/** @test */
+	public function user_can_add_values_to_associative_arrays()
+	{
+		$associativeArray = Value::associativeArray(
+			[1],
+			[1]
+		);
+
+
+		$associativeArray->add(Block::invokeMethod(Reference::this(), 'getKey'), Block::invokeFunction('getValue'));
+		$printed = $associativeArray->print();
+
+
+		$this->assertStringContainsString("[1 => 1, \$this->getKey() => getValue()];", $printed);
+	}
+
+	/** @test */
+	public function associative_arrays_will_delegate_imports()
+	{
+		$associativeArray = Value::associativeArray(
+			[Block::invokeStaticMethod(new Importable('App\Models\User'), 'chiefUserKey')],
+			[Block::invokeStaticMethod(new Importable('App\Models\Chief'), 'getUsersChief')]
+		);
+
+
+		$printed = $associativeArray->print();
+
+
+		$this->assertStringContainsString('use App\Models\User;', $printed);
+		$this->assertStringContainsString('use App\Models\Chief;', $printed);
+		$this->assertStringContainsString("[User::chiefUserKey() => Chief::getUsersChief()];", $printed);
 	}
 
 	/** @test */

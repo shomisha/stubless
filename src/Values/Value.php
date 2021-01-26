@@ -27,6 +27,11 @@ abstract class Value extends AssignableValue
 		return new ArrayValue($raw);
 	}
 
+	public static function associativeArray(array $keys, array $values): AssociativeArrayValue
+	{
+		return new AssociativeArrayValue($keys, $values);
+	}
+
 	public static function boolean(bool $raw): BooleanValue
 	{
 		return new BooleanValue($raw);
