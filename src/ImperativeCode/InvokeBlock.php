@@ -41,6 +41,17 @@ abstract class InvokeBlock extends AssignableValue implements Arrayable, ObjectC
 		return $block;
 	}
 
+	public function continueChain(string $name, array $arguments = []): self
+	{
+		if ($this->chainedMethod !== null) {
+			$this->chainedMethod->continueChain($name, $arguments);
+		} else {
+			$this->chain($name, $arguments);
+		}
+
+		return $this;
+	}
+
 	/** @return \Shomisha\Stubless\ImperativeCode\ChainedMethodBlock[] */
 	public function getChainedMethod(): ?ChainedMethodBlock
 	{

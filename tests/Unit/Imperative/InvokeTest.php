@@ -334,4 +334,32 @@ class InvokeTest extends TestCase
 
 		$this->assertStringContainsString('SomeClass::doSomething()->doSomethingElse()->clean(AnotherClass::class);', $printed);
 	}
+
+	/** @test */
+	public function user_can_continue_chains_from_any_link_in_them()
+	{
+		$chain = Block::invokeFunction('doSomething');
+		$chain->chain('doSomethingElse')->chain('doAnotherThing');
+
+
+		$this->assertInstanceOf(InvokeFunctionBlock::class, $chain);
+		$chain->continueChain('doOneMoreThing');
+		$printed = $chain->print();
+
+
+		$this->assertStringContainsString('doSomething()->doSomethingElse()->doAnotherThing()->doOneMoreThing();', $printed);
+	}
+
+	/** @test */
+	public function user_can_call_continue_chain_on_chain_root()
+	{
+		$chain = Block::invokeFunction('doSomething');
+
+
+		$chain->continueChain('doSomethingElse');
+		$printed = $chain->print();
+
+
+		$this->assertStringContainsString('doSomething()->doSomethingElse();', $printed);
+	}
 }
