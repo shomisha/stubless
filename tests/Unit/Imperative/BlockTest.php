@@ -145,4 +145,29 @@ class BlockTest extends TestCase
 		$this->assertStringContainsString('use App\Models\User;', $printed);
 		$this->assertStringContainsString("\$user = User::find(1);\n\$user->delete();", $printed);
 	}
+
+	/** @test */
+	public function user_can_get_code_instances_from_block()
+	{
+		$expectedCode = [
+			Block::assign(
+				Reference::variable('user'),
+				Block::instantiate(
+					"User"
+				)
+			),
+			Block::invokeMethod(
+				Reference::variable('user'),
+				'activate'
+			),
+		];
+
+		$block = Block::fromArray($expectedCode);
+
+
+		$actualCode = $block->getCodes();
+
+
+		$this->assertEquals($expectedCode, $actualCode);
+	}
 }

@@ -12,7 +12,6 @@ use Shomisha\Stubless\ImperativeCode\ControlBlocks\IfBlock;
 use Shomisha\Stubless\ImperativeCode\ControlBlocks\WhileBlock;
 use Shomisha\Stubless\References\ClassReference;
 use Shomisha\Stubless\References\Variable;
-use Shomisha\Stubless\Utilities\Importable;
 use Shomisha\Stubless\Values\AssignableValue;
 use Shomisha\Stubless\Values\Value;
 
@@ -45,6 +44,12 @@ class Block extends ImperativeCode
 		$this->code = array_merge($this->code, $codes);
 
 		return $this;
+	}
+
+	/** @return \Shomisha\Stubless\Abstractions\ImperativeCode[] */
+	public function getCodes(): array
+	{
+		return $this->code;
 	}
 
 	public function getPrintableNodes(): array
