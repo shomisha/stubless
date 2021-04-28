@@ -18,7 +18,7 @@ trait ImperativeCodeDataProviders
 			'Return value' => [Block::return(15), 'return 15;'],
 			'Assign value' => [Block::assign(Reference::objectProperty(Reference::this(), 'someProperty'), 'someValue'), "\$this->someProperty = 'someValue';"],
 			'Standalone reference' => [Reference::variable('test'), '$test;'],
-			'Standalon value' => [Value::string('I am alone.'), "'I am alone.';"],
+			'Standalone value' => [Value::string('I am alone.'), "'I am alone.';"],
 			'Block of code' => [
 				Block::fromArray([
 					Block::assign(Reference::variable('user'), Block::invokeStaticMethod('User', 'find', [22])),
