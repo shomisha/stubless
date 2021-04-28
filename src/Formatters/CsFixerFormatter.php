@@ -53,7 +53,7 @@ class CsFixerFormatter implements Formatter
 	{
 		$rules = json_encode($this->rules);
 
-		return "{$this->csFixerPath} fix \"{$path}\" --rules='{$rules}' --using-cache=no";
+		return "\"{$this->csFixerPath}\" fix \"{$path}\" --rules='{$rules}' --using-cache=no";
 	}
 
 	private function removeTemp(string $tempPath): void
