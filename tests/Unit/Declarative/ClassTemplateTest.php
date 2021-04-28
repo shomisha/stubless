@@ -8,6 +8,7 @@ use Shomisha\Stubless\DeclarativeCode\ClassConstant;
 use Shomisha\Stubless\DeclarativeCode\ClassMethod;
 use Shomisha\Stubless\DeclarativeCode\ClassProperty;
 use Shomisha\Stubless\DeclarativeCode\ClassTemplate;
+use Shomisha\Stubless\ImperativeCode\Block;
 use Shomisha\Stubless\ImperativeCode\UseStatement;
 use Shomisha\Stubless\Utilities\Importable;
 
@@ -278,11 +279,16 @@ class ClassTemplateTest extends TestCase
 		$class = ClassTemplate::name('TestClass')->setNamespace('App\Test');
 
 		$class->addProperty(
-			ClassProperty::name('test')->type(new Importable('App\Test\TestType')),
+			ClassProperty::name('test')->type(new Importable('App\Test\TestType'))
 		);
 
 		$class->addMethod(
-			ClassMethod::name('doSomething')->return(new Importable('App\Test\ReturnType', 'MethodReturnType'))
+			ClassMethod::name('doSomething')->return(new Importable('App\Test\ReturnType', 'MethodReturnType'))->body(
+				Block::invokeStaticMethod(
+					new Importable('App\Test\ThirdClass'),
+					'doSomething'
+				)
+			),
 		);
 
 
@@ -291,6 +297,7 @@ class ClassTemplateTest extends TestCase
 
 		$this->assertStringContainsString('use App\Test\TestType;', $printed);
 		$this->assertStringContainsString('use App\Test\ReturnType as MethodReturnType;', $printed);
+		$this->assertStringContainsString('use App\Test\ThirdClass;', $printed);
 	}
 
 	/**
